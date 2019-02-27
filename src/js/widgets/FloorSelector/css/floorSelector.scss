@@ -1,0 +1,71 @@
+@import "../../../../css/variables.scss";
+
+.floor-selector {
+  pointer-events: all;
+
+  .level {
+      -webkit-transition: all 0.8s;
+  -moz-transition: all 0.8s;
+    -o-transition: all 0.8s;
+       transition: all 0.8s;
+    margin-left: 200px;
+  }
+
+  .level:hover {
+    font-size: 40px;
+  }
+
+  .level.active:first-child {
+    margin-top: -80px;
+  }
+
+  .level:first-child {
+    margin-top: -40px;
+  }
+
+  .level {
+    cursor: pointer;
+    list-style: none;
+    display: block;
+    pointer-events: all;
+    width: 100%;
+    text-align: right;
+  }
+
+  .level.active {
+    font-size: 90px;
+    margin-top: -30px;
+    margin-bottom: -20px;
+    margin-left: 10px;
+    color: #F6A803;
+    font-family: "HelveticaNeue-CondensedBlack", "Helvetica Neue"; // import font!
+    text-transform: uppercase;
+    pointer-events: all;
+  }
+}
+
+.active .floor-selector {
+  .level {
+    margin-left: 0;
+  }
+
+  .level:nth-child(1) {
+      @include transition-delay(0.1s);
+  }
+
+  .level:nth-child(2) {
+      @include transition-delay(0.2s);
+  }
+
+  .level:nth-child(3) {
+      @include transition-delay(0.3s);
+  }
+
+  .level:nth-child(4) {
+      @include transition-delay(0.4s);
+  }
+
+  .level:nth-child(5) {
+      @include transition-delay(0.5s);
+  }
+}

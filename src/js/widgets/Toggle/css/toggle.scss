@@ -1,0 +1,35 @@
+$color: #a3a3a3;
+$size: 16px;
+
+.toggle {
+  display: inline-block;
+  width: 35px;
+  height: $size;
+  border-radius: $size;
+  border: solid 1px $color;
+  background: rgba(100,100,100,0.5);
+  cursor: pointer;
+
+  .knob {
+    height: ($size - 2);
+    width: ($size - 2);
+    border-radius: ($size - 2) / 2;
+    margin-top: 1px;
+    margin-left: 1px;
+    background-color: $color;
+
+    -webkit-transition: all 0.3s;
+    -moz-transition: all 0.3s;
+     -o-transition: all 0.3s;
+        transition: all 0.3s;
+  }
+
+  &.active {
+    border-color: #fff;
+
+    .knob {
+      margin-left: 19px;
+      background-color: #fff;
+    }
+  }
+}

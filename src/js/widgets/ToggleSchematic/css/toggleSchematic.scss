@@ -1,0 +1,41 @@
+@import "../../../../css/variables.scss";
+
+.toggle-schematic {
+  position: absolute;
+  bottom: 25px;
+  right: 10px;
+  pointer-events: all;
+  cursor: pointer;
+  opacity: 1;
+  @include transition(opacity 0.4s);
+
+  &.hide {
+    opacity: 0;
+  }
+
+  .item {
+    // float: left;
+    display: inline;
+    margin-right: 10px;
+    margin-left: 10px;
+    vertical-align: 5px;
+    color: #aaa;
+    -webkit-transition: color 0.3s;
+    -moz-transition: color 0.3s;
+    -o-transition: color 0.3s;
+    transition: color 0.3s;
+    cursor: pointer;
+
+    &.active {
+      font-weight: bold;
+      color: #fff;
+    }
+  }
+  
+  .toggle {
+    .knob {
+      background-color: #fff;
+    }
+    border-color: #fff;
+  }
+}

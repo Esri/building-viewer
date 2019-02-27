@@ -1,0 +1,173 @@
+@import "./variables.scss";
+
+/***************
+  Base
+****************/
+
+html, body {
+  background-color: $background;
+}
+
+html,
+body,
+#mainViewDiv, #appDiv, #canvas {
+  padding: 0;
+  margin: 0;
+  height: 100%;
+  width: 100%;
+  // z-index: 2;
+}
+
+#appDiv {
+  top: 0;
+  pointer-events: none;
+  position: absolute;
+  // z-index: 3;
+}
+
+#mainViewDiv {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  -webkit-transition: all 0.8s;
+  -moz-transition: all 0.8s;
+    -o-transition: all 0.8s;
+       transition: all 0.8s;
+}
+
+/***************
+  Typography
+****************/
+
+body {
+  color: $themedGray;
+  font-size: 15px;
+  line-height: 22px;
+  text-shadow: 1px 1px 5px rgba(70,70,70, 1);
+}
+
+a {
+  color: $themedGray;
+  text-decoration: underline;
+}
+
+h1, h2, h3, h4, h5 {
+  font-family: "HelveticaNeue-CondensedBlack", "Helvetica Neue"; // import font!
+  text-transform: uppercase;
+  pointer-events: all;
+  font-weight: 900;
+  text-shadow: 0 0 5px rgba(70,70,70, 1);
+  
+  &.slash-title {
+    text-transform: none;
+    font-family: "Avenir Next";
+    font-stretch: "normal";
+    font-weight: normal;
+
+    &::before {
+      content: "/";
+      margin-right: 10px;
+    }
+  }
+
+  &.inline {
+    margin-right: 10px;
+  }
+}
+
+h2.slash-title {
+  margin-bottom: 50px;
+  margin-top: 30px;
+}
+
+h5.inline {
+  font-family: "HelveticaNeue-CondensedBold", "Helvetica Neue";
+  font-size: 15px;
+}
+
+.inline {
+  display: inline;
+}
+
+p {
+  pointer-events: all;
+}
+
+h1 {
+  font-family: "HelveticaNeue-CondensedBlack", "Helvetica Neue";
+  font-stretch: "condensed";
+  font-weight: 900;
+  // font-size: 100px;
+  font-size: 85px;
+  // line-height: 120px;
+  line-height: 85px;
+  margin-bottom: 30px;
+}
+
+/***************
+  Layout
+****************/
+
+.side-container {
+  top: 0;
+  position: absolute;
+  max-width: 390px;
+  margin: 50px;
+}
+.side-container.left {
+  left: 0;
+}
+
+.side-container.right {
+  right: 0;
+  margin-top: 20px;
+  text-align: right;
+}
+
+#menu {
+  pointer-events: all;
+  text-align: center;
+  position: absolute;
+  left: 0;
+  right: 0;
+  margin-left: auto;
+  margin-right: auto;
+  width: auto;
+  // font-size: 27px;
+  font-size: 23px;
+  font-family: "Avenir Next";
+  font-stretch: "normal";
+  font-weight: medium;
+  // top: 40px;
+  top: 25px;
+
+  .slash {
+    margin-left: 25px;
+    margin-right: 20px;
+  }
+
+  a {
+    text-decoration: none;
+    color: $secondaryColor;
+
+    -webkit-transition: font-size 0.3s;
+       -moz-transition: font-size 0.3s;
+         -o-transition: font-size 0.3s;
+            transition: font-size 0.3s;
+    &.active {
+      color: $themedGray;
+    }
+
+    &:hover {
+      color: $themedGray;
+      // font-size: 30px;
+      font-size: 26px;
+      // font-weight: bold;
+    }
+  }
+
+}
+
+.esri-attribution {
+  display: none;
+}

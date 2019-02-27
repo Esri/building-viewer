@@ -1,0 +1,30 @@
+{
+  "name": "template",
+  "version": "1.0.0",
+  "description": "Template application for TypeScript and ArcGIS API 4 for JavaScript",
+  "repository": {
+    "type": "git",
+    "url": "git@github.com:yannikmesserli/esri-js-api-template-app.git"
+  },
+  "scripts": {
+    "dev": "tsc -w & sass --watch src:src",
+    "lint": "tslint './src/*.ts'"
+  },
+  "keywords": [
+    "esri",
+    "typescript"
+  ],
+  "author": "Yannik Messerli <ymesserli@esri.com>",
+  "license": "Apache-2.0",
+  "devDependencies": {
+    "tslint": "^4.2.0",
+    "grunt": "*",
+    "grunt-contrib-watch": "*",
+    "grunt-contrib-connect": "*"
+  },
+  "dependencies": {
+    "@types/dojo": "1.9.41",
+    "sass": "^1.17.0",
+    "typescript": "3.3"
+  }
+}
