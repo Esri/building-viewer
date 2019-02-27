@@ -28,7 +28,7 @@
     </div>
     <div id="appDiv">
       <div id="toggleSchematic"></div>
-      <div id="floorLegend"></div>
+      <div id="floorLegend" class="hide"></div>
     </div>
     <script>require([
       "app/BSLDemo", 
@@ -43,7 +43,7 @@
       FloorsSection
     )  => {
       // https://zrh.mapsdevext.arcgis.com/sharing/rest/content/items/0ed24045780348f8b7dfde7970710e4e/data?f=json
-      var buildingLayer = "https://tiles.arcgis.com/tiles/hLRlshaEMEYQG5A8/arcgis/rest/services/Turanga/SceneServer";
+      // var buildingLayer = "https://tiles.arcgis.com/tiles/hLRlshaEMEYQG5A8/arcgis/rest/services/Turanga/SceneServer";
           // "a1612c05d1ed43eaa1130cb6fbfc4dc2",
           // Demo from Gianluca:
           // "https://tilesdevext.arcgis.com/tiles/5xC5Wrapp1gUAl2r/arcgis/rest/services/Turanga_Library/SceneServer", 
@@ -53,11 +53,13 @@
         // The container where to display the map:
         mapContainer: "mainViewDiv",
 
-        // The url to the service for the BSL you'd like to display:
-        buildingLayer: buildingLayer,
+        // The id to the scene for the BSL you'd like to display:
+        websceneId: "b753b2ba04ef477ca46a5b8bd9766d2d",
+        buildingLayerTitle: "Turanga Library",
+        surroundingsLayerTitle: "City Model Christchurch",
 
         // The url to a SceneService displaying the surrounding:
-        surroundingsLayer: "https://services.arcgis.com/hLRlshaEMEYQG5A8/arcgis/rest/services/Scenechch_WSL1/SceneServer",
+        // surroundingsLayer: "https://services.arcgis.com/hLRlshaEMEYQG5A8/arcgis/rest/services/Scenechch_WSL1/SceneServer",
         // From Ginaluca:
         // "https://servicesdev.arcgis.com/5xC5Wrapp1gUAl2r/arcgis/rest/services/City_Model_Christchurch/SceneServer",
           //"440bec229bf24c89a72a69cf07cdf244", 
@@ -75,9 +77,7 @@
           // Surroundings:
           new SurroundingsSection(),
           // The different floors:
-          new FloorsSection({
-            buildingLayerUrl: buildingLayer
-          })
+          new FloorsSection()
         ]
       }, "appDiv");
     });</script>

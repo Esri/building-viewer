@@ -16,7 +16,7 @@ import AppState = require("../AppState");
 import buildingSceneLayerUtils = require("./buildingSceneLayerUtils");
 
 interface BuildingVisualisationCtorArgs {
-  layer: string;
+  layer: BuildingSceneLayer;
   appState: AppState;
   customBaseRenderer?: any;
 }
@@ -31,8 +31,8 @@ class BuildingVisualisation extends declared(GroupLayer) {
   @property()
   private baseLayer: BuildingSceneLayer;
 
-  // @property()
-  // private secondaryLayer: BuildingSceneLayer;
+  @property()
+  private secondaryLayer: BuildingSceneLayer;
 
   @property({
     readOnly: true,
@@ -147,12 +147,11 @@ class BuildingVisualisation extends declared(GroupLayer) {
     this.appState = args.appState;
 
     this.baseLayer = new BuildingSceneLayer({
-      url: args.layer,
-      // portalItem: {
-      //   id: args.layer
-      // },
-      opacity: 1
+      url: args.layer.url
     });
+
+    this.secondaryLayer = args.layer;
+    this.secondaryLayer.opacity = 0;
 
     // this.secondaryLayer = new BuildingSceneLayer({
     //   url: args.layer,
@@ -163,10 +162,21 @@ class BuildingVisualisation extends declared(GroupLayer) {
     //   opacity: 0
     // });
 
-    this.layers = new Collection([this.baseLayer]);
+    this.layers = new Collection([this.baseLayer, this.secondaryLayer]);
 
     watchUtils.init(this, "baseLayerRenderer", this._updateBaseRenderer);
     watchUtils.init(this, "customBaseRenderer", this._updateBaseRenderer);
+
+    watchUtils.init(this, "appState.mode", (mode) => {
+      if (mode === "real") {
+        this.secondaryLayer.opacity = 1;
+        this.baseLayer.opacity = 0;
+      }
+      else {
+        this.baseLayer.opacity = 1;
+        this.secondaryLayer.opacity = 0;
+      }
+    })
 
     buildingSceneLayerUtils.updateSubLayers(this.baseLayer, ["visible"], true);
 
@@ -175,9 +185,9 @@ class BuildingVisualisation extends declared(GroupLayer) {
     //   buildingSceneLayerUtils.updateSubLayers(this.secondaryLayer, ["renderer"], baseLayerRenderer);
     // });
 
-    watchUtils.init(this, "baseLayerOpacity", (baseLayerOpacity) => {
-      this.baseLayer.opacity = baseLayerOpacity;
-    });
+    // watchUtils.init(this, "baseLayerOpacity", (baseLayerOpacity) => {
+    //   this.baseLayer.opacity = baseLayerOpacity;
+    // });
 
     // watchUtils.init(this, "secondaryLayerOpacity", (secondaryLayerOpacity) => {
     //   this.secondaryLayer.opacity = secondaryLayerOpacity;

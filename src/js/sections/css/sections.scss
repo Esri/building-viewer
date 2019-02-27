@@ -214,6 +214,11 @@
   position: absolute;
   bottom: 80px;
   left: 30px;
+
+  &.hide {
+    display: none;
+  }
+
   div {
     background: transparent;
     color: #fff;

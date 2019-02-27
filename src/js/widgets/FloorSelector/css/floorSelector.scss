@@ -24,11 +24,13 @@
   }
 
   .level {
+    font-family: "HelveticaNeue-CondensedBlack", "Helvetica Neue"; // import font!
     cursor: pointer;
     list-style: none;
     display: block;
     pointer-events: all;
     width: 100%;
+    font-size: 25px;
     text-align: right;
   }
 
@@ -38,7 +40,6 @@
     margin-bottom: -20px;
     margin-left: 10px;
     color: #F6A803;
-    font-family: "HelveticaNeue-CondensedBlack", "Helvetica Neue"; // import font!
     text-transform: uppercase;
     pointer-events: all;
   }

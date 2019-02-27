@@ -6,24 +6,18 @@ import { tsx } from "esri/widgets/support/widget";
 
 import Section = require("./Section");
 import Camera = require("esri/Camera");
-import Color = require("esri/Color");
 import Collection = require("esri/core/Collection");
 import Widget = require("esri/widgets/Widget");
 import FloorSelector = require("../widgets/FloorSelector/FloorSelector");
 import watchUtils = require("esri/core/watchUtils");
-import appUtils = require("../support/appUtils");
 import SceneView = require("esri/views/SceneView");
-import BuildingVisualisation = require("../support/BuildingVisualisation");
-import SimpleRenderer = require("esri/renderers/SimpleRenderer");
 import FeatureLayer = require("esri/layers/FeatureLayer");
-import WatchHandles = require("esri/core/Handles");
-import { backgroundColor } from "../support/visualVariables";
 import Legend = require("esri/widgets/Legend");
 
-import domClass = require("dojo/dom-class");
 import domCtr = require("dojo/dom-construct");
+import domClass = require("dojo/dom-class");
 
-const floorViewInitialCamera = new Camera({"position":{"spatialReference":{"wkid":2193},"x":1570670.452701511,"y":5180244.367632804,"z":208.91035901793373},"heading":0,"tilt":0.5000000009642485});
+// const floorViewInitialCamera = new Camera({"position":{"spatialReference":{"wkid":2193},"x":1570670.452701511,"y":5180244.367632804,"z":208.91035901793373},"heading":0,"tilt":0.5000000009642485});
 // new Camera({"position":{"spatialReference":{"wkid":2193},"x":1570696.7848733864,"y":5180244.998463141,"z":142.2325701501933},"heading":0,"tilt":0.5000000004590939});
 
 @subclass()
@@ -40,24 +34,23 @@ class Floor extends declared(Widget) {
   @property()
   layer: string;
 
+  featureLayer: FeatureLayer;
+
   render() {
     return this.content;
   }
 
   constructor(args: any) {
     super(args);
+    this.featureLayer = new FeatureLayer({
+      url: args.layer
+    });
   }
 
   activate(view: SceneView, legend: Legend) {
-    const featureLayer = new FeatureLayer({
-      url: this.layer
-    });
-    view.map.layers = new Collection([
-      view.map.layers.getItemAt(0),
-      featureLayer
-    ]);
+    view.map.layers.add(this.featureLayer);
     legend.layerInfos = [{
-      layer: featureLayer,
+      layer: this.featureLayer,
       title: "Legend"
     }];
   }
@@ -75,24 +68,13 @@ class FloorsSection extends declared(Section) {
   selectedFloor: number;
 
   @property()
+  previousSelectedFloor: number;
+
+  @property()
   floorSelector: FloorSelector;
 
   @property()
-  floorView: SceneView;
-
-  @property()
-  buildingLayer: BuildingVisualisation;
-
-  @property()
-  buildingLayerUrl: string;
-
-  @property()
   legend: Legend;
-
-  // private offsetX: number;
-  // private offsetY: number;
-
-  private _handles = new WatchHandles();
 
   floors: Collection<Floor> = new Collection([
     new Floor({
@@ -123,14 +105,16 @@ class FloorsSection extends declared(Section) {
       title: "Auahatanga",
       subtitle: "creativity",
       layer: "https://servicesdev.arcgis.com/5xC5Wrapp1gUAl2r/arcgis/rest/services/Turanga_Spots/FeatureServer",
-      content: (<div id="creativity" bind={this} key={this}><p><a href="">Auahatanga | Creativity</a> <span class="italic">level 4</span> Browse the World Languages, Music and Fiction collections, including Biographies and Graphic Novels. Visit the two roof gardens with great views across the city. Explore your creativity in the Production Studio using creative technology such as 3D printers and sewing machines. Create and edit music and video using the Audio/Video Studio, or take a class in the Computer Labs with a great range of software available.</p><p>Listen to the name of this floor [MP3]</p></div>)
+      content: (<div id="creativity" bind={this} key={this}><p><a href="">Auahatanga | Creativity</a> <span class="italic">level 4</span> <span>Browse the World Languages, Music and Fiction collections, including Biographies and Graphic Novels. Visit the two roof gardens with great views across the city. Explore your creativity in the Production Studio using creative technology such as 3D printers and sewing machines. Create and edit music and video using the Audio/Video Studio, or take a class in the Computer Labs with a great range of software available.</span></p><p>Listen to the name of this floor [MP3]</p></div>)
     })
   ]);
 
   @property()
   // camera = new Camera({"position":{"spatialReference":{"wkid":2193},"x":1570527.3036612223,"y":5180359.178648159,"z":86.69521235276355},"heading":124.3049960081546,"tilt":73.36076191888827});
   // ipad friendlier camera: 
-  camera = new Camera({"position":{"spatialReference":{"wkid":2193},"x":1570544.291609822,"y":5180361.938219893,"z":71.53173486068152},"heading":124.30499600935663,"tilt":73.36076191907371});
+  // camera = new Camera({"position":{"spatialReference":{"wkid":2193},"x":1570670.452701511,"y":5180244.367632804,"z":208.91035901793373},"heading":0,"tilt":0.5000000007083909})
+  //{"position":{"spatialReference":{"wkid":2193},"x":1570544.291609822,"y":5180361.938219893,"z":71.53173486068152},"heading":124.30499600935663,"tilt":73.36076191907371});
+  camera = new Camera({"position":{"spatialReference":{"wkid":102100},"x":19217882.83777959,"y":-5393018.66464356,"z":163.67941159475595},"heading":359.9999957311318,"tilt":0.49998993117987317})
 
   render() {
     const currentLevel = this.floors.getItemAt(this.selectedFloor);
@@ -156,110 +140,39 @@ class FloorsSection extends declared(Section) {
     
     watchUtils.whenOnce(this, "appState", (appState) => {
       this.floorSelector = new FloorSelector({appState: appState});
-    });
 
-    watchUtils.init(this, "selectedFloor", (selectedFloor) => {
-      if (this.floorView) {
-        watchUtils.whenOnce(this, "legend", () => {
-          this.floors.getItemAt(selectedFloor).activate(this.floorView, this.legend);
-        });
-      }
+      this.legend = new Legend({
+        view: this.appState.view,
+        layerInfos: [],
+        container: domCtr.create("div", null, "floorLegend")
+      });
+
+      watchUtils.init(this, "selectedFloor,appState.pageLocation", () => {
+        if (typeof this.selectedFloor == 'number') {
+          if (this.previousSelectedFloor) {
+            this.appState.view.map.layers.remove(this.floors.getItemAt(this.previousSelectedFloor).featureLayer);
+          }
+          this.previousSelectedFloor = this.selectedFloor;
+          this.floors.getItemAt(this.selectedFloor).activate(this.appState.view, this.legend);
+          this.floors.getItemAt(this.selectedFloor).featureLayer.visible = (this.appState.pageLocation === "floors");
+        }
+      });
     });
   }
 
   onEnter() {
     this.selectedFloor = 0;
-    this.buildingLayer = new BuildingVisualisation({
-      appState: this.appState,
-      layer: this.buildingLayerUrl
-    });
-
-    this.floorView = appUtils.createView({
-      mapContainer: "floorViewDiv",
-      layers: [
-        this.buildingLayer
-      ]
-    });
+    domClass.remove("floorLegend", "hide");
     this.appState.view.environment.lighting.directShadowsEnabled = false;
-    this.appState.view.map.ground.surfaceColor = new Color([0, 0, 0, 0]);
-    this.appState.view.environment.background = {
-      type: "color",
-      color: new Color([0, 0, 0, 0])
-    } as any;
-
-    this.floorView.when(() => {
-      // this.floorView.camera = floorViewInitialCamera.clone();
-      // this.offsetX = this.appState.view.camera.position.x - this.floorView.camera.position.x;
-      // this.offsetY = this.appState.view.camera.position.y - this.floorView.camera.position.y;
-
-      // this._handles.add(this.watch("floorView.interacting", () => {
-      //   const camera = this.appState.view.camera.clone();
-      //   camera.position.x = this.floorView.camera.position.x + this.offsetX;
-      //   camera.position.y = this.floorView.camera.position.y + this.offsetY;
-      //   this.appState.view.goTo(camera);
-      // }), "floorView");
-
-      // this._handles.add(this.watch("appState.view.interacting", () => {
-      //   const camera = this.floorView.camera.clone();
-      //   camera.position.x = this.appState.view.camera.position.x - this.offsetX;
-      //   camera.position.y = this.appState.view.camera.position.y - this.offsetY;
-      //   this.floorView.goTo(camera);
-      // }), "floorView");
-
-      window["floorView"] = this.floorView;
-
-      this.floorView.whenLayerView(this.buildingLayer).then(() => {
-        this.buildingLayer.customBaseRenderer = new SimpleRenderer({
-          symbol: {
-            type: "mesh-3d",
-            symbolLayers: [{
-              type: "fill",
-              material: { color: [255,255,255, 1], colorMixMode: "replace" },
-              edges: {
-                type: "solid", // autocasts as new SolidEdges3D()
-                color: [30, 30, 30, 1]
-              }
-            }]
-          }  as any
-        });
-      });
-
-      this.floorView.goTo(floorViewInitialCamera);
-
-      this.legend = new Legend({
-        view: this.floorView,
-        layerInfos: [],
-        container: domCtr.create("div", null, "floorLegend")
-      });
-
-      this.floors.getItemAt(this.selectedFloor).activate(this.floorView, this.legend);
-    });
-
-    domClass.add("canvas", "floors");
+    this.appState.view.environment.lighting.ambientOcclusionEnabled = false;
+    // this.floors.getItemAt(this.selectedFloor).activate(this.floorView, this.legend);
 
   }
 
   onLeave() {
-    if (this.floorView) {
-      this.floorView.destroy();
-      this.floorView = null;
-    }
-    if (this.buildingLayer) {
-      this.buildingLayer.destroy();
-      this.buildingLayer = null;
-    }
-    if (this.legend) {
-      this.legend.destroy();
-      this.legend = null;
-    }
-
-    this.appState.view.map.ground.surfaceColor = backgroundColor;
-    this.appState.view.environment.background = {
-      type: "color",
-      color: backgroundColor
-    } as any;
-    this._handles.remove("floorView");
-    domClass.remove("canvas", "floors");
+    domClass.add("floorLegend", "hide");
+    this.appState.view.environment.lighting.directShadowsEnabled = true;
+    this.appState.view.environment.lighting.ambientOcclusionEnabled = true;
   }
 }
 

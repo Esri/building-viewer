@@ -24,7 +24,8 @@ class HomeSection extends declared(Section) {
   // camera = new Camera({"position":{"spatialReference":{"wkid":4326,},"x":172.6353490982857,"y":-43.529189012257284,"z":56.58640745468438},"heading":122.88346846437418,"tilt":77.70315705279316});
   //camera = new Camera({"position":{"spatialReference":{"wkid":2193},"x":1570527.3036612223,"y":5180359.178648159,"z":86.69521235276355},"heading":124.3049960081546,"tilt":73.36076191888827});
   // ipad friendlier camera: 
-  camera = new Camera({"position":{"spatialReference":{"wkid":2193},"x":1570544.291609822,"y":5180361.938219893,"z":71.53173486068152},"heading":124.30499600935663,"tilt":73.36076191907371});
+  // camera = new Camera({"position":{"spatialReference":{"wkid":2193},"x":1570544.291609822,"y":5180361.938219893,"z":71.53173486068152},"heading":124.30499600935663,"tilt":73.36076191907371});
+  camera = new Camera({"position":{"spatialReference":{"wkid":102100},"x":19217685.087990433,"y":-5392900.296798772,"z":79.08307875879109},"heading":115.42575019803249,"tilt":69.81430438201535});
 
   render() {
     return (<div id={this.id}>

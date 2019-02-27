@@ -43,7 +43,21 @@ export const renderers = {
       opacity: 1
     },
     "real-surroundings": {
-      renderer: null as any
+      renderer: {
+        type: "simple",
+        symbol: {
+          type: "mesh-3d",
+          // castShadows: false,
+          symbolLayers: [{
+            type: "fill",
+            material: { color: [100,100,100, 1], colorMixMode: "replace" },
+            edges: {
+              type: "solid", // autocasts as new SolidEdges3D()
+              color: [30, 30, 30, 1]
+            }
+          }]
+        }
+      } as any
     },
     "real-floors": {
       opacity: 0
@@ -88,19 +102,45 @@ export const renderers = {
       renderer: null as any
     },
     // This is used when displaying the different floors:
-    floors: {
-      opacity: 0
-    },
-    "schematic-surroundings": {
+    "schematic-floors": {
       renderer: new SimpleRenderer({
         symbol: {
           type: "mesh-3d",
           symbolLayers: [{
             type: "fill",
-            material: { color: [100,100,100, 1], colorMixMode: "replace" },
+            material: { color: [255,255,255, 1], colorMixMode: "replace" },
             edges: {
               type: "solid", // autocasts as new SolidEdges3D()
               color: [30, 30, 30, 1]
+            }
+          }]
+        }
+      } as any)
+    },
+    "schematic-surroundings": {
+      // renderer: new SimpleRenderer({
+      //   symbol: {
+      //     type: "mesh-3d",
+      //     symbolLayers: [{
+      //       type: "fill",
+      //       castShadows: false,
+      //       material: { color: [100,100,100, 1], colorMixMode: "replace" },
+      //       edges: {
+      //         type: "solid", // autocasts as new SolidEdges3D()
+      //         color: [30, 30, 30, 1]
+      //       }
+      //     }]
+      //   }
+      // } as any)
+      renderer: new SimpleRenderer({
+        symbol: {
+          type: "mesh-3d",
+          symbolLayers: [{
+            type: "fill",
+            material: { color: [255,184,1, 1], colorMixMode: "replace" },
+            edges: {
+              type: "solid", // autocasts as new SolidEdges3D()
+              color: [0, 0, 0, 1]
             }
           }]
         }

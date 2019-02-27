@@ -22,6 +22,7 @@ body,
   top: 0;
   pointer-events: none;
   position: absolute;
+  overflow: hidden;
   // z-index: 3;
 }
 
@@ -39,69 +40,69 @@ body,
   Typography
 ****************/
 
-body {
+#appDiv {
   color: $themedGray;
   font-size: 15px;
   line-height: 22px;
   text-shadow: 1px 1px 5px rgba(70,70,70, 1);
-}
 
-a {
-  color: $themedGray;
-  text-decoration: underline;
-}
+  a {
+    color: $themedGray;
+    text-decoration: underline;
+  }
 
-h1, h2, h3, h4, h5 {
-  font-family: "HelveticaNeue-CondensedBlack", "Helvetica Neue"; // import font!
-  text-transform: uppercase;
-  pointer-events: all;
-  font-weight: 900;
-  text-shadow: 0 0 5px rgba(70,70,70, 1);
-  
-  &.slash-title {
-    text-transform: none;
-    font-family: "Avenir Next";
-    font-stretch: "normal";
-    font-weight: normal;
+  h1, h2, h3, h4, h5 {
+    font-family: "HelveticaNeue-CondensedBlack", "Helvetica Neue"; // import font!
+    text-transform: uppercase;
+    pointer-events: all;
+    font-weight: 900;
+    text-shadow: 0 0 5px rgba(70,70,70, 1);
+    
+    &.slash-title {
+      text-transform: none;
+      font-family: "Avenir Next";
+      font-stretch: "normal";
+      font-weight: normal;
 
-    &::before {
-      content: "/";
+      &::before {
+        content: "/";
+        margin-right: 10px;
+      }
+    }
+
+    &.inline {
       margin-right: 10px;
     }
   }
 
-  &.inline {
-    margin-right: 10px;
+  h2.slash-title {
+    margin-bottom: 50px;
+    margin-top: 30px;
   }
-}
 
-h2.slash-title {
-  margin-bottom: 50px;
-  margin-top: 30px;
-}
+  h5.inline {
+    font-family: "HelveticaNeue-CondensedBold", "Helvetica Neue";
+    font-size: 15px;
+  }
 
-h5.inline {
-  font-family: "HelveticaNeue-CondensedBold", "Helvetica Neue";
-  font-size: 15px;
-}
+  .inline {
+    display: inline;
+  }
 
-.inline {
-  display: inline;
-}
+  p {
+    pointer-events: all;
+  }
 
-p {
-  pointer-events: all;
-}
-
-h1 {
-  font-family: "HelveticaNeue-CondensedBlack", "Helvetica Neue";
-  font-stretch: "condensed";
-  font-weight: 900;
-  // font-size: 100px;
-  font-size: 85px;
-  // line-height: 120px;
-  line-height: 85px;
-  margin-bottom: 30px;
+  h1 {
+    font-family: "HelveticaNeue-CondensedBlack", "Helvetica Neue";
+    font-stretch: "condensed";
+    font-weight: 900;
+    // font-size: 100px;
+    font-size: 85px;
+    // line-height: 120px;
+    line-height: 85px;
+    margin-bottom: 30px;
+  }
 }
 
 /***************

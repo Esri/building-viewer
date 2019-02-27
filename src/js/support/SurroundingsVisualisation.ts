@@ -77,7 +77,7 @@ class SurroundingsVisualisation extends declared(SceneLayer) {
 
     this.appState = appState;
 
-    watchUtils.whenOnce(this.appState, "view", (view) => {
+    this.when(() => {
       // view.whenLayerView(this)
       // .then(() => {
         watchUtils.init(this, "surroundingsRenderer", this._updateBaseRenderer);

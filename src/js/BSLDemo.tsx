@@ -8,9 +8,12 @@ import { tsx, renderable } from "esri/widgets/support/widget";
 import Sections = require("./sections/Sections");
 import SceneView = require("esri/views/SceneView");
 import Widget = require("esri/widgets/Widget");
-import promiseUtils = require("esri/core/promiseUtils");
-// import Collection = require("esri/core/Collection");
+// import promiseUtils = require("esri/core/promiseUtils");
+import Collection = require("esri/core/Collection");
 import Camera = require("esri/Camera");
+import BuildingSceneLayer = require("esri/layers/BuildingSceneLayer");
+import SceneLayer = require("esri/layers/SceneLayer");
+import WebScene = require("esri/WebScene");
 
 // BSLDemo
 import Section = require("./sections/Section");
@@ -25,8 +28,9 @@ type SectionSublcass = Pick<Section, "camera">;
 interface BSLDemoCtorArgs {
   sections: Pick<Section, "render" | "active" | "id" | "paneRight" | "title" | "camera" | "onLeave" | "onEnter" | "appState">[];
   mapContainer: string;
-  surroundingsLayer: string;
-  buildingLayer: string;
+  websceneId: string;
+  buildingLayerTitle: string;
+  surroundingsLayerTitle: string;
 }
 
 @subclass("webSceneViewer.widgets.LayersLoading.LayersLoadingProgressBar")
@@ -39,9 +43,6 @@ class BSLDemo extends declared(Widget) {
 
   @property({ aliasOf: "appState.view"})
   view: SceneView;
-
-  @property({constructOnly: true})
-  private mapContainer: string;
 
   @renderable()
   @property({ aliasOf: "sections.activeSection"})
@@ -74,13 +75,36 @@ class BSLDemo extends declared(Widget) {
   constructor(args: BSLDemoCtorArgs) {
     super(args as any);
 
-    this.buildingLayer = new BuildingVisualisation({
-      appState: this.appState,
-      layer: args.buildingLayer
-    });
-    this.surroundingsLayer = new SurroundingsVisualisation(args.surroundingsLayer, this.appState);
-    this.sections = new Sections(args.sections, this.appState);
+    this.view = appUtils.createViewFromWebScene({websceneId: args.websceneId, mapContainer: args.mapContainer});
 
+    (this.view.map as WebScene).when(() => {
+      const BSL = appUtils.findLayer(this.view.map.allLayers, args.buildingLayerTitle);
+
+      this.buildingLayer = new BuildingVisualisation({
+        appState: this.appState,
+        layer: BSL as BuildingSceneLayer
+      });
+
+      const surroundingsLayer = appUtils.findLayer(this.view.map.allLayers, args.surroundingsLayerTitle) as SceneLayer;
+      this.surroundingsLayer = new SurroundingsVisualisation(surroundingsLayer.url, this.appState);
+
+      this.view.map.layers.removeAll();
+
+      this.view.map.layers = new Collection([
+        this.buildingLayer,
+        this.surroundingsLayer
+      ]);
+    });
+
+    this.view.when(() => {
+      this.view.environment.lighting.directShadowsEnabled = true;
+      this.view.environment.lighting.ambientOcclusionEnabled = false;
+      
+      window["view"] = this.view;
+      this.sections.activateSection("home");
+    });
+
+    this.sections = new Sections(args.sections, this.appState);
   }
 
   normalizeCtorArgs(args: BSLDemoCtorArgs, container: string) {
@@ -102,11 +126,7 @@ class BSLDemo extends declared(Widget) {
 
     this.own(this.sections.on("go-to", (camera: Camera) => {
       this.view.goTo(camera);
-    }))
-
-    this.createView().then((view) => {
-      this.sections.activateSection("home");
-    });
+    }));
 
     new ToggleSchematic({
       appState: this.appState, 
@@ -126,29 +146,6 @@ class BSLDemo extends declared(Widget) {
   //  Private Methods
   //
   //--------------------------------------------------------------------------
-  private createView() {
-    this.view = appUtils.createView({
-      mapContainer: this.mapContainer,
-      layers: [
-        this.buildingLayer,
-        this.surroundingsLayer
-      ]
-    });
-
-    return this.view.when(() => {
-      // this.view.map.layers.removeAll();
-      // this.view.map.layers = new Collection([
-      //   this.buildingLayer,
-      //   this.surroundingsLayer
-      // ]);
-      // this.view.map.ground.surfaceColor = backgroundColor;
-      // this.view.map.basemap = null;
-      this.view.environment.lighting.directShadowsEnabled = true;
-      this.view.environment.lighting.ambientOcclusionEnabled = false;
-      window["view"] = this.view;
-      return promiseUtils.resolve(this.view);
-    });
-  }
 
 }
 
