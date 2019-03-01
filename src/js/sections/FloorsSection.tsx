@@ -13,7 +13,8 @@ import watchUtils = require("esri/core/watchUtils");
 // import SceneView = require("esri/views/SceneView");
 import FeatureLayer = require("esri/layers/FeatureLayer");
 import Legend = require("esri/widgets/Legend");
-import PopupTemplate = require("esri/PopupTemplate");
+// import PopupTemplate = require("esri/PopupTemplate");
+import PopupInfo = require("../widgets/Popup/PopupInfo");
 import domCtr = require("dojo/dom-construct");
 import domClass = require("dojo/dom-class");
 import appUtils = require("../support/appUtils");
@@ -49,14 +50,18 @@ class Floor extends declared(Widget) {
   }
 
   // activate(view: SceneView, legend: Legend) {
-  activate(layer: FeatureLayer) {
+  activate(infoLayer: FeatureLayer, pictureLayer: FeatureLayer) {
     // view.map.layers.add(this.featureLayer);
     // legend.layerInfos = [{
     //   layer: this.featureLayer,
     //   title: "Legend"
     // }];
-    if (layer) {
-      layer.definitionExpression = "level_id = " + this.level;
+    if (infoLayer) {
+      infoLayer.definitionExpression = "level_id = " + this.level;
+    }
+
+    if (pictureLayer) {
+      pictureLayer.definitionExpression = "level_id = " + this.level;
     }
   }
 }
@@ -85,6 +90,9 @@ class FloorsSection extends declared(Section) {
 
   @property()
   layer: FeatureLayer;
+
+  @property()
+  picturePointsLayer: FeatureLayer;
 
   private handles = new Handles();
 
@@ -160,25 +168,35 @@ class FloorsSection extends declared(Section) {
       this.floorSelector = new FloorSelector({appState: appState});
       watchUtils.on(this, "appState.initialLayers", "change", () => {
         if (this.appState && this.appState.initialLayers.length > 0) {
-          this.layer = appUtils.findLayer(this.appState.initialLayers, "Turanga Floor Points") as FeatureLayer;
-          this.layer.popupTemplate = new PopupTemplate({
-            overwriteActions: true,
-            // title: "OK",
-            // content: "ok",
-            actions: [] as any
-          });
-          this.layer.popupEnabled = true;
-          this.appState.view.map.layers.add(this.layer);
-        }
-        else {
-          this.layer = new FeatureLayer();
-        }
-        this.legend.layerInfos = [
-          {
-            layer: this.layer,
-            title: "Legend"
+
+          // Get the info points:
+          if (!this.layer) {
+            this.layer = appUtils.findLayer(this.appState.initialLayers, "Turanga Floor Points") as FeatureLayer;
+            // this.layer.popupTemplate = new PopupTemplate({
+            //   overwriteActions: true,
+            //   // title: "OK",
+            //   // content: "ok",
+            //   actions: [] as any
+            // });
+            // this.layer.popupEnabled = true;
+            this.appState.view.map.layers.add(this.layer);
+            this.legend.layerInfos = [
+              {
+                layer: this.layer,
+                title: "Legend"
+              }
+            ];
           }
-        ];
+
+          if (!this.picturePointsLayer) {
+            this.picturePointsLayer = appUtils.findLayer(this.appState.initialLayers, "Turanga Pictures - internal") as FeatureLayer;
+            this.picturePointsLayer.outFields = ["*"];
+            this.picturePointsLayer.popupTemplate.overwriteActions = true;
+            this.picturePointsLayer.popupTemplate.actions = new Collection();
+            this.appState.view.map.layers.add(this.picturePointsLayer);
+          }
+          
+        }
       });
       
       this.legend = new Legend({
@@ -189,8 +207,15 @@ class FloorsSection extends declared(Section) {
 
       watchUtils.init(this, "selectedFloor,appState.pageLocation", () => {
         if (typeof this.selectedFloor === 'number' && this.layer) {
-          this.floors.getItemAt(this.selectedFloor).activate(this.layer);
-          this.layer.visible = (this.appState.pageLocation === "floors");
+          this.floors.getItemAt(this.selectedFloor).activate(this.layer, this.picturePointsLayer);
+          
+          if (this.layer) {
+            this.layer.visible = (this.appState.pageLocation === "floors");
+          }
+
+          if (this.picturePointsLayer) {
+            this.picturePointsLayer.visible = (this.appState.pageLocation === "floors");
+          }
         }
       });
     });
@@ -205,21 +230,39 @@ class FloorsSection extends declared(Section) {
     this.oldDate = this.appState.view.environment.lighting.date;
     this.appState.view.environment.lighting.date = new Date("Thu Aug 01 2019 03:00:00 GMT+0200 (Central European Summer Time)");
 
-
+    // POPUP FOR THE INFO:
     // this.floors.getItemAt(this.selectedFloor).activate(this.floorView, this.legend);
+    // this.handles.add(this.appState.view.on("click", (event: any) => {
+    //   this.appState.view.hitTest(event)
+    //     .then((response) => {
+    //       const filtered = response.results.filter((result: any) => {
+    //         return result.graphic.layer === this.layer;
+    //       })[0];
+    //       if (filtered) {
+    //         this.appState.view.popup.open({
+    //           features: [filtered.graphic],
+    //           location: filtered.mapPoint
+    //         });
+    //       }
+    //     });
+    // }), "click");
+
     this.handles.add(this.appState.view.on("click", (event: any) => {
-      this.appState.view.hitTest(event)
-        .then((response) => {
-          const filtered = response.results.filter((result: any) => {
-            return result.graphic.layer === this.layer;
-          })[0];
-          if (filtered) {
-            this.appState.view.popup.open({
-              features: [filtered.graphic],
-              location: filtered.mapPoint
-            });
-          }
-        });
+     // the hitTest() checks to see if any graphics in the view
+     // intersect the given screen x, y coordinates
+     this.appState.view.hitTest(event)
+      .then((response) => {
+        const filtered = response.results.filter((result: any) => {
+          return result.graphic.layer === this.picturePointsLayer;
+        })[0];
+        if (filtered) {
+          // console.log(filtered.graphic);
+          this.appState.popupInfo = new PopupInfo({
+            image: filtered.graphic.attributes.url,
+            credit: "Credit © Emma Browne-Cole"
+          })
+        }
+      });
     }), "click");
 
   }
