@@ -12,6 +12,9 @@ class PopupInfo extends declared(Accessor) {
 
   @property()
   credit: string;
+
+  @property()
+  active: boolean = true;
 }
 
 export = PopupInfo;

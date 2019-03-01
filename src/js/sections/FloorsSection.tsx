@@ -222,13 +222,13 @@ class FloorsSection extends declared(Section) {
   }
 
   onEnter() {
-    this.selectedFloor = 0;
+    this.selectedFloor = 1;
     domClass.remove("floorLegend", "hide");
     domClass.add(document.body, "floors");
     this.appState.view.environment.lighting.directShadowsEnabled = false;
     this.appState.view.environment.lighting.ambientOcclusionEnabled = false;
     this.oldDate = this.appState.view.environment.lighting.date;
-    this.appState.view.environment.lighting.date = new Date("Thu Aug 01 2019 03:00:00 GMT+0200 (Central European Summer Time)");
+    this.appState.view.environment.lighting.date = new Date("Thu Aug 01 2019 03:00:00 GMT+0200 (Central European Summer Time)"); // new Date("Fri Dec 15 2019 0:29:27 GMT+0100");
 
     // POPUP FOR THE INFO:
     // this.floors.getItemAt(this.selectedFloor).activate(this.floorView, this.legend);

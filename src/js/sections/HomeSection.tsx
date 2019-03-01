@@ -75,6 +75,7 @@ class HomeSection extends declared(Section) {
         if (this.appState && this.appState.initialLayers.length > 0) {
           this.infoPointsLayer = appUtils.findLayer(this.appState.initialLayers, "Turanga Pictures - external") as FeatureLayer;
           this.infoPointsLayer.outFields = ["*"];
+          this.infoPointsLayer.visible = false;
           this.infoPointsLayer.popupTemplate.overwriteActions = true;
           this.infoPointsLayer.popupTemplate.actions = new Collection();
           this.appState.view.map.layers.add(this.infoPointsLayer);
@@ -84,12 +85,13 @@ class HomeSection extends declared(Section) {
 
     watchUtils.init(this, "appState.pageLocation", (l) => {
       if (this.infoPointsLayer) {
-        this.infoPointsLayer.visible = l === "home";
+        this.infoPointsLayer.visible = false; // l === "home";
       }
     });
   }
 
   onEnter() {
+    this.viewpoints.activeViewpoint = null;
     this.handles.add(this.appState.view.on("click", (event: any) => {
      // the hitTest() checks to see if any graphics in the view
      // intersect the given screen x, y coordinates
