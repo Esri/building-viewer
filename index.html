@@ -3,11 +3,14 @@
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
     <meta name="viewport" content="initial-scale=1, maximum-scale=1,user-scalable=no"/>
     <title>BSL Demo App</title>
+    <meta name="viewport" content="minimal-ui">
     <link rel="stylesheet" href="https://jsdev.arcgis.com/4.11/esri/themes/light/main.css">
     <link rel="stylesheet" href="https://s3-us-west-1.amazonaws.com/patterns.esri.com/files/calcite-web/1.2.4/css/calcite-web.min.css">
     <link rel="stylesheet" href="./src/css/main.css">
     <link rel="stylesheet" href="./src/js/sections/css/sections.css">
     <link rel="stylesheet" href="./src/js/widgets/widgets.css">
+    <link href="https://fonts.googleapis.com/css?family=Roboto" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css?family=Roboto+Condensed" rel="stylesheet">
     <script>
       var locationPath = location.pathname.replace(/\/[^\/]+$/, "/");
       window.dojoConfig = {
@@ -29,6 +32,7 @@
     <div id="appDiv">
       <div id="toggleSchematic"></div>
       <div id="floorLegend" class="hide"></div>
+      <div id="popup"></div>
     </div>
     <script>require([
       "app/BSLDemo", 
@@ -74,10 +78,10 @@
           
           // The about Tarangua section:
           new HomeSection(),
-          // Surroundings:
-          new SurroundingsSection(),
           // The different floors:
-          new FloorsSection()
+          new FloorsSection(),
+          // Surroundings:
+          new SurroundingsSection()
         ]
       }, "appDiv");
     });</script>

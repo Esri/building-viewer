@@ -3,16 +3,17 @@
 
 import { subclass, declared, property } from "esri/core/accessorSupport/decorators";
 
-import SceneLayer = require("esri/layers/SceneLayer");
+import Accessor = require("esri/core/Accessor");
 
 // App
 import AppState = require("../AppState");
 import buildingSceneLayerUtils = require("./buildingSceneLayerUtils");
 import watchUtils = require("esri/core/watchUtils");
 import Renderer = require("esri/renderers/Renderer");
+import SceneLayer = require("esri/layers/SceneLayer");
 
 @subclass("support/SurroundingsVisualisation")
-class SurroundingsVisualisation extends declared(SceneLayer) {
+class SurroundingsVisualisation extends declared(Accessor) {
   //--------------------------------------------------------------------------
   //
   //  Properties
@@ -56,6 +57,9 @@ class SurroundingsVisualisation extends declared(SceneLayer) {
       );
   }
 
+  @property()
+  layer: SceneLayer;
+
   @property({ constructOnly: true})
   appState: AppState;
 
@@ -64,27 +68,20 @@ class SurroundingsVisualisation extends declared(SceneLayer) {
   //  Life circle
   //
   //--------------------------------------------------------------------------
-  constructor(url: string, appState: AppState) {
-    super({
-      url: url,
-      // portalItem: {
-      //   id: url,
-      //   portal: { url: "https://zrh.mapsdevext.arcgis.com" }
-      // },
-      // renderer: buildingSceneLayerUtils.getVisualVarsFromAppState(appState, "surroundings", "renderer"),
-      // opacity: buildingSceneLayerUtils.getVisualVarsFromAppState(appState, "surroundings", "opacity")
-    });
+  constructor(args: {layer: SceneLayer, appState: AppState}) {
+    super();
 
-    this.appState = appState;
+    this.appState = args.appState;
+    this.layer = args.layer;
 
-    this.when(() => {
+    this.layer.when(() => {
       // view.whenLayerView(this)
       // .then(() => {
         watchUtils.init(this, "surroundingsRenderer", this._updateBaseRenderer);
         watchUtils.init(this, "customRenderer", this._updateBaseRenderer);
 
         watchUtils.init(this, "surroundingsOpacity", (surroundingsOpacity) => {
-          this.opacity = surroundingsOpacity;
+          this.layer.opacity = surroundingsOpacity;
         });
       // })
     });
@@ -105,10 +102,10 @@ class SurroundingsVisualisation extends declared(SceneLayer) {
 
   private _updateBaseRenderer() {
     if (this.customRenderer) {
-      this.renderer = this.customRenderer;  
+      this.layer.renderer = this.customRenderer;  
     }
     else {
-      this.renderer = this.surroundingsRenderer;
+      this.layer.renderer = this.surroundingsRenderer;
     }
   }
 }

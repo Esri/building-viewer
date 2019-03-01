@@ -7,18 +7,39 @@ import { tsx } from "esri/widgets/support/widget";
 import Section = require("./Section");
 import Camera = require("esri/Camera");
 
+import AppState = require("../AppState");
 import Timetable = require("../widgets/Timetable/Timetable");
+import Viewpoints = require("../widgets/Viewpoints/Viewpoints");
+import watchUtils = require("esri/core/watchUtils");
+import Handles = require("esri/core/Handles");
+import FeatureLayer = require("esri/layers/FeatureLayer");
+import appUtils = require("../support/appUtils");
+import Collection = require("esri/core/Collection");
+import PopupInfo = require("../widgets/Popup/PopupInfo");
 
 @subclass("sections/HomeSection")
 class HomeSection extends declared(Section) {
   @property()
-  title = "About us";
+  title = "Overview";
 
   @property()
   id = "home";
 
   @property()
   timetable = new Timetable();
+
+  @property()
+  appState: AppState;
+
+  @property()
+  infoPointsLayer: FeatureLayer;
+
+  private handles = new Handles();
+
+  @property({dependsOn: ["appState"], readOnly: true})
+  get viewpoints() {
+    return new Viewpoints({appState: this.appState});
+  }
 
   @property()
   // camera = new Camera({"position":{"spatialReference":{"wkid":4326,},"x":172.6353490982857,"y":-43.529189012257284,"z":56.58640745468438},"heading":122.88346846437418,"tilt":77.70315705279316});
@@ -31,27 +52,80 @@ class HomeSection extends declared(Section) {
     return (<div id={this.id}>
       <h1>T&#x16b;ranga Library</h1>
       <p>T&#x16b;ranga is a library in Central Christchurch and the main library of Christchurch City Libraries, New Zealand. It is the largest library in the South Island and the third-biggest in New Zealand. The previous Christchurch Central Library opened in 1982 on the corner of Oxford Terrace and Gloucester Street but was closed after the February 2011 Christchurch earthquake and demolished in 2014 to make way for the Convention Centre Precinct.</p>
-      <section class="information">
-        <h2 class="slash-title">Information</h2>
-        <p>
-          <h5 class="inline">Size</h5> Approx 9850m<sup>2</sup>, making it the largest public library in the South Island 
-        </p>
-        <p>
-          <h5 class="inline">Site</h5> <a href="https://www.google.com/maps?ll=-43.529977,172.636805&z=16&t=m&hl=en-US&gl=US&mapclient=embed&cid=3913235168885151081">60 Cathedral Square</a> - corner of Cathedral Square, Colombo Street, and Gloucester Street
-        </p>
-        <p>
-          <h5 class="inline">Cost</h5> $92.7 million
-        </p>
-        <p>
-          <h5 class="inline">Opening</h5> Friday 12 October 2018
-        </p>
+      <section class="Hours">
+        <h2 class="slash-title">Opening hours</h2>
+        <div>
+          {this.timetable.render()}
+        </div>
       </section>
     </div>);
   }
 
   paneRight() {
-    return (<div>{this.timetable.render()}</div>);
+    const viewpoints = this.viewpoints ? this.viewpoints.render() : null;
+    return (<div>{viewpoints}</div>);
+  }
+
+  constructor(args: any) {
+    super(args);
+
+    watchUtils.whenOnce(this, "appState", () => {
+      watchUtils.on(this, "appState.initialLayers", "change", () => {
+        if (this.appState && this.appState.initialLayers.length > 0) {
+          this.infoPointsLayer = appUtils.findLayer(this.appState.initialLayers, "Turanga Pictures") as FeatureLayer;
+          this.infoPointsLayer.outFields = ["*"];
+          this.infoPointsLayer.popupTemplate.overwriteActions = true;
+          this.infoPointsLayer.popupTemplate.actions = new Collection();
+          this.appState.view.map.layers.add(this.infoPointsLayer);
+        }
+      });
+    });
+
+    watchUtils.init(this, "appState.pageLocation", (l) => {
+      if (this.infoPointsLayer) {
+        this.infoPointsLayer.visible = l === "home";
+      }
+    });
+  }
+
+  onEnter() {
+    this.handles.add(this.appState.view.on("click", (event: any) => {
+     // the hitTest() checks to see if any graphics in the view
+     // intersect the given screen x, y coordinates
+     this.appState.view.hitTest(event)
+      .then((response) => {
+        const filtered = response.results.filter((result: any) => {
+          return result.graphic.layer === this.infoPointsLayer;
+        })[0];
+        if (filtered) {
+          // console.log(filtered.graphic);
+          this.appState.popupInfo = new PopupInfo({
+            image: filtered.graphic.attributes.url,
+            credit: "Credit © Emma Browne-Cole"
+          })
+        }
+      });
+    }), "click");
+  }
+  onLeave() {
+    this.handles.remove("click");
   }
 }
 
 export = HomeSection;
+
+// <section class="information">
+//         <h2 class="slash-title">Information</h2>
+//         <p>
+//           <h5 class="inline">Size</h5> Approx 9850m<sup>2</sup>, making it the largest public library in the South Island 
+//         </p>
+//         <p>
+//           <h5 class="inline">Site</h5> <a href="https://www.google.com/maps?ll=-43.529977,172.636805&z=16&t=m&hl=en-US&gl=US&mapclient=embed&cid=3913235168885151081">60 Cathedral Square</a> - corner of Cathedral Square, Colombo Street, and Gloucester Street
+//         </p>
+//         <p>
+//           <h5 class="inline">Cost</h5> $92.7 million
+//         </p>
+//         <p>
+//           <h5 class="inline">Opening</h5> Friday 12 October 2018
+//         </p>
+//       </section>

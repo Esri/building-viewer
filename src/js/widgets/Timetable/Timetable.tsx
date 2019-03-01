@@ -20,12 +20,12 @@ class DayTimetable extends declared(Widget) {
   render() {
     const today = new Date();
     if (today.getDay() === this.opens.getDay()) {
-      const isOpen = (today.getTime() > this.opens.getTime()) && (today.getTime() < this.closes.getTime());
-      const openText = isOpen ? "OPEN NOW" : "CLOSE NOW";
+      // const isOpen = (today.getTime() > this.opens.getTime()) && (today.getTime() < this.closes.getTime());
+      // const openText = isOpen ? "OPEN NOW" : "CLOSE NOW";
       return (<div class="daytime today">
         <h2>TODAY</h2>
         <div class="schedule">{this.opens.getHours()}:00 - {this.closes.getHours()}:00</div>
-        <div class="openstatus">{openText}</div>
+        {/*<div class="openstatus">{openText}</div>*/}
       </div>)
     }
     else {
@@ -51,24 +51,32 @@ class Timetable extends declared(Widget) {
   dates: Collection<DayTimetable> = new Collection([
     new DayTimetable({
       opens: new Date(2019, 2, 18, 8, 0),
-      closes: new Date(2019, 2, 18, 17, 0)
+      closes: new Date(2019, 2, 18, 20, 0)
     }),
     new DayTimetable({
       opens: new Date(2019, 2, 19, 8, 0),
-      closes: new Date(2019, 2, 19, 17, 0)
+      closes: new Date(2019, 2, 19, 20, 0)
     }),
     new DayTimetable({
       opens: new Date(2019, 2, 20, 8, 0),
-      closes: new Date(2019, 2, 20, 17, 0)
+      closes: new Date(2019, 2, 20, 20, 0)
     }),
     new DayTimetable({
       opens: new Date(2019, 2,  21, 8, 0),
-      closes: new Date(2019, 2, 21, 17, 0)
+      closes: new Date(2019, 2, 21, 20, 0)
     }),
     new DayTimetable({
       opens: new Date(2019, 2, 22, 8, 0),
-      closes: new Date(2019, 2, 22, 17, 0)
+      closes: new Date(2019, 2, 22, 20, 0)
     }),
+    new DayTimetable({
+      opens: new Date(2019, 2, 23, 10, 0),
+      closes: new Date(2019, 2, 23, 17, 0)
+    }),
+    new DayTimetable({
+      opens: new Date(2019, 2, 24, 10, 0),
+      closes: new Date(2019, 2, 24, 17, 0)
+    })
   ]);
 
   render() {

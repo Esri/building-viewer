@@ -36,7 +36,7 @@ export function createView(args: {mapContainer: string, layers?: Layer[]}) {
       },
       background: {
         type: "color",
-        color: backgroundColor
+        color: [0,0,0,0] as any
       }
     }
   });
@@ -68,27 +68,25 @@ export function createViewFromWebScene(args: {
 
   webscene.when(function() {
     webscene.basemap = null;
-    webscene.ground = { 
-      surfaceColor: backgroundColor
-    } as any;
+    webscene.ground.surfaceColor = backgroundColor;
   });
 
   const view = new SceneView({
     container: args.mapContainer,
     map: webscene,
-    alphaCompositingEnabled: true,
-    environment: {
-      starsEnabled: false,
-      atmosphereEnabled: false,
-      lighting: {
-        directShadowsEnabled: true,
-        ambientOcclusionEnabled: false
-      },
-      background: {
-        type: "color",
-        color: backgroundColor
-      }
-    }
+    alphaCompositingEnabled: true
+    // environment: {
+    //   starsEnabled: false,
+    //   atmosphereEnabled: true,
+    //   lighting: {
+    //     directShadowsEnabled: true,
+    //     ambientOcclusionEnabled: true
+    //   },
+    //   background: {
+    //     type: "color",
+    //     color: backgroundColor
+    //   }
+    // }
   });
 
   view.ui.empty("top-left");

@@ -210,9 +210,26 @@
   }
 }
 
+.floors {
+  #appDiv {
+    .left.side-container {
+      z-index: 1;
+    }
+    .right.side-container, #menu {
+      z-index: 3;
+      position: absolute;
+    }
+  }
+
+  #canvas {
+    position: absolute;
+    z-index: 2;
+  }
+}
+
 #floorLegend {
   position: absolute;
-  bottom: 80px;
+  bottom: 30px;
   left: 30px;
 
   &.hide {
@@ -229,7 +246,7 @@
   }
 
   .esri-legend__layer-row {
-    height: 38px;
+    height: 28px;
     display: block;
   }
 

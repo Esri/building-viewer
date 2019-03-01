@@ -117,6 +117,21 @@ export const renderers = {
         }
       } as any)
     },
+    "real-floors": {
+      renderer: new SimpleRenderer({
+        symbol: {
+          type: "mesh-3d",
+          symbolLayers: [{
+            type: "fill",
+            material: { color: [255,255,255, 1], colorMixMode: "replace" },
+            edges: {
+              type: "solid", // autocasts as new SolidEdges3D()
+              color: [30, 30, 30, 1]
+            }
+          }]
+        }
+      } as any)
+    },
     "schematic-surroundings": {
       // renderer: new SimpleRenderer({
       //   symbol: {
@@ -147,7 +162,19 @@ export const renderers = {
       } as any)
     },
     "real-surroundings": {
-      renderer: null as any
+      renderer: new SimpleRenderer({
+        symbol: {
+          type: "mesh-3d",
+          symbolLayers: [{
+            type: "fill",
+            material: { color: [255,184,1, 1], colorMixMode: "replace" },
+            edges: {
+              type: "solid", // autocasts as new SolidEdges3D()
+              color: [0, 0, 0, 1]
+            }
+          }]
+        }
+      } as any)
     }
   },
 

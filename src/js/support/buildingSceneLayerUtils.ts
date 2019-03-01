@@ -1,5 +1,6 @@
 import BuildingSceneLayer = require("esri/layers/BuildingSceneLayer");
 import BuildingComponentSublayer = require("esri/layers/buildingSublayers/BuildingComponentSublayer");
+import BuildingGroupSublayer = require("esri/layers/buildingSublayers/BuildingGroupSublayer");
 import { renderers } from "./visualVariables";
 import AppState = require("../AppState");
 
@@ -35,6 +36,14 @@ export function updateSubLayers(buildingLayer: BuildingSceneLayer, propertyPath:
           parentProp = parentProp[prop];
         }
       });
+    });
+  });
+}
+
+export function goThroughSubLayers(buildingLayer: BuildingSceneLayer, callback: (sublayers: BuildingComponentSublayer | BuildingGroupSublayer) => void) {
+  buildingLayer.when(function() {
+    buildingLayer.allSublayers.forEach(function(layer) {
+      callback(layer);
     });
   });
 }

@@ -1,9 +1,31 @@
 @import "../../../../css/variables.scss";
 
-.floor-selector {
+#appDiv .viewpoints {
+  width: 300px;
+  margin-left: -100px;
   pointer-events: all;
 
-  .level {
+  h2.slash-title {
+    margin-bottom: 20px;
+  }
+
+  & > div > div {
+    height: 30px;
+  }
+
+  a {
+    color: rgba(255,255,255,0.5);
+    margin-left: 8px;
+    text-decoration: none;
+  }
+
+  svg {
+    width: 15px;
+    opacity: 0.5;
+    vertical-align: -2px;
+  }
+
+  .viewpoint {
       -webkit-transition: all 0.8s;
   -moz-transition: all 0.8s;
     -o-transition: all 0.8s;
@@ -11,19 +33,19 @@
     margin-left: 200px;
   }
 
-  .level:hover {
+  .viewpoint:hover {
     font-size: 40px;
   }
 
-  .level.active:first-child {
+  .viewpoint.active:first-child {
     margin-top: -80px;
   }
 
-  .level:first-child {
-    margin-top: -40px;
+  .viewpoint:first-child {
+    margin-top: 0px;
   }
 
-  .level {
+  .viewpoint {
     font-family: 'Roboto Condensed', sans-serif; // import font!
     cursor: pointer;
     list-style: none;
@@ -34,42 +56,40 @@
     text-align: right;
   }
 
-  .level.active {
+  .viewpoint.active {
     font-size: 90px;
-    margin-top: -20px;
+    margin-top: -30px;
     margin-bottom: -20px;
+    margin-left: 10px;
     color: #F6A803;
     text-transform: uppercase;
     pointer-events: all;
   }
 }
 
-.active .floor-selector {
-  .level {
-    margin-left: 0;
 
-    &.active {
-      margin-left: 15px;
-    }
+#appDiv .active .viewpoints {
+  .viewpoint {
+    margin-left: 0;
   }
 
-  .level:nth-child(1) {
+  .viewpoint:nth-child(1) {
       @include transition-delay(0.1s);
   }
 
-  .level:nth-child(2) {
+  .viewpoint:nth-child(2) {
       @include transition-delay(0.2s);
   }
 
-  .level:nth-child(3) {
+  .viewpoint:nth-child(3) {
       @include transition-delay(0.3s);
   }
 
-  .level:nth-child(4) {
+  .viewpoint:nth-child(4) {
       @include transition-delay(0.4s);
   }
 
-  .level:nth-child(5) {
+  .viewpoint:nth-child(5) {
       @include transition-delay(0.5s);
   }
 }

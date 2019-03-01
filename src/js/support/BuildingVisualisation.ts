@@ -32,7 +32,11 @@ class BuildingVisualisation extends declared(GroupLayer) {
   private baseLayer: BuildingSceneLayer;
 
   @property()
-  private secondaryLayer: BuildingSceneLayer;
+  // private secondaryLayer: BuildingSceneLayer;
+
+  private initialRenderer: HashMap<Renderer> = {};
+  private initialDefExp: HashMap<string> = {};
+  private initialVisibility: HashMap<boolean> = {};
 
   @property({
     readOnly: true,
@@ -146,12 +150,28 @@ class BuildingVisualisation extends declared(GroupLayer) {
 
     this.appState = args.appState;
 
-    this.baseLayer = new BuildingSceneLayer({
-      url: args.layer.url
+    this.baseLayer = args.layer; 
+    // new BuildingSceneLayer({
+    //   url: args.layer.url
+    // });
+
+    buildingSceneLayerUtils.goThroughSubLayers(args.layer, (sublayer) => {
+      if (sublayer.type === "building-component") {
+        this.initialRenderer[sublayer.title] = (sublayer as any).renderer;
+      }
     });
 
-    this.secondaryLayer = args.layer;
-    this.secondaryLayer.opacity = 0;
+    buildingSceneLayerUtils.goThroughSubLayers(args.layer, (sublayer) => {
+      if (sublayer.type === "building-component") {
+        this.initialDefExp[sublayer.title] = sublayer.definitionExpression;
+      }
+    });
+    buildingSceneLayerUtils.goThroughSubLayers(args.layer, (sublayer) => {
+      this.initialVisibility[sublayer.title] = sublayer.visible;
+    });
+
+    // this.secondaryLayer = args.layer;
+    // this.secondaryLayer.opacity = 0;
 
     // this.secondaryLayer = new BuildingSceneLayer({
     //   url: args.layer,
@@ -162,23 +182,26 @@ class BuildingVisualisation extends declared(GroupLayer) {
     //   opacity: 0
     // });
 
-    this.layers = new Collection([this.baseLayer, this.secondaryLayer]);
+    this.layers = new Collection([this.baseLayer]);
 
     watchUtils.init(this, "baseLayerRenderer", this._updateBaseRenderer);
     watchUtils.init(this, "customBaseRenderer", this._updateBaseRenderer);
 
-    watchUtils.init(this, "appState.mode", (mode) => {
-      if (mode === "real") {
-        this.secondaryLayer.opacity = 1;
-        this.baseLayer.opacity = 0;
-      }
-      else {
-        this.baseLayer.opacity = 1;
-        this.secondaryLayer.opacity = 0;
-      }
-    })
+    // watchUtils.init(this, "appState.mode", (mode) => {
+    //   if (mode === "real") {
+    //     this.secondaryLayer.opacity = 1;
+    //     this.baseLayer.opacity = 0;
+    //   }
+    //   else {
+    //     this.baseLayer.opacity = 1;
+    //     this.secondaryLayer.opacity = 0;
+    //   }
+    // });
 
-    buildingSceneLayerUtils.updateSubLayers(this.baseLayer, ["visible"], true);
+    // buildingSceneLayerUtils.updateSubLayers(this.baseLayer, ["visible"], true);
+    // buildingSceneLayerUtils.goThroughSubLayers(this.baseLayer, (sublayer) => {
+    //   sublayer.opacity = this.initialOpacity[sublayer.title];
+    // });
 
 
     // watchUtils.init(this, "secondaryLayerRenderer", (baseLayerRenderer) => {
@@ -194,7 +217,20 @@ class BuildingVisualisation extends declared(GroupLayer) {
     // });
 
     watchUtils.init(this, "baseLayerDefinitionExpression", (baseLayerDefinitionExpression) => {
-      buildingSceneLayerUtils.updateSubLayers(this.baseLayer, ["definitionExpression"], baseLayerDefinitionExpression);
+      if (!this.appState.pageLocation || this.appState.pageLocation !== "floors") {
+        buildingSceneLayerUtils.goThroughSubLayers(this.baseLayer, (sublayer) => {
+          if (sublayer.type === "building-component") {
+            sublayer.definitionExpression = this.initialDefExp[sublayer.title];
+          }
+        });
+      }
+      else {
+        buildingSceneLayerUtils.goThroughSubLayers(this.baseLayer, (sublayer) => {
+          if (sublayer.type === "building-component") {
+            sublayer.definitionExpression = baseLayerDefinitionExpression;
+          }
+        });
+      }
     });
 
     // watchUtils.init(this, "secondaryLayerDefinitionExpression", (secondaryLayerDefinitionExpression) => {
@@ -229,6 +265,13 @@ class BuildingVisualisation extends declared(GroupLayer) {
   private _updateBaseRenderer() {
     if (this.customBaseRenderer) {
       buildingSceneLayerUtils.updateSubLayers(this.baseLayer, ["renderer"], this.customBaseRenderer);  
+    }
+    else if (!this.appState.pageLocation || this.appState.pageLocation === "home") {
+      buildingSceneLayerUtils.goThroughSubLayers(this.baseLayer, (sublayer) => {
+        if (sublayer.type === "building-component") {
+          sublayer.renderer = this.initialRenderer[sublayer.title] && (this.initialRenderer[sublayer.title] as any).clone();
+        }
+      });
     }
     else {
       buildingSceneLayerUtils.updateSubLayers(this.baseLayer, ["renderer"], this.baseLayerRenderer);

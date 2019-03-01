@@ -25,7 +25,7 @@ class FloorSelector extends declared(Widget) {
   appState: AppState;
 
   render() {
-    const levels = Array.from(Array(Math.abs(this.minFloor) + this.maxFloor).keys()).map((rawLevel: number) => {
+    const levels = Array.from(Array(Math.abs(this.minFloor) + this.maxFloor).keys()).reverse().map((rawLevel: number) => {
       const level: number = rawLevel - this.minFloor;
       const levelText = level === 0 ? "G" : level;
       const activeClass = {

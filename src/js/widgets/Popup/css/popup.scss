@@ -1,0 +1,43 @@
+@import "../../../../css/variables.scss";
+
+#appDiv #popup {
+  z-index: 100;
+  position: absolute;
+  width: 0%;
+  height: 0%;
+  overflow: hidden;
+  left: 50%;
+  top: 50%;
+  background: #fff;
+  opacity: 0;
+  box-shadow: 2px 2px 5px rgba(0,0,0,0.5);
+  // display: none;
+
+  @include transition(width 0.5s ease, height 0.5s ease, opacity 0.5s ease, left 0.5s ease, top 0.5s ease);
+  
+  & > img {
+    width: 100%;
+  }
+
+  &.active {
+    // display: block;
+    width: 90%;
+    height: 90%;
+    left: 5%;
+    top: 5%;
+    opacity: 1;  
+    cursor: pointer;
+    pointer-events: all;
+  }
+
+  .credit {
+    position: absolute;
+    width: 100%;
+    bottom: -2px;
+    background: rgba(0,0,0,0.5);
+
+    & > div {
+      margin: 10px 20px;
+    }
+  }
+}

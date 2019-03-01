@@ -8,7 +8,7 @@
 
   .daytime {
     @include transition(margin 0.3s ease);
-    margin-left: 200px;
+    margin-left: -200px;
     clear: both;
     width: 100%;
     height: 30px;
@@ -17,6 +17,7 @@
         font-size: 25px;
         color: #FFAF03;
         float: left;
+        margin: 0;
         display: inline-block;
     }
     h3 {
@@ -28,12 +29,27 @@
     .schedule, .openstatus {
       float: right;
       display: inline-block;
-      font-size: 80%;
-      margin-top: -5px;
+      font-size: 90%;
+      margin-top: -3px;
     }
 
-    .daytime.today .schedule {
-        margin-top: -15px;
+    // .openstatus {
+    //   font-weight: bold;
+    //   font-size: 80%;
+    //   margin-top: -5px;
+    // }
+
+    &.today {
+      margin-bottom: 3px;
+      margin-top: 2px;
+
+      h2 {
+        margin-top: -8px;
+      }
+
+      .schedule {
+          margin-top: -5px;
+      }
     }
   }
 }
