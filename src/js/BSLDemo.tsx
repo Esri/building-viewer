@@ -181,7 +181,6 @@ class BSLDemo extends declared(Widget) {
     }
     else {
       this.initialLayers.add(layer);
-      console.log(layer.title);
       // this.view.map.allLayers.remove(l);
     }
   }

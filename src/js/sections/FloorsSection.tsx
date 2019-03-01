@@ -256,11 +256,15 @@ class FloorsSection extends declared(Section) {
           return result.graphic.layer === this.picturePointsLayer;
         })[0];
         if (filtered) {
-          // console.log(filtered.graphic);
-          this.appState.popupInfo = new PopupInfo({
-            image: filtered.graphic.attributes.url,
-            credit: "Credit © Emma Browne-Cole"
-          })
+          // var img=new Image();
+          // img.src = filtered.graphic.attributes.url;
+          // img.onload = () => {
+            // console.log(filtered.graphic);
+            this.appState.popupInfo = new PopupInfo({
+              image: filtered.graphic.attributes.url,
+              credit: "Credit © Emma Browne-Cole"
+            });
+          // };
         }
       });
     }), "click");
