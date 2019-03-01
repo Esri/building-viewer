@@ -127,7 +127,7 @@ class FloorsSection extends declared(Section) {
   ]);
 
   @property()
-  camera = new Camera({"position":{"spatialReference":{"wkid":102100},"x":19217889.27368903,"y":-5392989.009216037,"z":145.8640114273876},"heading":0.0000024148365394514667,"tilt":0.4999913464918646});
+  camera = new Camera({"position":{"spatialReference":{"wkid":102100},"x":19217906.056871723,"y":-5392983.203578308,"z":138.30973901506513},"heading":0.000002699869328381916,"tilt":0.4999919670732401});
   // camera = new Camera({"position":{"spatialReference":{"wkid":2193},"x":1570527.3036612223,"y":5180359.178648159,"z":86.69521235276355},"heading":124.3049960081546,"tilt":73.36076191888827});
   // ipad friendlier camera: 
   // camera = new Camera({"position":{"spatialReference":{"wkid":2193},"x":1570670.452701511,"y":5180244.367632804,"z":208.91035901793373},"heading":0,"tilt":0.5000000007083909})

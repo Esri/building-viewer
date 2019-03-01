@@ -27,6 +27,7 @@ export function createView(args: {mapContainer: string, layers?: Layer[]}) {
     container: args.mapContainer,
     map: webscene,
     alphaCompositingEnabled: true,
+    padding: {left: 300},
     environment: {
       starsEnabled: false,
       atmosphereEnabled: false,

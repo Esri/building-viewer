@@ -110,14 +110,87 @@ body,
 
 @media (max-width: 1400px) {
   #appDiv {
+    font-size: 12px;
+    line-height: 17px;
+
+    .active .viewpoints {
+      margin-top: 50px;
+
+      h2.slash-title {
+        margin-bottom: -5px;
+      }
+
+      .viewpoint {
+        font-size: 21px;
+      }
+    }
+    #surroundings h1 {
+      font-size: 30px;
+      margin-bottom: 10px;
+    }
+    
+    #surroundings .slash-title.width-toggle {
+      font-size: 20px;
+      // margin-top: -5px;
+    }
+
+    #surroundings .content {
+      font-size: 17px;
+    }
+
+    #surroundings .content {
+      line-height: 30px;
+    }
+
+    #surroundings .content svg {
+      width: 13px;
+      vertical-align: -2px;
+    }
+
+    #surroundings .element a {
+      margin-left: 8px;
+    }
+
+    #menu {
+      font-size: 18px;
+
+      .slash {
+        margin-left: 20px;
+        margin-right: 15px;
+      }
+    }
+
+    .side-container {
+      max-width: 290px;
+    }
+
     h1 {
-      font-size: 60px;
-      line-height: 70px;
+      font-size: 50px;
+      line-height: 50px;
     }
 
     h2.slash-title {
       margin-top: 10px;
-      margin-bottom: 20px;
+      margin-bottom: 10px;
+      font-size: 25px;
+    }
+
+    .timetable {
+      margin-top: 20px;
+
+      .daytime {
+        height: 20px;
+
+        h2 {
+          font-size: 20px;
+          margin-top: -4px;
+        }
+        
+        h3 {
+          font-size: 15px;
+          margin-bottom: 3px;
+        }
+      }
     }
 
     #surroundings .content {
@@ -130,18 +203,29 @@ body,
 
     #floors {
       h1 {
-        font-size: 60px;
-        line-height: 70px;
+        font-size: 40px;
+        line-height: 40px;
+        margin-left: 70px;
+        width: 200px;
 
         &.number {
-          font-size: 160px;
-          margin-top: 30px;
+          font-size: 100px;
+          margin-top: 20px;
+          margin-left: 0;
         }
       }
 
-      .level {
-        margin-top: 60px;
+      h3.subtitle {
+        font-size: 40px;
       }
+
+      .level {
+        margin-top: 30px;
+      }
+    }
+
+    .side-container.left .pane {
+      width: 290px;
     }
   }
 }

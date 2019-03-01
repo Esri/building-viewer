@@ -46,7 +46,8 @@ class HomeSection extends declared(Section) {
   //camera = new Camera({"position":{"spatialReference":{"wkid":2193},"x":1570527.3036612223,"y":5180359.178648159,"z":86.69521235276355},"heading":124.3049960081546,"tilt":73.36076191888827});
   // ipad friendlier camera: 
   // camera = new Camera({"position":{"spatialReference":{"wkid":2193},"x":1570544.291609822,"y":5180361.938219893,"z":71.53173486068152},"heading":124.30499600935663,"tilt":73.36076191907371});
-  camera = new Camera({"position":{"spatialReference":{"wkid":102100},"x":19217685.087990433,"y":-5392900.296798772,"z":79.08307875879109},"heading":115.42575019803249,"tilt":69.81430438201535});
+  // camera = new Camera({"position":{"spatialReference":{"wkid":102100},"x":19217685.087990433,"y":-5392900.296798772,"z":79.08307875879109},"heading":115.42575019803249,"tilt":69.81430438201535});
+  camera = new Camera({"position":{"spatialReference":{"wkid":102100},"x":19217748.22738697,"y":-5392889.47126926,"z":75.64768815878779},"heading":129.98709663269761,"tilt":67.75482529312283});
 
   render() {
     return (<div id={this.id}>
@@ -72,7 +73,7 @@ class HomeSection extends declared(Section) {
     watchUtils.whenOnce(this, "appState", () => {
       watchUtils.on(this, "appState.initialLayers", "change", () => {
         if (this.appState && this.appState.initialLayers.length > 0) {
-          this.infoPointsLayer = appUtils.findLayer(this.appState.initialLayers, "Turanga Pictures") as FeatureLayer;
+          this.infoPointsLayer = appUtils.findLayer(this.appState.initialLayers, "Turanga Pictures - external") as FeatureLayer;
           this.infoPointsLayer.outFields = ["*"];
           this.infoPointsLayer.popupTemplate.overwriteActions = true;
           this.infoPointsLayer.popupTemplate.actions = new Collection();

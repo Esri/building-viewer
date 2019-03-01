@@ -112,12 +112,13 @@ class BSLDemo extends declared(Widget) {
     this.view.when(() => {
       this.view.environment.lighting.directShadowsEnabled = true;
       this.view.environment.lighting.ambientOcclusionEnabled = true;
+      this.view.environment.starsEnabled = false;
       (this.view.environment.background as any) = {
         type: "color",
         color: [0,0,0,0] as any
       };
       this.view.map.ground.surfaceColor =  [0,0,0,0] as any;
-      this.view.padding.left = 300;
+      this.view.padding = { left: 300 };
 
       this.view.popup.defaultPopupTemplateEnabled = true;
       this.appState.view.popup.autoOpenEnabled = false;
