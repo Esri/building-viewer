@@ -17,14 +17,22 @@
   "author": "Yannik Messerli <ymesserli@esri.com>",
   "license": "Apache-2.0",
   "devDependencies": {
-    "tslint": "^4.2.0",
     "grunt": "*",
+    "grunt-contrib-concat": "*",
+    "grunt-contrib-connect": "*",
+    "grunt-contrib-copy": "*",
+    "grunt-contrib-htmlmin": "*",
+    "grunt-contrib-uglify": "*",
     "grunt-contrib-watch": "*",
-    "grunt-contrib-connect": "*"
+    "grunt-dojo": "^1.1.2",
+    "grunt-include-source": "^1.1.0",
+    "grunt-run": "^0.8.1",
+    "grunt-stripcomments": "^0.7.2",
+    "tslint": "^4.2.0"
   },
   "dependencies": {
     "@types/dojo": "1.9.41",
     "sass": "^1.17.0",
-    "typescript": "3.3"
+    "typescript": "^3.3.3333"
   }
 }

@@ -90,6 +90,7 @@ export function createViewFromWebScene(args: {
     // }
   });
 
+  // Remove default ui:
   view.ui.empty("top-left");
   view.ui.empty("bottom-left");
 
