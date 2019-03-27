@@ -19,8 +19,6 @@ import domCtr = require("dojo/dom-construct");
 import domClass = require("dojo/dom-class");
 import appUtils = require("../support/appUtils");
 import Handles = require("esri/core/Handles");
-// const floorViewInitialCamera = new Camera({"position":{"spatialReference":{"wkid":2193},"x":1570670.452701511,"y":5180244.367632804,"z":208.91035901793373},"heading":0,"tilt":0.5000000009642485});
-// new Camera({"position":{"spatialReference":{"wkid":2193},"x":1570696.7848733864,"y":5180244.998463141,"z":142.2325701501933},"heading":0,"tilt":0.5000000004590939});
 
 @subclass()
 class Floor extends declared(Widget) {
@@ -36,9 +34,6 @@ class Floor extends declared(Widget) {
   @property()
   level = 1;
 
-  // @property()
-  // layer: string;
-
   featureLayer: FeatureLayer;
 
   render() {
@@ -49,13 +44,7 @@ class Floor extends declared(Widget) {
     super(args);
   }
 
-  // activate(view: SceneView, legend: Legend) {
   activate(infoLayer: FeatureLayer, pictureLayer: FeatureLayer) {
-    // view.map.layers.add(this.featureLayer);
-    // legend.layerInfos = [{
-    //   layer: this.featureLayer,
-    //   title: "Legend"
-    // }];
     if (infoLayer) {
       infoLayer.definitionExpression = "level_id = " + this.level;
     }
@@ -101,46 +90,36 @@ class FloorsSection extends declared(Section) {
       title: "He Hononga",
       subtitle: "connection",
       level: 0,
-      // layer: "https://servicesdev.arcgis.com/5xC5Wrapp1gUAl2r/arcgis/rest/services/Turanga_Spots/FeatureServer",
       content: (<div id="connection" bind={this} key={this}><p><a href="">He Hononga | Connection</a> <span class="italic">ground level</span> <span>Open an hour earlier than the rest of the building on weekdays, He Hononga | Connection, Ground Level is the place to return library items, collect holds, browse magazines, DVDs and new arrivals, visit the café or interact with the Discovery Wall.</span></p><p>Listen to the name of this floor [MP3]</p></div>)
     }),
     new Floor({
       title: "Hapori",
       subtitle: "community",
       level: 1,
-      // layer: "https://servicesdev.arcgis.com/5xC5Wrapp1gUAl2r/arcgis/rest/services/Turanga_Spots/FeatureServer",
       content: (<div id="community" bind={this} key={this}><p><a href="">Hapori | Community</a> <span class="italic">level 1</span> <span> offers experiences geared towards a wide cross-section of our community. Grab a hot drink at the espresso bar, attend an event in our community arena, or help the kids explore the play and craft areas and children’s resources. It’s also a great place for young adults to hang out, play videogames, try out VR or get some study done.</span></p><p>Listen to the name of this floor [MP3]</p></div>)
     }),
     new Floor({
       title: "Tuakiri",
       subtitle: "identity",
       level: 2,
-      // layer: "https://servicesdev.arcgis.com/5xC5Wrapp1gUAl2r/arcgis/rest/services/Turanga_Spots/FeatureServer",
       content: (<div id="identity" bind={this} key={this}><p><a href="">Tuakiri | Identity</a> <span class="italic">level 2</span> <span>Find resources and services to help you develop your knowledge about your own identity, your ancestors, your whakapapa and also about the place that they called home – its land and buildings.</span></p><p>Listen to the name of this floor [MP3]</p></div>)
     }),
     new Floor({
       title: "Tūhuratanga",
       subtitle: "discovery",
       level: 3,
-      // layer: "https://servicesdev.arcgis.com/5xC5Wrapp1gUAl2r/arcgis/rest/services/Turanga_Spots/FeatureServer",
       content: (<div id="discovery" bind={this} key={this}><p><a href="">Tūhuratanga | Discovery</a> <span class="italic">level 3</span> <span>Explore the nonfiction collection with thousands of books on a huge range of subjects. Get help with print and online resources for research or recreation. Use the public internet computers or, for those who want a low-key space to read or study, there is a separate room called &lsquo;The Quiet Place&rsquo;. Study, research or browse for some recreational reading.</span></p><p>Listen to the name of this floor [MP3]</p></div>)
     }),
     new Floor({
       title: "Auahatanga",
       subtitle: "creativity",
       level: 4,
-      // layer: "https://servicesdev.arcgis.com/5xC5Wrapp1gUAl2r/arcgis/rest/services/Turanga_Spots/FeatureServer",
       content: (<div id="creativity" bind={this} key={this}><p><a href="">Auahatanga | Creativity</a> <span class="italic">level 4</span> <span>Browse the World Languages, Music and Fiction collections, including Biographies and Graphic Novels. Visit the two roof gardens with great views across the city. Explore your creativity in the Production Studio using creative technology such as 3D printers and sewing machines. Create and edit music and video using the Audio/Video Studio, or take a class in the Computer Labs with a great range of software available.</span></p><p>Listen to the name of this floor [MP3]</p></div>)
     })
   ]);
 
   @property()
   camera = new Camera({"position":{"spatialReference":{"wkid":102100},"x":19217906.056871723,"y":-5392983.203578308,"z":138.30973901506513},"heading":0.000002699869328381916,"tilt":0.4999919670732401});
-  // camera = new Camera({"position":{"spatialReference":{"wkid":2193},"x":1570527.3036612223,"y":5180359.178648159,"z":86.69521235276355},"heading":124.3049960081546,"tilt":73.36076191888827});
-  // ipad friendlier camera: 
-  // camera = new Camera({"position":{"spatialReference":{"wkid":2193},"x":1570670.452701511,"y":5180244.367632804,"z":208.91035901793373},"heading":0,"tilt":0.5000000007083909})
-  //{"position":{"spatialReference":{"wkid":2193},"x":1570544.291609822,"y":5180361.938219893,"z":71.53173486068152},"heading":124.30499600935663,"tilt":73.36076191907371});
-  //camera = new Camera({"position":{"spatialReference":{"wkid":102100},"x":19217882.83777959,"y":-5393018.66464356,"z":163.67941159475595},"heading":359.9999957311318,"tilt":0.49998993117987317})
 
   render() {
     const currentLevel = this.floors.getItemAt(this.selectedFloor);
@@ -228,25 +207,7 @@ class FloorsSection extends declared(Section) {
     this.appState.view.environment.lighting.directShadowsEnabled = false;
     this.appState.view.environment.lighting.ambientOcclusionEnabled = false;
     this.oldDate = this.appState.view.environment.lighting.date;
-    this.appState.view.environment.lighting.date = new Date("Thu Aug 01 2019 03:00:00 GMT+0200 (Central European Summer Time)"); // new Date("Fri Dec 15 2019 0:29:27 GMT+0100");
-
-    // POPUP FOR THE INFO:
-    // this.floors.getItemAt(this.selectedFloor).activate(this.floorView, this.legend);
-    // this.handles.add(this.appState.view.on("click", (event: any) => {
-    //   this.appState.view.hitTest(event)
-    //     .then((response) => {
-    //       const filtered = response.results.filter((result: any) => {
-    //         return result.graphic.layer === this.layer;
-    //       })[0];
-    //       if (filtered) {
-    //         this.appState.view.popup.open({
-    //           features: [filtered.graphic],
-    //           location: filtered.mapPoint
-    //         });
-    //       }
-    //     });
-    // }), "click");
-
+    this.appState.view.environment.lighting.date = new Date("Thu Aug 01 2019 03:00:00 GMT+0200 (Central European Summer Time)");
     this.handles.add(this.appState.view.on("click", (event: any) => {
      // the hitTest() checks to see if any graphics in the view
      // intersect the given screen x, y coordinates
@@ -256,15 +217,10 @@ class FloorsSection extends declared(Section) {
           return result.graphic.layer === this.picturePointsLayer;
         })[0];
         if (filtered) {
-          // var img=new Image();
-          // img.src = filtered.graphic.attributes.url;
-          // img.onload = () => {
-            // console.log(filtered.graphic);
-            this.appState.popupInfo = new PopupInfo({
-              image: filtered.graphic.attributes.url,
-              credit: "Credit © Emma Browne-Cole"
-            });
-          // };
+          this.appState.popupInfo = new PopupInfo({
+            image: filtered.graphic.attributes.url,
+            credit: "Credit © Emma Browne-Cole"
+          });
         }
       });
     }), "click");

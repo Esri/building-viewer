@@ -22,9 +22,7 @@ import Section = require("./sections/Section");
 import BuildingVisualisation = require("./support/BuildingVisualisation");
 import SurroundingsVisualisation = require("./support/SurroundingsVisualisation");
 import AppState = require("./AppState");
-// import ToggleSchematic = require("./widgets/ToggleSchematic/ToggleSchematic");
 import appUtils = require("./support/appUtils");
-// import { backgroundColor } from "./support/visualVariables";
 import Popup = require("./widgets/Popup/Popup");
 
 type SectionSublcass = Pick<Section, "camera">;
@@ -67,6 +65,7 @@ class BSLDemo extends declared(Widget) {
   //  Variables:
   //
   //--------------------------------------------------------------------------
+
   @property({ aliasOf: "appState.buildingLayer"})
   private buildingLayer: BuildingVisualisation;
 
@@ -83,54 +82,45 @@ class BSLDemo extends declared(Widget) {
     super(args as any);
 
     this.view = appUtils.createViewFromWebScene({websceneId: args.websceneId, mapContainer: args.mapContainer});
+    this.sections = new Sections(args.sections, this.appState);
 
     (this.view.map as WebScene).when(() => {
       // Save the initial layers:
-      promiseUtils.eachAlways(this.view.map.layers.map((l) => this.appState.view.whenLayerView(l))).then((results: any) => {
-        results.forEach((result: {value: {layer: Layer}}) => this.recursivelySaveLayer(result.value.layer));
+      promiseUtils
+        .eachAlways(this.view.map.layers.map((l) => this.appState.view.whenLayerView(l)))
+        .then((results: any) => {
+          results.forEach((result: {value: {layer: Layer}}) => this.recursivelySaveLayer(result.value.layer));
 
-        // Find
-        const BSL = appUtils.findLayer(this.initialLayers, args.buildingLayerTitle);
+          // Building:
+          const BSL = appUtils.findLayer(this.initialLayers, args.buildingLayerTitle);
+          this.buildingLayer = new BuildingVisualisation({
+            appState: this.appState,
+            layer: BSL as BuildingSceneLayer
+          });
 
-        this.buildingLayer = new BuildingVisualisation({
-          appState: this.appState,
-          layer: BSL as BuildingSceneLayer
+          // Surroundings:
+          const surroundingsLayer = appUtils.findLayer(this.view.map.allLayers, args.surroundingsLayerTitle) as SceneLayer;
+          this.surroundingsLayer = new SurroundingsVisualisation({
+            layer: surroundingsLayer,
+            appState: this.appState
+          });
+
+          // Reset layers:
+          this.view.map.layers.removeAll();
+          this.view.map.layers = new Collection([
+            this.buildingLayer.layer,
+            this.surroundingsLayer.layer
+          ]);
         });
-
-        const surroundingsLayer = appUtils.findLayer(this.view.map.allLayers, args.surroundingsLayerTitle) as SceneLayer;
-        this.surroundingsLayer = new SurroundingsVisualisation({layer: surroundingsLayer, appState: this.appState});
-
-        this.view.map.layers.removeAll();
-
-        this.view.map.layers = new Collection([
-          this.buildingLayer,
-          this.surroundingsLayer.layer
-        ]);
-      });
     });
 
     this.view.when(() => {
-      this.view.environment.lighting.directShadowsEnabled = true;
-      this.view.environment.lighting.ambientOcclusionEnabled = true;
-      this.view.environment.starsEnabled = false;
-      (this.view.environment.background as any) = {
-        type: "color",
-        color: [0,0,0,0] as any
-      };
-      this.view.map.ground.surfaceColor =  [0,0,0,0] as any;
-      this.view.padding = { left: 300 };
-
-      this.view.popup.defaultPopupTemplateEnabled = true;
-      this.appState.view.popup.autoOpenEnabled = false;
-      this.view.popup.dockOptions = { buttonEnabled:false };
-      // this.view.popup.dockEnabled = false;
-      
+      // Debug:
       window["view"] = this.view;
       window["appState"] = this.appState;
+
       this.sections.activateSection("home");
     });
-
-    this.sections = new Sections(args.sections, this.appState);
   }
 
   normalizeCtorArgs(args: BSLDemoCtorArgs, container: string) {
@@ -155,19 +145,7 @@ class BSLDemo extends declared(Widget) {
     }));
 
     new Popup({ appState: this.appState, container: "popup"});
-
-    // new ToggleSchematic({
-    //   appState: this.appState, 
-    //   container: "toggleSchematic"
-    // });
   }
-
-  //--------------------------------------------------------------------------
-  //
-  //  Public Methods
-  //
-  //--------------------------------------------------------------------------
-
 
   //--------------------------------------------------------------------------
   //
@@ -181,7 +159,6 @@ class BSLDemo extends declared(Widget) {
     }
     else {
       this.initialLayers.add(layer);
-      // this.view.map.allLayers.remove(l);
     }
   }
 }

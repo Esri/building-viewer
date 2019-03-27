@@ -50,15 +50,10 @@ export function goThroughSubLayers(buildingLayer: BuildingSceneLayer, callback: 
 
 export function getVisualVarsFromAppState(appState: AppState, layerName: string, propertyName: string) {
   const defaultProps = renderers[layerName]["default"][propertyName];
-  const customMode = renderers[layerName][appState.mode] ? renderers[layerName][appState.mode][propertyName] : undefined;
-  const customPage = renderers[layerName][appState.mode + "-" + appState.pageLocation] ? renderers[layerName][appState.mode + "-" + appState.pageLocation][propertyName] : undefined;
+  const customPage = renderers[layerName][appState.pageLocation] ? renderers[layerName][appState.pageLocation][propertyName] : undefined;
 
   if (customPage !== undefined) {
     return customPage;
-  }
-
-  if (customMode !== undefined) {
-    return customMode;
   }
   
   return defaultProps;

@@ -23,7 +23,6 @@ class SurroundingsVisualisation extends declared(Accessor) {
   @property({
     readOnly: true,
     dependsOn: [
-      "appState.mode",
       "appState.pageLocation",
       "appState.floorNumber"
     ]
@@ -43,7 +42,6 @@ class SurroundingsVisualisation extends declared(Accessor) {
   @property({
     readOnly: true,
     dependsOn: [
-      "appState.mode",
       "appState.pageLocation",
       "appState.floorNumber"
     ]
@@ -68,6 +66,7 @@ class SurroundingsVisualisation extends declared(Accessor) {
   //  Life circle
   //
   //--------------------------------------------------------------------------
+
   constructor(args: {layer: SceneLayer, appState: AppState}) {
     super();
 
@@ -75,30 +74,20 @@ class SurroundingsVisualisation extends declared(Accessor) {
     this.layer = args.layer;
 
     this.layer.when(() => {
-      // view.whenLayerView(this)
-      // .then(() => {
         watchUtils.init(this, "surroundingsRenderer", this._updateBaseRenderer);
         watchUtils.init(this, "customRenderer", this._updateBaseRenderer);
 
         watchUtils.init(this, "surroundingsOpacity", (surroundingsOpacity) => {
           this.layer.opacity = surroundingsOpacity;
         });
-      // })
     });
   }
-
-  //--------------------------------------------------------------------------
-  //
-  //  Public Methods
-  //
-  //--------------------------------------------------------------------------
 
   //--------------------------------------------------------------------------
   //
   //  Private Methods
   //
   //--------------------------------------------------------------------------
-
 
   private _updateBaseRenderer() {
     if (this.customRenderer) {

@@ -57,9 +57,6 @@ class Sections extends declared(Collection)<SectionSubclass> {
 
   previousActiveSection: SectionSubclass = null;
 
-  // private currentPane: any = null;
-  // private previousUsedPane: any = null;
-
   //--------------------------------------------------------------------------
   //
   //  Life circle
@@ -125,7 +122,6 @@ class Sections extends declared(Collection)<SectionSubclass> {
       pane.removeClass("active");
       const paneWillBeActive = query(".willBeActive");
       paneWillBeActive.addClass("active");
-      // paneWillBeActive.removeClass("willBeActive");
     }, 10);
     return (<div>{previousUsedPane}{currentPane}</div>);
   }

@@ -4,8 +4,7 @@
 import { subclass, declared, property } from "esri/core/accessorSupport/decorators";
 
 // Esri
-import Collection = require("esri/core/Collection");
-import GroupLayer = require("esri/layers/GroupLayer");
+import Accessor = require("esri/core/Accessor");
 import BuildingSceneLayer = require("esri/layers/BuildingSceneLayer");
 import watchUtils = require("esri/core/watchUtils");
 import Renderer = require("esri/renderers/Renderer");
@@ -22,17 +21,14 @@ interface BuildingVisualisationCtorArgs {
 }
 
 @subclass("support/BuildingVisualisation")
-class BuildingVisualisation extends declared(GroupLayer) {
+class BuildingVisualisation extends declared(Accessor) {
   //--------------------------------------------------------------------------
   //
   //  Properties
   //
   //--------------------------------------------------------------------------
   @property()
-  private baseLayer: BuildingSceneLayer;
-
-  @property()
-  // private secondaryLayer: BuildingSceneLayer;
+  layer: BuildingSceneLayer;
 
   private initialRenderer: HashMap<Renderer> = {};
   private initialDefExp: HashMap<string> = {};
@@ -41,12 +37,11 @@ class BuildingVisualisation extends declared(GroupLayer) {
   @property({
     readOnly: true,
     dependsOn: [
-      "appState.mode",
       "appState.pageLocation",
       "appState.floorNumber"
     ]
   })
-  get baseLayerRenderer() {
+  get layerRenderer() {
     return buildingSceneLayerUtils
       .getVisualVarsFromAppState(
         this.appState,
@@ -61,29 +56,11 @@ class BuildingVisualisation extends declared(GroupLayer) {
   @property({
     readOnly: true,
     dependsOn: [
-      "appState.mode",
       "appState.pageLocation",
       "appState.floorNumber"
     ]
   })
-  get secondaryLayerRenderer() {
-    return buildingSceneLayerUtils
-      .getVisualVarsFromAppState(
-        this.appState,
-        "secondaryBuilding",
-        "renderer"
-      );
-  }
-
-  @property({
-    readOnly: true,
-    dependsOn: [
-      "appState.mode",
-      "appState.pageLocation",
-      "appState.floorNumber"
-    ]
-  })
-  get baseLayerOpacity() {
+  get layerOpacity() {
     return buildingSceneLayerUtils
       .getVisualVarsFromAppState(
         this.appState,
@@ -95,44 +72,13 @@ class BuildingVisualisation extends declared(GroupLayer) {
   @property({
     readOnly: true,
     dependsOn: [
-      "appState.mode",
       "appState.pageLocation",
       "appState.floorNumber"
     ]
   })
-  get secondaryLayerOpacity() {
-    return buildingSceneLayerUtils
-      .getVisualVarsFromAppState(
-        this.appState,
-        "secondaryBuilding",
-        "opacity"
-      );
-  }
-
-  @property({
-    readOnly: true,
-    dependsOn: [
-      "appState.pageLocation",
-      "appState.floorNumber"
-    ]
-  })
-  get baseLayerDefinitionExpression() {
+  get layerDefinitionExpression() {
     if (this.appState.pageLocation === "floors") {
       return definitionExpressions.floor(this.floorMapping());
-    }
-    return definitionExpressions.basic;
-  }
-
-  @property({
-    readOnly: true,
-    dependsOn: [
-      "appState.pageLocation",
-      "appState.floorNumber"
-    ]
-  })
-  get secondaryLayerDefinitionExpression() {
-    if (this.appState.pageLocation === "floors") {
-      return definitionExpressions.belowFloor(this.floorMapping());
     }
     return definitionExpressions.basic;
   }
@@ -150,10 +96,7 @@ class BuildingVisualisation extends declared(GroupLayer) {
 
     this.appState = args.appState;
 
-    this.baseLayer = args.layer; 
-    // new BuildingSceneLayer({
-    //   url: args.layer.url
-    // });
+    this.layer = args.layer; 
 
     buildingSceneLayerUtils.goThroughSubLayers(args.layer, (sublayer) => {
       if (sublayer.type === "building-component") {
@@ -170,72 +113,26 @@ class BuildingVisualisation extends declared(GroupLayer) {
       this.initialVisibility[sublayer.title] = sublayer.visible;
     });
 
-    // this.secondaryLayer = args.layer;
-    // this.secondaryLayer.opacity = 0;
-
-    // this.secondaryLayer = new BuildingSceneLayer({
-    //   url: args.layer,
-    //   // portalItem: {
-    //   //   id: args.layer,
-    //   //   portal: { url: "https://zrh.mapsdevext.arcgis.com" }
-    //   // },
-    //   opacity: 0
-    // });
-
-    this.layers = new Collection([this.baseLayer]);
-
-    watchUtils.init(this, "baseLayerRenderer", this._updateBaseRenderer);
+    watchUtils.init(this, "layerRenderer", this._updateBaseRenderer);
     watchUtils.init(this, "customBaseRenderer", this._updateBaseRenderer);
 
-    // watchUtils.init(this, "appState.mode", (mode) => {
-    //   if (mode === "real") {
-    //     this.secondaryLayer.opacity = 1;
-    //     this.baseLayer.opacity = 0;
-    //   }
-    //   else {
-    //     this.baseLayer.opacity = 1;
-    //     this.secondaryLayer.opacity = 0;
-    //   }
-    // });
-
-    // buildingSceneLayerUtils.updateSubLayers(this.baseLayer, ["visible"], true);
-    // buildingSceneLayerUtils.goThroughSubLayers(this.baseLayer, (sublayer) => {
-    //   sublayer.opacity = this.initialOpacity[sublayer.title];
-    // });
-
-
-    // watchUtils.init(this, "secondaryLayerRenderer", (baseLayerRenderer) => {
-    //   buildingSceneLayerUtils.updateSubLayers(this.secondaryLayer, ["renderer"], baseLayerRenderer);
-    // });
-
-    // watchUtils.init(this, "baseLayerOpacity", (baseLayerOpacity) => {
-    //   this.baseLayer.opacity = baseLayerOpacity;
-    // });
-
-    // watchUtils.init(this, "secondaryLayerOpacity", (secondaryLayerOpacity) => {
-    //   this.secondaryLayer.opacity = secondaryLayerOpacity;
-    // });
-
-    watchUtils.init(this, "baseLayerDefinitionExpression", (baseLayerDefinitionExpression) => {
+    watchUtils.init(this, "layerDefinitionExpression", (layerDefinitionExpression) => {
       if (!this.appState.pageLocation || this.appState.pageLocation !== "floors") {
-        buildingSceneLayerUtils.goThroughSubLayers(this.baseLayer, (sublayer) => {
+        buildingSceneLayerUtils.goThroughSubLayers(this.layer, (sublayer) => {
           if (sublayer.type === "building-component") {
             sublayer.definitionExpression = this.initialDefExp[sublayer.title];
           }
         });
       }
       else {
-        buildingSceneLayerUtils.goThroughSubLayers(this.baseLayer, (sublayer) => {
+        buildingSceneLayerUtils.goThroughSubLayers(this.layer, (sublayer) => {
           if (sublayer.type === "building-component") {
-            sublayer.definitionExpression = baseLayerDefinitionExpression;
+            sublayer.definitionExpression = layerDefinitionExpression;
           }
         });
       }
     });
 
-    // watchUtils.init(this, "secondaryLayerDefinitionExpression", (secondaryLayerDefinitionExpression) => {
-    //   buildingSceneLayerUtils.updateSubLayers(this.secondaryLayer, ["definitionExpression"], secondaryLayerDefinitionExpression);
-    // });
   }
 
   normalizeCtorArgs(args: BuildingVisualisationCtorArgs) {
@@ -244,17 +141,6 @@ class BuildingVisualisation extends declared(GroupLayer) {
     };
   }
 
-  //--------------------------------------------------------------------------
-  //
-  //  Public Methods
-  //
-  //--------------------------------------------------------------------------
-
-  updateBaseRenderer(renderer?: Renderer) {
-    if (renderer) {
-      this.customBaseRenderer = renderer;
-    }
-  }
 
   //--------------------------------------------------------------------------
   //
@@ -264,17 +150,17 @@ class BuildingVisualisation extends declared(GroupLayer) {
 
   private _updateBaseRenderer() {
     if (this.customBaseRenderer) {
-      buildingSceneLayerUtils.updateSubLayers(this.baseLayer, ["renderer"], this.customBaseRenderer);  
+      buildingSceneLayerUtils.updateSubLayers(this.layer, ["renderer"], this.customBaseRenderer);  
     }
     else if (!this.appState.pageLocation || this.appState.pageLocation === "home") {
-      buildingSceneLayerUtils.goThroughSubLayers(this.baseLayer, (sublayer) => {
+      buildingSceneLayerUtils.goThroughSubLayers(this.layer, (sublayer) => {
         if (sublayer.type === "building-component") {
           sublayer.renderer = this.initialRenderer[sublayer.title] && (this.initialRenderer[sublayer.title] as any).clone();
         }
       });
     }
     else {
-      buildingSceneLayerUtils.updateSubLayers(this.baseLayer, ["renderer"], this.baseLayerRenderer);
+      buildingSceneLayerUtils.updateSubLayers(this.layer, ["renderer"], this.layerRenderer);
     }
   }
 

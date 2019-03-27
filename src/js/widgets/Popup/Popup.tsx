@@ -23,20 +23,8 @@ class Popup extends declared(Widget) {
   @property()
   appState: AppState;
 
-  constructor(args: any) {
+  constructor(args: {appState: AppState, container: string}) {
     super(args);
-
-    // this.watch("appState.popupInfo.image", () => {
-    //   if (this.appState.popupInfo) {
-    //     // this.active = true;
-    //     this.image = this.appState.popupInfo.image;
-    //     this.credit = this.appState.popupInfo.credit;
-    //     // this.scheduleRender();
-    //   }
-    //   else {
-    //     this.active = false;
-    //   }
-    // });
   }
 
   render() {

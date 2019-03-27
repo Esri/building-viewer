@@ -18,7 +18,6 @@ export const renderers = {
         type: "simple",
         symbol: {
           type: "mesh-3d",
-          // castShadows: false,
           symbolLayers: [{
             type: "fill",
             material: { color: [100,100,100, 1], colorMixMode: "replace" },
@@ -33,16 +32,7 @@ export const renderers = {
       opacity: 1
     },
 
-    // This is when schematic is on
-    schematic: {},
-
-    // this is when real is on
-    real: {},
-    // This is used when displaying the different floors:
-    "schematic-surroundings": {
-      opacity: 1
-    },
-    "real-surroundings": {
+    "surroundings": {
       renderer: {
         type: "simple",
         symbol: {
@@ -59,10 +49,8 @@ export const renderers = {
         }
       } as any
     },
-    "real-floors": {
-      opacity: 0
-    },
-    "schematic-floors": {
+
+    "floors": {
       opacity: 0
     }
   },
@@ -70,7 +58,7 @@ export const renderers = {
   mainBuilding: {
     //--------------------------------------------------------------------------
     //
-    //  Surroundings
+    //  Building
     //
     //--------------------------------------------------------------------------
 
@@ -94,15 +82,8 @@ export const renderers = {
       opacity: 1
     },
 
-    // This is when schematic is on
-    schematic: {},
-
-    // this is when real is on
-    real: {
-      renderer: null as any
-    },
     // This is used when displaying the different floors:
-    "schematic-floors": {
+    "floors": {
       renderer: new SimpleRenderer({
         symbol: {
           type: "mesh-3d",
@@ -117,36 +98,8 @@ export const renderers = {
         }
       } as any)
     },
-    "real-floors": {
-      renderer: new SimpleRenderer({
-        symbol: {
-          type: "mesh-3d",
-          symbolLayers: [{
-            type: "fill",
-            material: { color: [255,255,255, 1], colorMixMode: "replace" },
-            edges: {
-              type: "solid", // autocasts as new SolidEdges3D()
-              color: [30, 30, 30, 1]
-            }
-          }]
-        }
-      } as any)
-    },
-    "schematic-surroundings": {
-      // renderer: new SimpleRenderer({
-      //   symbol: {
-      //     type: "mesh-3d",
-      //     symbolLayers: [{
-      //       type: "fill",
-      //       castShadows: false,
-      //       material: { color: [100,100,100, 1], colorMixMode: "replace" },
-      //       edges: {
-      //         type: "solid", // autocasts as new SolidEdges3D()
-      //         color: [30, 30, 30, 1]
-      //       }
-      //     }]
-      //   }
-      // } as any)
+
+    "surroundings": {
       renderer: new SimpleRenderer({
         symbol: {
           type: "mesh-3d",
@@ -160,48 +113,14 @@ export const renderers = {
           }]
         }
       } as any)
-    },
-    "real-surroundings": {
-      renderer: new SimpleRenderer({
-        symbol: {
-          type: "mesh-3d",
-          symbolLayers: [{
-            type: "fill",
-            material: { color: [255,184,1, 1], colorMixMode: "replace" },
-            edges: {
-              type: "solid", // autocasts as new SolidEdges3D()
-              color: [0, 0, 0, 1]
-            }
-          }]
-        }
-      } as any)
-    }
-  },
-
-  secondaryBuilding: {
-    //--------------------------------------------------------------------------
-    //
-    //  secondary building
-    //
-    //--------------------------------------------------------------------------
-
-    // This is used when displaying the different pages and
-    // when there is no other variables defined
-    default: {
-      renderer: null as any,
-      // Opacity when displaying the different pages and
-      opacity: 0
     }
   }
-}
+};
 
 export const definitionExpressions = {
   basic: "BldgLevel IS NULL OR BldgLevel IS NOT NULL AND Category <> 'Generic Models'",
   floor: function (floorNumber: number) {
     return "BldgLevel = " + floorNumber + " AND (Category <> 'Generic Models' OR OBJECTID_1 = 2) AND Category <> 'Walls' AND Category <> 'Roofs'  AND Category <> 'Curtain Wall Mullions' AND Category <> 'Curtain Panels'";
-  },
-  belowFloor: function (floorNumber: number) {
-    return "BldgLevel < " + floorNumber + " AND (Category <> 'Generic Models' OR OBJECTID_1 = 2) AND Category <> 'Walls' AND Category <> 'Roofs'  AND Category <> 'Curtain Wall Mullions' AND Category <> 'Curtain Panels'";
   }
 };
 

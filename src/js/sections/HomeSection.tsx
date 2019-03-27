@@ -42,11 +42,6 @@ class HomeSection extends declared(Section) {
   }
 
   @property()
-  // camera = new Camera({"position":{"spatialReference":{"wkid":4326,},"x":172.6353490982857,"y":-43.529189012257284,"z":56.58640745468438},"heading":122.88346846437418,"tilt":77.70315705279316});
-  //camera = new Camera({"position":{"spatialReference":{"wkid":2193},"x":1570527.3036612223,"y":5180359.178648159,"z":86.69521235276355},"heading":124.3049960081546,"tilt":73.36076191888827});
-  // ipad friendlier camera: 
-  // camera = new Camera({"position":{"spatialReference":{"wkid":2193},"x":1570544.291609822,"y":5180361.938219893,"z":71.53173486068152},"heading":124.30499600935663,"tilt":73.36076191907371});
-  // camera = new Camera({"position":{"spatialReference":{"wkid":102100},"x":19217685.087990433,"y":-5392900.296798772,"z":79.08307875879109},"heading":115.42575019803249,"tilt":69.81430438201535});
   camera = new Camera({"position":{"spatialReference":{"wkid":102100},"x":19217748.22738697,"y":-5392889.47126926,"z":75.64768815878779},"heading":129.98709663269761,"tilt":67.75482529312283});
 
   render() {
@@ -101,7 +96,6 @@ class HomeSection extends declared(Section) {
           return result.graphic.layer === this.infoPointsLayer;
         })[0];
         if (filtered) {
-          // console.log(filtered.graphic);
           this.appState.popupInfo = new PopupInfo({
             image: filtered.graphic.attributes.url,
             credit: "Credit © Emma Browne-Cole"
@@ -116,19 +110,3 @@ class HomeSection extends declared(Section) {
 }
 
 export = HomeSection;
-
-// <section class="information">
-//         <h2 class="slash-title">Information</h2>
-//         <p>
-//           <h5 class="inline">Size</h5> Approx 9850m<sup>2</sup>, making it the largest public library in the South Island 
-//         </p>
-//         <p>
-//           <h5 class="inline">Site</h5> <a href="https://www.google.com/maps?ll=-43.529977,172.636805&z=16&t=m&hl=en-US&gl=US&mapclient=embed&cid=3913235168885151081">60 Cathedral Square</a> - corner of Cathedral Square, Colombo Street, and Gloucester Street
-//         </p>
-//         <p>
-//           <h5 class="inline">Cost</h5> $92.7 million
-//         </p>
-//         <p>
-//           <h5 class="inline">Opening</h5> Friday 12 October 2018
-//         </p>
-//       </section>

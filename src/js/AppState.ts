@@ -9,18 +9,15 @@ import BuildingVisualisation = require("./support/BuildingVisualisation");
 import SurroundingsVisualisation = require("./support/SurroundingsVisualisation");
 import Collection = require("esri/core/Collection");
 import Layer = require("esri/layers/Layer");
-// import PopupInfo = require("./widgets/Popup/PopupInfo");
+import PopupInfo = require("./widgets/Popup/PopupInfo");
 
 @subclass("AppState")
 class AppState extends declared(Accessor) {
   @property()
-  mode: "schematic" | "real" = "schematic";
-
-  @property()
   pageLocation: string;
 
   @property()
-  floorNumber: number = 0;
+  floorNumber = 0;
 
   @property()
   view: SceneView;
@@ -35,7 +32,7 @@ class AppState extends declared(Accessor) {
   initialLayers: Collection<Layer> = new Collection();
 
   @property()
-  popupInfo: any;
+  popupInfo: PopupInfo;
 }
 
 export = AppState;
