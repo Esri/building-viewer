@@ -7,7 +7,7 @@ import { tsx, renderable } from "esri/widgets/support/widget";
 import Widget = require("esri/widgets/Widget");
 import Collection = require("esri/core/Collection");
 
-const daysName = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
+const daysName = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"];
 
 @subclass("widgets/Timetable")
 class DayTimetable extends declared(Widget) {
@@ -20,19 +20,16 @@ class DayTimetable extends declared(Widget) {
   render() {
     const today = new Date();
     if (today.getDay() === this.opens.getDay()) {
-      // const isOpen = (today.getTime() > this.opens.getTime()) && (today.getTime() < this.closes.getTime());
-      // const openText = isOpen ? "OPEN NOW" : "CLOSE NOW";
       return (<div class="daytime today">
         <h2>TODAY</h2>
         <div class="schedule">{this.opens.getHours()}:00 - {this.closes.getHours()}:00</div>
-        {/*<div class="openstatus">{openText}</div>*/}
-      </div>)
+      </div>);
     }
     else {
       return (<div class="daytime">
         <h3>{daysName[this.opens.getDay()]}</h3>
         <div class="schedule">{this.opens.getHours()}:00 - {this.closes.getHours()}:00</div>
-      </div>)
+      </div>);
     }
   }
 
