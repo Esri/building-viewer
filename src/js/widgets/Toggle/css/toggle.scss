@@ -1,3 +1,5 @@
+@import "../../../../css/variables.scss";
+
 $color: #a3a3a3;
 $size: 16px;
 
@@ -6,7 +8,7 @@ $size: 16px;
   width: 35px;
   height: $size;
   border-radius: $size;
-  border: solid 1px $color;
+  border: solid 1px $themedGray;
   background: rgba(100,100,100,0.5);
   cursor: pointer;
 
@@ -16,7 +18,7 @@ $size: 16px;
     border-radius: ($size - 2) / 2;
     margin-top: 1px;
     margin-left: 1px;
-    background-color: $color;
+    background-color: $themedGray;
 
     -webkit-transition: all 0.3s;
     -moz-transition: all 0.3s;
@@ -25,11 +27,11 @@ $size: 16px;
   }
 
   &.active {
-    border-color: #fff;
+    border-color: $orange;
 
     .knob {
       margin-left: 19px;
-      background-color: #fff;
+      background-color: $orange;
     }
   }
 }

@@ -21,7 +21,7 @@ class DayTimetable extends declared(Widget) {
     const today = new Date();
     if (today.getDay() === this.opens.getDay()) {
       return (<div class="daytime today">
-        <h2>TODAY</h2>
+        <h3>Today</h3>
         <div class="schedule">{this.opens.getHours()}:00 - {this.closes.getHours()}:00</div>
       </div>);
     }

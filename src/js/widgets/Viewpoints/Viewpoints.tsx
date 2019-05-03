@@ -56,6 +56,7 @@ class Viewpoints extends declared(Widget) {
   }
 
   postInitialize() {
+    (this.appState.view.map as WebScene).presentation.slides.on("change", () => this.notifyChange("slides"));
     this.slides.on("change", this.watchActiveSlide.bind(this));
     this.watchActiveSlide();
   }

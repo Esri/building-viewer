@@ -10,12 +10,11 @@ html, body {
 
 html,
 body,
-#mainViewDiv, #appDiv, #canvas, #popup {
+#mainViewDiv, #appDiv, #popup {
   padding: 0;
   margin: 0;
   height: 100%;
   width: 100%;
-  // z-index: 2;
 }
 
 #appDiv {
@@ -23,7 +22,6 @@ body,
   pointer-events: none;
   position: absolute;
   overflow: hidden;
-  // z-index: 3;
 }
 
 #mainViewDiv {
@@ -261,12 +259,10 @@ body,
   width: 100%;
   text-align: center;
   display: block;
-  // font-size: 27px;
   font-size: 23px;
   font-family: "Avenir Next";
   font-stretch: "normal";
   font-weight: medium;
-  // top: 40px;
   top: 25px;
 
   .slash {
@@ -276,21 +272,18 @@ body,
 
   a {
     text-decoration: none;
-    color: $secondaryColor;
+    color: $themedGray;
 
     -webkit-transition: font-size 0.3s;
        -moz-transition: font-size 0.3s;
          -o-transition: font-size 0.3s;
             transition: font-size 0.3s;
     &.active {
-      color: $themedGray;
+      color: $orange;
     }
 
     &:hover {
-      color: $themedGray;
-      // font-size: 30px;
       font-size: 26px;
-      // font-weight: bold;
     }
   }
 

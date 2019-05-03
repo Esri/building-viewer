@@ -16,6 +16,7 @@ import SceneLayer = require("esri/layers/SceneLayer");
 import WebScene = require("esri/WebScene");
 import Layer = require("esri/layers/Layer");
 import GroupLayer = require("esri/layers/GroupLayer");
+import Color = require("esri/Color");
 
 // BSLDemo
 import Section = require("./sections/Section");
@@ -60,6 +61,9 @@ class BSLDemo extends declared(Widget) {
   @property()
   appState = new AppState();
 
+  @property()
+  backgroundColor: Color;
+
   //--------------------------------------------------------------------------
   //
   //  Variables:
@@ -82,6 +86,7 @@ class BSLDemo extends declared(Widget) {
     super(args as any);
 
     this.view = appUtils.createViewFromWebScene({websceneId: args.websceneId, mapContainer: args.mapContainer});
+    this.backgroundColor = this.view.map.ground.surfaceColor;
     this.sections = new Sections(args.sections, this.appState);
 
     (this.view.map as WebScene).when(() => {
@@ -112,6 +117,18 @@ class BSLDemo extends declared(Widget) {
             this.surroundingsLayer.layer
           ]);
         });
+      
+      // Setup camera:
+      this.sections.forEach(section => {
+        const slide = (this.view.map as WebScene).presentation.slides.find(slide => slide.title.text === section.title);
+        if (slide) {
+          section.camera = slide.viewpoint.camera;
+          (this.view.map as WebScene).presentation.slides.remove(slide);
+        }
+        else {
+          console.error("Could not find a slide for section " + section.title);
+        }
+      });
     });
 
     this.view.when(() => {
@@ -154,12 +171,12 @@ class BSLDemo extends declared(Widget) {
   //--------------------------------------------------------------------------
 
   recursivelySaveLayer(layer: Layer | GroupLayer) {
-    if (layer instanceof GroupLayer) {
-      layer.layers.forEach(l => this.recursivelySaveLayer(l));
-    }
-    else {
+    // if (layer instanceof GroupLayer) {
+    //   layer.layers.forEach(l => this.recursivelySaveLayer(l));
+    // }
+    // else {
       this.initialLayers.add(layer);
-    }
+    // }
   }
 }
 

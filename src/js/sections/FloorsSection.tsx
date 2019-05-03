@@ -2,10 +2,9 @@
 /// <amd-dependency path="esri/core/tsSupport/decorateHelper" name="__decorate" />
 
 import { subclass, declared, property } from "esri/core/accessorSupport/decorators";
-import { tsx } from "esri/widgets/support/widget";
+import { tsx, renderable } from "esri/widgets/support/widget";
 
 import Section = require("./Section");
-import Camera = require("esri/Camera");
 import Collection = require("esri/core/Collection");
 import Widget = require("esri/widgets/Widget");
 import FloorSelector = require("../widgets/FloorSelector/FloorSelector");
@@ -21,6 +20,55 @@ import appUtils = require("../support/appUtils");
 import Handles = require("esri/core/Handles");
 
 @subclass()
+class PlayButton extends declared(Widget) {
+  @property()
+  @renderable()
+  playing: boolean = false;
+
+  @property()
+  audioSrc: string;
+
+  @property({dependsOn: ["audioSrc"], readOnly: true })
+  get audio() {
+    return new Audio(this.audioSrc);
+  }
+
+  postInitialize() {
+    this.watch("audio", audio => {
+      audio.addEventListener("ended", () => {
+        audio.currentTime = 0;
+        this.playing = false;
+      });
+    });
+  }
+
+  render() {
+    const dynamicCss = {
+      "playing": this.playing
+    };
+
+    return (
+      <button class={this.classes(dynamicCss, "play_button")} onclick={this.onClick} bind={this} key={this}>
+        <i class="play_button__icon">
+          <div class="play_button__mask"/>
+        </i>
+      </button>
+    );
+  }
+
+  onClick(event: Event) {
+    if (this.playing) {
+      this.playing = false;
+      this.audio.pause();
+    }
+    else {
+      this.audio.play();
+      this.playing = true;
+    }
+  }
+}
+
+@subclass()
 class Floor extends declared(Widget) {
   @property()
   title: string;
@@ -32,12 +80,18 @@ class Floor extends declared(Widget) {
   subtitle: string;
 
   @property()
-  level = 1;
+  floor = 1;
+
+  @property({aliasOf: "playButton.audioSrc"})
+  audio: string;
+
+  @property()
+  playButton = new PlayButton();
 
   featureLayer: FeatureLayer;
 
   render() {
-    return this.content;
+    return (<div>{this.content}<p>Listen to the name of this floor {this.playButton.render()}</p></div>);
   }
 
   constructor(args: any) {
@@ -45,12 +99,16 @@ class Floor extends declared(Widget) {
   }
 
   activate(infoLayer: FeatureLayer, pictureLayer: FeatureLayer) {
+    // put audio back to 0
+    this.playButton.audio.currentTime = 0;
+
+    // filter the picture and infoLayer:
     if (infoLayer) {
-      infoLayer.definitionExpression = "level_id = " + this.level;
+      infoLayer.definitionExpression = "level_id = " + this.floor;
     }
 
     if (pictureLayer) {
-      pictureLayer.definitionExpression = "level_id = " + this.level;
+      pictureLayer.definitionExpression = "level_id = " + this.floor;
     }
   }
 }
@@ -89,47 +147,49 @@ class FloorsSection extends declared(Section) {
     new Floor({
       title: "He Hononga",
       subtitle: "connection",
-      level: 0,
-      content: (<div id="connection" bind={this} key={this}><p><a href="">He Hononga | Connection</a> <span class="italic">ground level</span> <span>Open an hour earlier than the rest of the building on weekdays, He Hononga | Connection, Ground Level is the place to return library items, collect holds, browse magazines, DVDs and new arrivals, visit the café or interact with the Discovery Wall.</span></p><p>Listen to the name of this floor [MP3]</p></div>)
+      audio: "https://my.christchurchcitylibraries.com/wp-content/uploads/sites/5/2019/01/He-Hononga.mp3",
+      floor: 0,
+      content: (<div id="connection" bind={this} key={this}><p><span>Open an hour earlier than the rest of the building on weekdays, He Hononga | Connection, Ground Level is the place to return library items, collect holds, browse magazines, DVDs and new arrivals, visit the café or interact with the Discovery Wall.</span></p></div>)
     }),
     new Floor({
       title: "Hapori",
       subtitle: "community",
-      level: 1,
-      content: (<div id="community" bind={this} key={this}><p><a href="">Hapori | Community</a> <span class="italic">level 1</span> <span> offers experiences geared towards a wide cross-section of our community. Grab a hot drink at the espresso bar, attend an event in our community arena, or help the kids explore the play and craft areas and children’s resources. It’s also a great place for young adults to hang out, play videogames, try out VR or get some study done.</span></p><p>Listen to the name of this floor [MP3]</p></div>)
+      audio: "https://my.christchurchcitylibraries.com/wp-content/uploads/sites/5/2019/01/Hapori.mp3",
+      floor: 1,
+      content: (<div id="community" bind={this} key={this}><p><span>It offers experiences geared towards a wide cross-section of our community. Grab a hot drink at the espresso bar, attend an event in our community arena, or help the kids explore the play and craft areas and children’s resources. It’s also a great place for young adults to hang out, play videogames, try out VR or get some study done.</span></p></div>)
     }),
     new Floor({
       title: "Tuakiri",
       subtitle: "identity",
-      level: 2,
-      content: (<div id="identity" bind={this} key={this}><p><a href="">Tuakiri | Identity</a> <span class="italic">level 2</span> <span>Find resources and services to help you develop your knowledge about your own identity, your ancestors, your whakapapa and also about the place that they called home – its land and buildings.</span></p><p>Listen to the name of this floor [MP3]</p></div>)
+      audio: "https://my.christchurchcitylibraries.com/wp-content/uploads/sites/5/2019/01/Tuakiri.mp3",
+      floor: 2,
+      content: (<div id="identity" bind={this} key={this}><p><span>Find resources and services to help you develop your knowledge about your own identity, your ancestors, your whakapapa and also about the place that they called home – its land and buildings.</span></p></div>)
     }),
     new Floor({
       title: "Tūhuratanga",
       subtitle: "discovery",
-      level: 3,
-      content: (<div id="discovery" bind={this} key={this}><p><a href="">Tūhuratanga | Discovery</a> <span class="italic">level 3</span> <span>Explore the nonfiction collection with thousands of books on a huge range of subjects. Get help with print and online resources for research or recreation. Use the public internet computers or, for those who want a low-key space to read or study, there is a separate room called &lsquo;The Quiet Place&rsquo;. Study, research or browse for some recreational reading.</span></p><p>Listen to the name of this floor [MP3]</p></div>)
+      audio: "https://my.christchurchcitylibraries.com/wp-content/uploads/sites/5/2019/01/T%C5%ABhuratanga.mp3",
+      floor: 3,
+      content: (<div id="discovery" bind={this} key={this}><p><span>Explore the nonfiction collection with thousands of books on a huge range of subjects. Get help with print and online resources for research or recreation. Use the public internet computers or, for those who want a low-key space to read or study, there is a separate room called &lsquo;The Quiet Place&rsquo;. Study, research or browse for some recreational reading.</span></p></div>)
     }),
     new Floor({
       title: "Auahatanga",
       subtitle: "creativity",
-      level: 4,
-      content: (<div id="creativity" bind={this} key={this}><p><a href="">Auahatanga | Creativity</a> <span class="italic">level 4</span> <span>Browse the World Languages, Music and Fiction collections, including Biographies and Graphic Novels. Visit the two roof gardens with great views across the city. Explore your creativity in the Production Studio using creative technology such as 3D printers and sewing machines. Create and edit music and video using the Audio/Video Studio, or take a class in the Computer Labs with a great range of software available.</span></p><p>Listen to the name of this floor [MP3]</p></div>)
+      audio: "https://my.christchurchcitylibraries.com/wp-content/uploads/sites/5/2019/01/Auahatanga.mp3",
+      floor: 4,
+      content: (<div id="creativity" bind={this} key={this}><p><span>Browse the World Languages, Music and Fiction collections, including Biographies and Graphic Novels. Visit the two roof gardens with great views across the city. Explore your creativity in the Production Studio using creative technology such as 3D printers and sewing machines. Create and edit music and video using the Audio/Video Studio, or take a class in the Computer Labs with a great range of software available.</span></p></div>)
     })
   ]);
-
-  @property()
-  camera = new Camera({"position":{"spatialReference":{"wkid":102100},"x":19217906.056871723,"y":-5392983.203578308,"z":138.30973901506513},"heading":0.000002699869328381916,"tilt":0.4999919670732401});
 
   render() {
     const currentLevel = this.floors.getItemAt(this.selectedFloor);
     const selectedFloor = this.selectedFloor === 0 ? "G" : this.selectedFloor;
-    const title = this.selectedFloor === 0 ? (<h1>{currentLevel.title}</h1>) : (<h1><br/>{currentLevel.title}</h1>);
+    const title = this.selectedFloor === 0 ? (<h1>{currentLevel.title}</h1>) : (<h1>{currentLevel.title}</h1>);
     return (<div id={this.id} bind={this} key={this}>
-      <div class="level">level</div>
+      <div class="level">floor</div>
       <h1 class="number">{selectedFloor}</h1>
       {title}
-      <h3 class="subtitle">{currentLevel.subtitle}</h3>
+      <h3 class="subtitle">[{currentLevel.subtitle}]</h3>
       <div class="content">{currentLevel.render()}</div>
     </div>);
   }
@@ -203,7 +263,6 @@ class FloorsSection extends declared(Section) {
   onEnter() {
     this.selectedFloor = 1;
     domClass.remove("floorLegend", "hide");
-    domClass.add(document.body, "floors");
     this.appState.view.environment.lighting.directShadowsEnabled = false;
     this.appState.view.environment.lighting.ambientOcclusionEnabled = false;
     this.oldDate = this.appState.view.environment.lighting.date;
@@ -229,7 +288,6 @@ class FloorsSection extends declared(Section) {
 
   onLeave() {
     domClass.add("floorLegend", "hide");
-    domClass.remove(document.body, "floors");
     this.handles.remove("click");
     this.appState.view.environment.lighting.directShadowsEnabled = true;
     this.appState.view.environment.lighting.ambientOcclusionEnabled = true;

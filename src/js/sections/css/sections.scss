@@ -83,7 +83,7 @@
     margin-left: -200px;
 
     a {
-      color: #a3a3a3;
+      color: $themedGray;
       vertical-align: -2px;
       margin-left: 20px;
       text-decoration: none;
@@ -91,7 +91,7 @@
 
     &.active {
       a {
-        color: $themedGray;
+        color: $orange;
       }
     }
   }
@@ -135,48 +135,19 @@
   Floors
 ****************/
 
-#canvas.floors #mainViewDiv {
-  width: 40%;
-  height: 40%;
-  opacity: 0;
-}
-
-#canvas #floorViewDiv {
-  display: none;
-  right: 0;
-  top: 0;
-  position: absolute;
-  // -webkit-transition: all 0.8s;
-  // -moz-transition: all 0.8s;
-  //   -o-transition: all 0.8s;
-  //      transition: all 0.8s;
-  
-  .esri-view-root {
-    height: 100%;
-  }
-}
-// #canvas.floors #mainViewDiv {
-//   z-index: 4;
-// }
-
-#canvas.floors #floorViewDiv {
-  width: 100%;
-  height: 100%;
-  display: block;
-  // z-index: 1;
-}
-
 #floors {
   pointer-events: all;
   h1 {
     margin-left: 120px;
+    // width: 
     pointer-events: all;
+    width: 600px;
   }
 
   h1.number {
     margin-left: 0;
-    margin-top: 45px;
-    color: #F6A803;
+    margin-top: 25px;
+    color: $orange;
   }
 
   .level, .number {
@@ -184,9 +155,10 @@
   }
 
   .level {
-    margin-top: 80px;
+    margin-top: 61px;
     z-index: 2;
-    opacity: 0.5;
+    margin-left: 28px;
+    opacity: 0.8;
   }
 
   .number {
@@ -198,9 +170,11 @@
     font-family: "Avenir Next";
     font-weight: normal;
     font-style: italic;
-    font-size: 50px;
-    margin-top: -20px;
+    font-size: 40px;
+    letter-spacing: 8px;
     opacity: 0.3;
+    margin-top: -30px;
+    margin-left: 125px;
     pointer-events: all;
   }
 
@@ -208,29 +182,112 @@
     font-style: italic;
     opacity: 0.5;
   }
+
+  .content {
+    margin-top: 50px;
+  }
+
+  .play_button {
+    position: relative;
+    background: transparent;
+    border: none;
+    outline: none;
+    padding: 6px;
+    border-radius: 13px;
+    cursor: pointer;
+    margin-left: 5px;
+    vertical-align: -2px;
+    border: 1px solid $themedGray;
+
+    .play_button__icon {
+        $size: 12px;
+        height: $size;
+        width: $size;
+        line-height: $size;
+        position: relative;
+        left: 1px;
+        z-index: 0;
+        box-sizing: border-box;
+        display: inline-block;
+        overflow: hidden;
+
+        &:before, &:after {
+            content: '';
+            position: absolute;
+            transition: 0.3s;
+            background: #FFF;
+            height: 100%;
+            width: 50%;
+            top: 0;
+        }
+
+        &:before {
+            left: 0;
+        }
+
+        &:after {
+            right: 0;
+        }
+    }
+
+    .play_button__mask {
+        position: absolute;
+        z-index: 1;
+        left: 0;
+        top: 0;
+        width: 100%;
+        height: 100%;
+        display: block;
+
+        &:before, &:after {
+            content: '';
+            position: absolute;
+            left: 0;
+            height: 100%;
+            width: 150%;
+            background: $background;
+            transition: all 0.3s ease-out;
+        }
+
+        &:before {
+            top: -100%;
+            transform-origin: 0% 100%;
+            transform: rotate(26.5deg);
+        }
+
+        &:after {
+            transform-origin: 0% 0%;
+            transform: rotate(-26.5deg);
+            top: 100%;
+        }
+    }
+
+    &.playing {
+      .play_button__icon {
+          left: 0;
+
+          &:before {
+              transform: translateX(-25%);
+          }
+
+          &:after {
+              transform: translateX(25%);
+          }
+      }
+
+      .play_button__mask {
+          &:before, &:after {
+              transform: rotate(0);
+          }
+      }
+    }
 }
-
-.floors {
-  #appDiv {
-    .left.side-container {
-      z-index: 1;
-    }
-    .right.side-container, #menu {
-      z-index: 3;
-      position: absolute;
-    }
-  }
-
-  #canvas {
-    position: absolute;
-    z-index: 2;
-  }
 }
 
 #floorLegend {
   position: absolute;
   bottom: 30px;
-  left: 30px;
+  left: 15px;
 
   &.hide {
     display: none;
@@ -239,6 +296,8 @@
   div {
     background: transparent;
     color: #fff;
+    font-size: 15px;
+    line-height: 22px;
   }
 
   .esri-legend__layer-caption, .esri-widget__heading {
@@ -260,7 +319,7 @@
     display: block;
 
     a {
-      color: #a3a3a3;
+      color: #fff;
     }
 
     & > div {

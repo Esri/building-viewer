@@ -5,7 +5,6 @@ import { subclass, declared, property } from "esri/core/accessorSupport/decorato
 import { tsx } from "esri/widgets/support/widget";
 
 import Section = require("./Section");
-import Camera = require("esri/Camera");
 
 import AppState = require("../AppState");
 import Timetable = require("../widgets/Timetable/Timetable");
@@ -40,9 +39,6 @@ class HomeSection extends declared(Section) {
   get viewpoints() {
     return new Viewpoints({appState: this.appState});
   }
-
-  @property()
-  camera = new Camera({"position":{"spatialReference":{"wkid":102100},"x":19217748.22738697,"y":-5392889.47126926,"z":75.64768815878779},"heading":129.98709663269761,"tilt":67.75482529312283});
 
   render() {
     return (<div id={this.id}>

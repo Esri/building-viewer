@@ -43,7 +43,10 @@ class Sections extends declared(Collection)<SectionSubclass> {
         this.activeSection.onEnter();
       }
     }
-    this.emit("go-to", this.activeSection.camera);
+
+    if (this.activeSection.camera) {
+      this.emit("go-to", this.activeSection.camera);
+    }
   }
 
   @property({ constructOnly: true})

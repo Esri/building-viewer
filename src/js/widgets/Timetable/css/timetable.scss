@@ -2,7 +2,7 @@
 
 .timetable {
     width: 200px;
-    margin-top: 50px;
+    margin-top: -10px;
     pointer-events: all;
     overflow: hidden;
 
@@ -13,15 +13,8 @@
     width: 100%;
     height: 30px;
 
-    h2 {
-        font-size: 25px;
-        color: #FFAF03;
-        float: left;
-        margin: 0;
-        display: inline-block;
-    }
     h3 {
-       float: left;
+      float: left;
       display: inline-block; 
       font-size: 18px;
     }
@@ -30,26 +23,12 @@
       float: right;
       display: inline-block;
       font-size: 90%;
-      margin-top: -3px;
+      margin-top: 3px;
     }
 
-    // .openstatus {
-    //   font-weight: bold;
-    //   font-size: 80%;
-    //   margin-top: -5px;
-    // }
-
     &.today {
-      margin-bottom: 3px;
-      margin-top: 2px;
-
-      h2 {
-        margin-top: -8px;
-      }
-
-      .schedule {
-          margin-top: -5px;
-      }
+      color: $orange;
+      font-weight: bold;
     }
   }
 }

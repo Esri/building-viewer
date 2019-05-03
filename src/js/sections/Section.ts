@@ -20,7 +20,7 @@ abstract class Section extends declared(Widget) {
   abstract id: string;
 
   @property()
-  abstract camera: Camera;
+  camera: Camera;
 
   @property()
   active: boolean = false;
@@ -32,6 +32,14 @@ abstract class Section extends declared(Widget) {
   onEnter() {}
 
   onLeave() {}
+
+  postInitialize() {
+    this.own(this.watch("camera", camera => {
+      if (camera) {
+        this.emit("go-to", camera);
+      }
+    }));
+  }
 }
 
 export = Section;
