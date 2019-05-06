@@ -1,14 +1,12 @@
 @import "../../../css/variables.scss";
+@import "../../../css/mixins.scss";
 
 /***************
   Slide animation
 ****************/
 
 .side-container .pane {
-  -webkit-transition: all 0.5s cubic-bezier(0.68, -0.55, 0.265, 1.55), opacity 0.6s cubic-bezier(0.42,0,0.58,1);
-  -moz-transition: all 0.5s cubic-bezier(0.68, -0.55, 0.265, 1.55), opacity 0.6s cubic-bezier(0.42,0,0.58,1);
-  -o-transition: all 0.5s cubic-bezier(0.68, -0.55, 0.265, 1.55), opacity 0.6s cubic-bezier(0.42,0,0.58,1);
-  transition: all 0.5s cubic-bezier(0.68, -0.55, 0.265, 1.55), opacity 0.6s cubic-bezier(0.42,0,0.58,1);
+  @include transition(all 0.5s cubic-bezier(0.68, -0.55, 0.265, 1.55), opacity 0.6s cubic-bezier(0.42,0,0.58,1));
   position: absolute;
   opacity: 0;
   top: 0;
@@ -35,10 +33,7 @@
 }
 
 .side-container.left .pane h1 {
-  -webkit-transition: margin 0.7s cubic-bezier(0.68, -0.55, 0.265, 1.55);
-  -moz-transition: margin 0.7s cubic-bezier(0.68, -0.55, 0.265, 1.55);
-  -o-transition: margin 0.7s cubic-bezier(0.68, -0.55, 0.265, 1.55);
-  transition: margin 0.7s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+  @include transition(margin 0.7s cubic-bezier(0.68, -0.55, 0.265, 1.55));
   margin-left: -200px;
 }
 
@@ -47,25 +42,16 @@
 }
 
 .side-container.left .pane h2 {
-  -webkit-transition: margin 0.8s ease;
-  -moz-transition: margin 0.8s ease;
-  -o-transition: margin 0.8s ease;
-  transition: margin 0.8s ease;
+  @include transition(margin 0.8s ease);
   margin-left: -200px;
 }
 
 .side-container.left .pane h2:nth-child(2) {
-  -webkit-transition: margin 0.8s ease 0.3s;
-  -moz-transition: margin 0.8s ease 0.3s;
-  -o-transition: margin 0.8s ease 0.3s;
-  transition: margin 0.8s ease 0.3s;
+  @include transition(margin 0.8s ease 0.3s);
 }
 
 .side-container.left .pane h2:nth-child(3) {
-  -webkit-transition: margin 0.8s ease 0.6s;
-  -moz-transition: margin 0.8s ease 0.6s;
-  -o-transition: margin 0.8s ease 0.6s;
-  transition: margin 0.8s ease 0.6s;
+  @include transition(margin 0.8s ease 0.6s);
 }
 
 .side-container.left .pane.active h2 {
@@ -83,7 +69,7 @@
     margin-left: -200px;
 
     a {
-      color: $themedGray;
+      color: $primaryColor;
       vertical-align: -2px;
       margin-left: 20px;
       text-decoration: none;
@@ -105,10 +91,10 @@
   }
 
   // .toggle {
-  //   border-color: $themedGray;
+  //   border-color: $primaryColor;
 
   //   .knob {
-  //     background-color: $themedGray;
+  //     background-color: $primaryColor;
   //   }
   // }
 }
@@ -188,8 +174,9 @@
   }
 
   .play_button {
+    $play_button_background: scale-color($primaryColor, $lightness: -70%);
     position: relative;
-    background: transparent;
+    background: $play_button_background;
     border: none;
     outline: none;
     padding: 6px;
@@ -197,7 +184,7 @@
     cursor: pointer;
     margin-left: 5px;
     vertical-align: -2px;
-    border: 1px solid $themedGray;
+    border: 1px solid $primaryColor;
 
     .play_button__icon {
         $size: 12px;
@@ -245,7 +232,7 @@
             left: 0;
             height: 100%;
             width: 150%;
-            background: $background;
+            background:  $play_button_background;
             transition: all 0.3s ease-out;
         }
 
@@ -324,15 +311,10 @@
 
     & > div {
       a {
-        -webkit-transition: all 0.8s;
-          -moz-transition: all 0.8s;
-    -o-transition: all 0.8s;
-       transition: all 0.8s;
+        @include transition(all 0.8s);
       }
       svg {
-          -moz-transition: all 0.8s;
-    -o-transition: all 0.8s;
-       transition: all 0.8s;
+        @include transition(all 0.8s);
       }
     }
 

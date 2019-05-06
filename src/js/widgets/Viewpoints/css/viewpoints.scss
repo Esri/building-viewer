@@ -1,4 +1,5 @@
 @import "../../../../css/variables.scss";
+@import "../../../../css/mixins.scss";
 
 #appDiv .viewpoints {
   width: 300px;
@@ -14,7 +15,7 @@
   }
 
   a {
-    color: rgba(255,255,255,0.5);
+    color: $viewpointItemColor;
     margin-left: 8px;
     text-decoration: none;
   }
@@ -26,39 +27,38 @@
   }
 
   .viewpoint {
-      -webkit-transition: all 0.8s;
-  -moz-transition: all 0.8s;
-    -o-transition: all 0.8s;
-       transition: all 0.8s;
+    @include transition(all 0.5s);
     margin-left: 200px;
-  }
-
-  .viewpoint:hover {
-    font-size: 40px;
-  }
-
-  .viewpoint.active:first-child {
-    margin-top: 0;
-  }
-
-  .viewpoint:first-child {
-    margin-top: 0px;
-  }
-
-  .viewpoint {
     font-family: 'Roboto Condensed', sans-serif; // import font!
     cursor: pointer;
     list-style: none;
     display: block;
     pointer-events: all;
     width: 100%;
-    font-size: 25px;
+    font-size: $viewpointItemFontSize;
     text-align: right;
-  }
 
-  .viewpoint.active {
-    font-size: 40px;
-    color: #F6A803;
+    &:first-child {
+      margin-top: 0;
+    }
+
+    &.active {
+      font-size: $viewpointItemActiveFontSize;
+      color: $viewpointItemActiveColor;
+
+      &:first-child {
+        margin-top: 0;
+      }
+
+      &:hover {
+        color: $viewpointItemActiveColor;
+      }
+    }
+
+    &:hover {
+      font-size: $viewpointItemOverFontSize;
+      color: $viewpointItemOverColor;
+    }
   }
 }
 
@@ -69,22 +69,22 @@
   }
 
   .viewpoint:nth-child(1) {
-      @include transition-delay(0.1s);
+      @include transition(all 0.5s, margin-left 0.8s 0.1s);
   }
 
   .viewpoint:nth-child(2) {
-      @include transition-delay(0.2s);
+      @include transition(all 0.5s, margin-left 0.8s 0.2s);
   }
 
   .viewpoint:nth-child(3) {
-      @include transition-delay(0.3s);
+      @include transition(all 0.5s, margin-left 0.8s 0.3s);
   }
 
   .viewpoint:nth-child(4) {
-      @include transition-delay(0.4s);
+      @include transition(all 0.5s, margin-left 0.8s 0.4s);
   }
 
   .viewpoint:nth-child(5) {
-      @include transition-delay(0.5s);
+      @include transition(all 0.5s, margin-left 0.8s 0.5s);
   }
 }

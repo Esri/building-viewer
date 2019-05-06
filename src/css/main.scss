@@ -1,12 +1,9 @@
 @import "./variables.scss";
+@import "./mixins.scss";
 
 /***************
   Base
 ****************/
-
-html, body {
-  background-color: $background;
-}
 
 html,
 body,
@@ -28,10 +25,7 @@ body,
   position: absolute;
   bottom: 0;
   left: 0;
-  -webkit-transition: all 0.8s;
-  -moz-transition: all 0.8s;
-    -o-transition: all 0.8s;
-       transition: all 0.8s;
+  @include transition(all 0.8s);
 }
 
 /***************
@@ -39,13 +33,13 @@ body,
 ****************/
 
 #appDiv {
-  color: $themedGray;
-  font-size: 15px;
-  line-height: 22px;
+  color: $primaryColor;
+  font-size: $generalFontSize;
+  line-height: $generalFontSize + 7px;
   text-shadow: 1px 1px 5px rgba(70,70,70, 1);
 
   a {
-    color: $themedGray;
+    color: $primaryColor;
     text-decoration: underline;
   }
 
@@ -98,10 +92,8 @@ body,
     font-family:'Roboto Condensed', sans-serif;
     font-stretch: "condensed";
     font-weight: 900;
-    // font-size: 100px;
-    font-size: 85px;
-    // line-height: 120px;
-    line-height: 85px;
+    font-size: $bigTitleFontSize;
+    line-height: $bigTitleFontSize;
     margin-bottom: 30px;
   }
 }
@@ -129,7 +121,6 @@ body,
     
     #surroundings .slash-title.width-toggle {
       font-size: 20px;
-      // margin-top: -5px;
     }
 
     #surroundings .content {
@@ -259,31 +250,34 @@ body,
   width: 100%;
   text-align: center;
   display: block;
-  font-size: 23px;
+  font-size: $menuItemFontSize;
   font-family: "Avenir Next";
   font-stretch: "normal";
   font-weight: medium;
-  top: 25px;
+  top: $menuTopPosition;
 
   .slash {
-    margin-left: 25px;
-    margin-right: 20px;
+    margin-left: $menuSlashMarginLeft;
+    margin-right: $menuSlashMarginRight;
   }
 
   a {
     text-decoration: none;
-    color: $themedGray;
+    color: $menuItemColor;
+    @include transition(font-size 0.3s);
 
-    -webkit-transition: font-size 0.3s;
-       -moz-transition: font-size 0.3s;
-         -o-transition: font-size 0.3s;
-            transition: font-size 0.3s;
     &.active {
-      color: $orange;
+      font-size: $menuItemActiveFontSize;
+      color: $menuItemActiveColor;
+
+      &:hover {
+        color: $menuItemActiveColor;
+      }
     }
 
     &:hover {
-      font-size: 26px;
+      font-size: $menuItemOverFontSize;
+      color: $menuItemOverColor;
     }
   }
 

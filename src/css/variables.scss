@@ -2,43 +2,44 @@
   Colors
 ****************/
 
-$themedGray: #fff;
+// Global:
+$primaryColor: #fff;
 $secondaryColor: #a3a3a3;
 $orange: #F6A803;
-$background: rgba(70,70,70, 1);
+
+// Menu:
+$menuItemColor: $primaryColor;
+$menuItemActiveColor: $orange;
+$menuItemOverColor: $primaryColor;
+
+// Viewpoints:
+$viewpointItemColor: $primaryColor;
+$viewpointItemActiveColor: $orange;
+$viewpointItemOverColor: $primaryColor;
 
 /***************
-  Mixins
+  Font sizing
 ****************/
 
-@mixin transition($transition...) {
-  -moz-transition:    $transition;
-  -o-transition:      $transition;
-  -webkit-transition: $transition;
-  transition:         $transition;
-}
+$generalFontSize: 15px;
+$bigTitleFontSize: 5 * $generalFontSize + 10px;
 
-@mixin transition-property($property...) {
-  -moz-transition-property:    $property;
-  -o-transition-property:      $property;
-  -webkit-transition-property: $property;
-  transition-property:         $property;
-}
-@mixin transition-duration($duration...) {
-  -moz-transition-property:    $duration;
-  -o-transition-property:      $duration;
-  -webkit-transition-property: $duration;
-  transition-property:         $duration;
-}
-@mixin transition-timing-function($timing...) {
-  -moz-transition-timing-function:    $timing;
-  -o-transition-timing-function:      $timing;
-  -webkit-transition-timing-function: $timing;
-  transition-timing-function:         $timing;
-}
-@mixin transition-delay($delay...) {
-  -moz-transition-delay:    $delay;
-  -o-transition-delay:      $delay;
-  -webkit-transition-delay: $delay;
-  transition-delay:         $delay;
-}
+// Menu
+$menuItemFontSize: 23px;
+$menuItemActiveFontSize: 23px;
+$menuItemOverFontSize: 26px;
+
+// Viewpoints
+$viewpointItemFontSize: 25px;
+$viewpointItemActiveFontSize: 40px;
+$viewpointItemOverFontSize: 40px;
+
+
+/***************
+  Sizing
+****************/
+
+// Menu
+$menuTopPosition: 25px;
+$menuSlashMarginLeft: $menuItemFontSize + 2px;
+$menuSlashMarginRight: $menuItemFontSize - 3px;

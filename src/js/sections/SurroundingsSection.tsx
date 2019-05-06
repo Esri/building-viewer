@@ -146,7 +146,6 @@ class SurroundingsSection extends declared(Section) {
           title: "Points of Interest",
           appState: this.appState,
           camera: this.camera,
-          active: true,
           content: () => {
             const poiElementsItems = this.poiElements.map(el => el.render());
             return (<div class="content">
@@ -202,10 +201,7 @@ class SurroundingsSection extends declared(Section) {
   }
 
   onEnter() {
-    const el = this.elements.find(el => el.title === "Points of Interest");
-    if (el) {
-      el.active = true;
-    }
+    this.elements.forEach(el => el.active = el.title === "Points of Interest");
   }
 
   onLeave() {
