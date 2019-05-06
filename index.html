@@ -33,9 +33,7 @@
     </div>
     <script>require([
       "app/BSLDemo", 
-      "app/sections/HomeSection",
-      "app/sections/SurroundingsSection",
-      "app/sections/FloorsSection",
+      "app/config"
     ], 
     (
       BSLDemo,
@@ -55,9 +53,9 @@
         mapContainer: "mainViewDiv",
 
         // The id to the scene for the BSL you'd like to display:
-        websceneId: "b753b2ba04ef477ca46a5b8bd9766d2d",
-        buildingLayerTitle: "Turanga Library",
-        surroundingsLayerTitle: "City Model Christchurch",
+        websceneId: config.websceneId,
+        buildingLayerTitle: config.buildingLayerTitle,
+        surroundingsLayerTitle: config.surroundingsLayerTitle,
 
         // The url to a SceneService displaying the surrounding:
         // surroundingsLayer: "https://services.arcgis.com/hLRlshaEMEYQG5A8/arcgis/rest/services/Scenechch_WSL1/SceneServer",
@@ -67,19 +65,7 @@
           // "https://services.arcgis.com/hLRlshaEMEYQG5A8/arcgis/rest/services/Scenechch_WSL1/SceneServer",
 
         // Your different sections:
-        sections: [
-          // Check the different files
-          // to adapt to your need
-          // or create a new section by
-          // implement a subclass from `Section`
-          
-          // The about Tarangua section:
-          new HomeSection(),
-          // The different floors:
-          new FloorsSection(),
-          // Surroundings:
-          new SurroundingsSection()
-        ]
+        sections: config.sections
       }, "appDiv");
     });</script>
   </body>
