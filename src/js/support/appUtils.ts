@@ -52,3 +52,7 @@ export function createViewFromWebScene(args: {
 export function findLayer(layers: Collection<Layer>, title: string) {
   return layers.find(l => l.title === title);
 }
+
+export const MAIN_BSL_PREFIX = "Main BSL:";
+export const EXTRA_LAYER_PREFIX = "Extra:";
+export const EXTERNAL_INFOPOINT_LAYER_PREFIX = "External infopoints:";

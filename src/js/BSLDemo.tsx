@@ -32,8 +32,6 @@ interface BSLDemoCtorArgs {
   sections: Pick<Section, "render" | "active" | "id" | "paneRight" | "title" | "camera" | "onLeave" | "onEnter" | "appState">[];
   mapContainer: string;
   websceneId: string;
-  buildingLayerTitle: string;
-  surroundingsLayerTitle: string;
 }
 
 @subclass("webSceneViewer.widgets.LayersLoading.LayersLoadingProgressBar")
@@ -96,28 +94,42 @@ class BSLDemo extends declared(Widget) {
         .then((results: any) => {
           results.forEach((result: {value: {layer: Layer}}) => this.recursivelySaveLayer(result.value.layer));
 
-          // Building:
-          const BSL = appUtils.findLayer(this.initialLayers, args.buildingLayerTitle);
+          ///////////////////////////////////
+          // Main building to present:
+          const BSL = this.appState.initialLayers.find(layer => layer.title.indexOf(appUtils.MAIN_BSL_PREFIX) > -1);
+          
+          if (!BSL) {
+            throw new Error("Cannot find the main BuildingSceneLayer (Main BSL) in the webscene " + args.websceneId);
+          }
+          
           this.buildingLayer = new BuildingVisualisation({
             appState: this.appState,
             layer: BSL as BuildingSceneLayer
           });
 
-          // Surroundings:
-          const surroundingsLayer = appUtils.findLayer(this.view.map.allLayers, args.surroundingsLayerTitle) as SceneLayer;
-          this.surroundingsLayer = new SurroundingsVisualisation({
-            layer: surroundingsLayer,
-            appState: this.appState
-          });
+          ///////////////////////////////////
+          // Optional surrounding's layer:
+          const surroundingsLayer = this.appState.initialLayers.find(layer => layer.title.indexOf(appUtils.EXTRA_LAYER_PREFIX) > -1) as SceneLayer;
+          if (surroundingsLayer) {
+            this.surroundingsLayer = new SurroundingsVisualisation({
+              layer: surroundingsLayer,
+              appState: this.appState
+            });
+          }
 
+          ///////////////////////////////////
           // Reset layers:
           this.view.map.layers.removeAll();
           this.view.map.layers = new Collection([
             this.buildingLayer.layer,
-            this.surroundingsLayer.layer
           ]);
+
+          if (this.surroundingsLayer.layer) {
+            this.view.map.layers.push(this.surroundingsLayer.layer);
+          }
         });
       
+      ///////////////////////////////////
       // Setup camera:
       this.sections.forEach(section => {
         const slide = (this.view.map as WebScene).presentation.slides.find(slide => slide.title.text === section.title);
@@ -136,7 +148,10 @@ class BSLDemo extends declared(Widget) {
       window["view"] = this.view;
       window["appState"] = this.appState;
 
-      this.sections.activateSection("home");
+      // Active first section:
+      if (this.sections.length > 0) {
+        this.sections.activateSection(this.sections.getItemAt(0).id);
+      }
     });
   }
 
@@ -171,12 +186,7 @@ class BSLDemo extends declared(Widget) {
   //--------------------------------------------------------------------------
 
   recursivelySaveLayer(layer: Layer | GroupLayer) {
-    // if (layer instanceof GroupLayer) {
-    //   layer.layers.forEach(l => this.recursivelySaveLayer(l));
-    // }
-    // else {
-      this.initialLayers.add(layer);
-    // }
+    this.initialLayers.add(layer);
   }
 }
 

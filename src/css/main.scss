@@ -195,7 +195,7 @@ body,
         font-size: 40px;
         line-height: 40px;
         margin-left: 70px;
-        width: 200px;
+        width: 220px;
 
         &.number {
           font-size: 100px;
@@ -205,11 +205,14 @@ body,
       }
 
       h3.subtitle {
-        font-size: 40px;
+        font-size: 25px;
+        margin-left: 75px;
+        letter-spacing: 4px;
       }
 
       .level {
-        margin-top: 30px;
+        margin-top: 33px;
+        margin-left: 12px;
       }
     }
 
@@ -255,6 +258,7 @@ body,
   font-stretch: "normal";
   font-weight: medium;
   top: $menuTopPosition;
+  cursor: pointer;
 
   .slash {
     margin-left: $menuSlashMarginLeft;
@@ -264,6 +268,7 @@ body,
   a {
     text-decoration: none;
     color: $menuItemColor;
+    cursor: pointer;
     @include transition(font-size 0.3s);
 
     &.active {

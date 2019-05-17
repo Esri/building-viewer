@@ -2,12 +2,12 @@
 /// <amd-dependency path="esri/core/tsSupport/decorateHelper" name="__decorate" />
 
 import { subclass, declared, property } from "esri/core/accessorSupport/decorators";
-import { tsx } from "esri/widgets/support/widget";
+import { tsx, renderable } from "esri/widgets/support/widget";
 
 import Section = require("./Section");
 
 import AppState = require("../AppState");
-import Timetable = require("../widgets/Timetable/Timetable");
+import { Timetable } from "../widgets/Timetable/Timetable";
 import Viewpoints = require("../widgets/Viewpoints/Viewpoints");
 import watchUtils = require("esri/core/watchUtils");
 import Handles = require("esri/core/Handles");
@@ -15,6 +15,13 @@ import FeatureLayer = require("esri/layers/FeatureLayer");
 import appUtils = require("../support/appUtils");
 import Collection = require("esri/core/Collection");
 import PopupInfo = require("../widgets/Popup/PopupInfo");
+import WebScene = require("esri/WebScene");
+
+interface HomeSectionCtorArgs {
+  content: (that: HomeSection) => any;
+  timetable?: Timetable;
+  title?: string;
+}
 
 @subclass("sections/HomeSection")
 class HomeSection extends declared(Section) {
@@ -24,8 +31,12 @@ class HomeSection extends declared(Section) {
   @property()
   id = "home";
 
+  @property({ constructOnly: true })
+  timetable: Timetable;
+
   @property()
-  timetable = new Timetable();
+  @renderable()
+  private textTitle: string;
 
   @property()
   appState: AppState;
@@ -35,19 +46,28 @@ class HomeSection extends declared(Section) {
 
   private handles = new Handles();
 
+  @property()
+  content: (that: this) => any;
+
   @property({dependsOn: ["appState"], readOnly: true})
   get viewpoints() {
     return new Viewpoints({appState: this.appState});
   }
 
   render() {
+
+    const timetable = this.timetable ? this.timetable.render() : null;
+    const title = this.textTitle ? (<h1>{this.textTitle}</h1>) : null;
+
     return (<div id={this.id}>
-      <h1>T&#x16b;ranga Library</h1>
-      <p>T&#x16b;ranga is a library in Central Christchurch and the main library of Christchurch City Libraries, New Zealand. It is the largest library in the South Island and the third-biggest in New Zealand. The previous Christchurch Central Library opened in 1982 on the corner of Oxford Terrace and Gloucester Street but was closed after the February 2011 Christchurch earthquake and demolished in 2014 to make way for the Convention Centre Precinct.</p>
+      <div bind={this} key={this}>
+        {title}
+        {this.content(this)}
+      </div>
       <section class="Hours">
         <h2 class="slash-title">Opening hours</h2>
         <div>
-          {this.timetable.render()}
+          {timetable}
         </div>
       </section>
     </div>);
@@ -58,13 +78,13 @@ class HomeSection extends declared(Section) {
     return (<div>{viewpoints}</div>);
   }
 
-  constructor(args: any) {
-    super(args);
+  constructor(args: HomeSectionCtorArgs) {
+    super(args as any);
 
     watchUtils.whenOnce(this, "appState", () => {
       watchUtils.on(this, "appState.initialLayers", "change", () => {
         if (this.appState && this.appState.initialLayers.length > 0) {
-          this.infoPointsLayer = appUtils.findLayer(this.appState.initialLayers, "Turanga Pictures - external") as FeatureLayer;
+          this.infoPointsLayer = this.appState.initialLayers.find(layer => layer.title.indexOf(appUtils.EXTERNAL_INFOPOINT_LAYER_PREFIX) > -1) as FeatureLayer;
           this.infoPointsLayer.outFields = ["*"];
           this.infoPointsLayer.visible = false;
           this.infoPointsLayer.popupTemplate.overwriteActions = true;
@@ -72,6 +92,11 @@ class HomeSection extends declared(Section) {
           this.appState.view.map.layers.add(this.infoPointsLayer);
         }
       });
+    });
+
+    // Get the title to display in the text:
+    watchUtils.whenOnce(this, "appState.view.map.portalItem.title", () => {
+      this.textTitle = (this.appState.view.map as WebScene).portalItem.title;
     });
 
     watchUtils.init(this, "appState.pageLocation", (l) => {
@@ -94,7 +119,7 @@ class HomeSection extends declared(Section) {
         if (filtered) {
           this.appState.popupInfo = new PopupInfo({
             image: filtered.graphic.attributes.url,
-            credit: "Credit © Emma Browne-Cole"
+            credit: filtered.graphic.attributes.title
           })
         }
       });

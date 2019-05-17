@@ -9,10 +9,8 @@ import Collection = require("esri/core/Collection");
 import Widget = require("esri/widgets/Widget");
 import FloorSelector = require("../widgets/FloorSelector/FloorSelector");
 import watchUtils = require("esri/core/watchUtils");
-// import SceneView = require("esri/views/SceneView");
 import FeatureLayer = require("esri/layers/FeatureLayer");
 import Legend = require("esri/widgets/Legend");
-// import PopupTemplate = require("esri/PopupTemplate");
 import PopupInfo = require("../widgets/Popup/PopupInfo");
 import domCtr = require("dojo/dom-construct");
 import domClass = require("dojo/dom-class");
@@ -68,13 +66,21 @@ class PlayButton extends declared(Widget) {
   }
 }
 
+interface FloorCtorArgs {
+  title: string;
+  subtitle: string;
+  content: (that: Floor) => any;
+  floor: number;
+  audio?: string;
+}
+
 @subclass()
-class Floor extends declared(Widget) {
+export class Floor extends declared(Widget) {
   @property()
   title: string;
 
   @property()
-  content: string;
+  content: (that: this) => any;
 
   @property()
   subtitle: string;
@@ -91,11 +97,15 @@ class Floor extends declared(Widget) {
   featureLayer: FeatureLayer;
 
   render() {
-    return (<div>{this.content}<p>Listen to the name of this floor {this.playButton.render()}</p></div>);
+    const audio = this.audio ? (<p>Listen to the name of this floor {this.playButton.render()}</p>) : null;
+    return (<div>
+      {this.content(this)}
+      {audio}
+    </div>);
   }
 
-  constructor(args: any) {
-    super(args);
+  constructor(args: FloorCtorArgs) {
+    super(args as any);
   }
 
   activate(infoLayer: FeatureLayer, pictureLayer: FeatureLayer) {
@@ -114,7 +124,7 @@ class Floor extends declared(Widget) {
 }
 
 @subclass("sections/FloorsSection")
-class FloorsSection extends declared(Section) {
+export class FloorsSection extends declared(Section) {
   @property()
   title = "Floor by floor";
 
@@ -138,48 +148,19 @@ class FloorsSection extends declared(Section) {
   @property()
   layer: FeatureLayer;
 
+  @property({constructOnly: true })
+  layerNameForInfoPoint: string;
+
+  @property({constructOnly: true })
+  layerNameForPicturePoint: string;
+
   @property()
   picturePointsLayer: FeatureLayer;
 
   private handles = new Handles();
 
-  floors: Collection<Floor> = new Collection([
-    new Floor({
-      title: "He Hononga",
-      subtitle: "connection",
-      audio: "https://my.christchurchcitylibraries.com/wp-content/uploads/sites/5/2019/01/He-Hononga.mp3",
-      floor: 0,
-      content: (<div id="connection" bind={this} key={this}><p><span>Open an hour earlier than the rest of the building on weekdays, He Hononga | Connection, Ground Level is the place to return library items, collect holds, browse magazines, DVDs and new arrivals, visit the café or interact with the Discovery Wall.</span></p></div>)
-    }),
-    new Floor({
-      title: "Hapori",
-      subtitle: "community",
-      audio: "https://my.christchurchcitylibraries.com/wp-content/uploads/sites/5/2019/01/Hapori.mp3",
-      floor: 1,
-      content: (<div id="community" bind={this} key={this}><p><span>It offers experiences geared towards a wide cross-section of our community. Grab a hot drink at the espresso bar, attend an event in our community arena, or help the kids explore the play and craft areas and children’s resources. It’s also a great place for young adults to hang out, play videogames, try out VR or get some study done.</span></p></div>)
-    }),
-    new Floor({
-      title: "Tuakiri",
-      subtitle: "identity",
-      audio: "https://my.christchurchcitylibraries.com/wp-content/uploads/sites/5/2019/01/Tuakiri.mp3",
-      floor: 2,
-      content: (<div id="identity" bind={this} key={this}><p><span>Find resources and services to help you develop your knowledge about your own identity, your ancestors, your whakapapa and also about the place that they called home – its land and buildings.</span></p></div>)
-    }),
-    new Floor({
-      title: "Tūhuratanga",
-      subtitle: "discovery",
-      audio: "https://my.christchurchcitylibraries.com/wp-content/uploads/sites/5/2019/01/T%C5%ABhuratanga.mp3",
-      floor: 3,
-      content: (<div id="discovery" bind={this} key={this}><p><span>Explore the nonfiction collection with thousands of books on a huge range of subjects. Get help with print and online resources for research or recreation. Use the public internet computers or, for those who want a low-key space to read or study, there is a separate room called &lsquo;The Quiet Place&rsquo;. Study, research or browse for some recreational reading.</span></p></div>)
-    }),
-    new Floor({
-      title: "Auahatanga",
-      subtitle: "creativity",
-      audio: "https://my.christchurchcitylibraries.com/wp-content/uploads/sites/5/2019/01/Auahatanga.mp3",
-      floor: 4,
-      content: (<div id="creativity" bind={this} key={this}><p><span>Browse the World Languages, Music and Fiction collections, including Biographies and Graphic Novels. Visit the two roof gardens with great views across the city. Explore your creativity in the Production Studio using creative technology such as 3D printers and sewing machines. Create and edit music and video using the Audio/Video Studio, or take a class in the Computer Labs with a great range of software available.</span></p></div>)
-    })
-  ]);
+  @property({constructOnly: true})
+  floors: Collection<Floor>;
 
   render() {
     const currentLevel = this.floors.getItemAt(this.selectedFloor);
@@ -209,15 +190,8 @@ class FloorsSection extends declared(Section) {
         if (this.appState && this.appState.initialLayers.length > 0) {
 
           // Get the info points:
-          if (!this.layer) {
-            this.layer = appUtils.findLayer(this.appState.initialLayers, "Turanga Floor Points") as FeatureLayer;
-            // this.layer.popupTemplate = new PopupTemplate({
-            //   overwriteActions: true,
-            //   // title: "OK",
-            //   // content: "ok",
-            //   actions: [] as any
-            // });
-            // this.layer.popupEnabled = true;
+          if (!this.layer && this.layerNameForInfoPoint) {
+            this.layer = appUtils.findLayer(this.appState.initialLayers, this.layerNameForInfoPoint) as FeatureLayer;
             this.appState.view.map.layers.add(this.layer);
             this.legend.layerInfos = [
               {
@@ -228,7 +202,7 @@ class FloorsSection extends declared(Section) {
           }
 
           if (!this.picturePointsLayer) {
-            this.picturePointsLayer = appUtils.findLayer(this.appState.initialLayers, "Turanga Pictures - internal") as FeatureLayer;
+            this.picturePointsLayer = appUtils.findLayer(this.appState.initialLayers, this.layerNameForPicturePoint) as FeatureLayer;
             this.picturePointsLayer.outFields = ["*"];
             this.picturePointsLayer.popupTemplate.overwriteActions = true;
             this.picturePointsLayer.popupTemplate.actions = new Collection();
@@ -278,7 +252,7 @@ class FloorsSection extends declared(Section) {
         if (filtered) {
           this.appState.popupInfo = new PopupInfo({
             image: filtered.graphic.attributes.url,
-            credit: "Credit © Emma Browne-Cole"
+            credit: filtered.graphic.attributes.title
           });
         }
       });
@@ -294,5 +268,3 @@ class FloorsSection extends declared(Section) {
     this.appState.view.environment.lighting.date = this.oldDate;
   }
 }
-
-export = FloorsSection;

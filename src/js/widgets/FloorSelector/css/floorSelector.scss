@@ -1,28 +1,10 @@
 @import "../../../../css/variables.scss";
 @import "../../../../css/mixins.scss";
 
+$transition-time: 0.5s;
+
 .floor-selector {
   pointer-events: all;
-
-  .level {
-      -webkit-transition: all 0.8s;
-  -moz-transition: all 0.8s;
-    -o-transition: all 0.8s;
-       transition: all 0.8s;
-    margin-left: 200px;
-  }
-
-  .level:hover {
-    font-size: 40px;
-  }
-
-  .level.active:first-child {
-    margin-top: -80px;
-  }
-
-  .level:first-child {
-    margin-top: -40px;
-  }
 
   .level {
     font-family: 'Roboto Condensed', sans-serif; // import font!
@@ -31,17 +13,31 @@
     display: block;
     pointer-events: all;
     width: 100%;
-    font-size: 25px;
+    font-size: $floorSelectorLevelFontSize;
     text-align: right;
-  }
+    @include transition(all $transition-time);
+    margin-left: 200px;
 
-  .level.active {
-    font-size: 90px;
-    margin-top: -20px;
-    margin-bottom: -20px;
-    color: #F6A803;
-    text-transform: uppercase;
-    pointer-events: all;
+    &:hover {
+      font-size: $floorSelectorLevelOverFontSize;
+    }
+
+    &:first-child {
+      margin-top: -$floorSelectorLevelFontSize - 15px;
+    }
+
+    &.active {
+      font-size: $floorSelectorLevelActiveFontSize;
+      margin-top: -$floorSelectorLevelActiveFontSize / 2 + 15px;
+      margin-bottom: -$floorSelectorLevelActiveFontSize / 2 + 15px;
+      color: #F6A803;
+      text-transform: uppercase;
+      pointer-events: all;
+
+      &:first-child {
+        margin-top: -$floorSelectorLevelActiveFontSize + 10px;
+      }
+    }
   }
 }
 
@@ -55,22 +51,38 @@
   }
 
   .level:nth-child(1) {
-      @include transition-delay(0.1s);
+      @include transition(all $transition-time, margin-left 0.8s 0.1s);
   }
 
   .level:nth-child(2) {
-      @include transition-delay(0.2s);
+      @include transition(all $transition-time, margin-left 0.8s 0.2s);
   }
 
   .level:nth-child(3) {
-      @include transition-delay(0.3s);
+      @include transition(all $transition-time, margin-left 0.8s 0.3s);
   }
 
   .level:nth-child(4) {
-      @include transition-delay(0.4s);
+      @include transition(all $transition-time, margin-left 0.8s 0.4s);
   }
 
   .level:nth-child(5) {
-      @include transition-delay(0.5s);
+      @include transition(all $transition-time, margin-left 0.8s 0.5s);
+  }
+
+  .level:nth-child(6) {
+      @include transition(all $transition-time, margin-left 0.8s 0.6s);
+  }
+
+  .level:nth-child(7) {
+      @include transition(all $transition-time, margin-left 0.8s 0.7s);
+  }
+
+  .level:nth-child(8) {
+      @include transition(all $transition-time, margin-left 0.8s 0.8s);
+  }
+
+  .level:nth-child(9) {
+      @include transition(all $transition-time, margin-left 0.8s 0.9s);
   }
 }

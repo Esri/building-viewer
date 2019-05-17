@@ -45,6 +45,7 @@ class SurroundingsElement extends declared(Widget) {
     this.appState.view.goTo(this.camera);
     if (this.layer) {
       this.appState.view.map.layers.add(this.layer);
+      this.layer.visible = true;
     }
   }
 

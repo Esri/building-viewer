@@ -35,38 +35,23 @@
       "app/BSLDemo", 
       "app/config"
     ], 
-    (
+    function(
       BSLDemo,
-      HomeSection,
-      SurroundingsSection,
-      FloorsSection
-    )  => {
-      // https://zrh.mapsdevext.arcgis.com/sharing/rest/content/items/0ed24045780348f8b7dfde7970710e4e/data?f=json
-      // var buildingLayer = "https://tiles.arcgis.com/tiles/hLRlshaEMEYQG5A8/arcgis/rest/services/Turanga/SceneServer";
-          // "a1612c05d1ed43eaa1130cb6fbfc4dc2",
-          // Demo from Gianluca:
-          // "https://tilesdevext.arcgis.com/tiles/5xC5Wrapp1gUAl2r/arcgis/rest/services/Turanga_Library/SceneServer", 
-          // "https://tiles.arcgis.com/tiles/hLRlshaEMEYQG5A8/arcgis/rest/services/Turanga/SceneServer",
-      
+      config
+    ) {      
       new BSLDemo({
         // The container where to display the map:
         mapContainer: "mainViewDiv",
 
         // The id to the scene for the BSL you'd like to display:
         websceneId: config.websceneId,
-        buildingLayerTitle: config.buildingLayerTitle,
-        surroundingsLayerTitle: config.surroundingsLayerTitle,
-
-        // The url to a SceneService displaying the surrounding:
-        // surroundingsLayer: "https://services.arcgis.com/hLRlshaEMEYQG5A8/arcgis/rest/services/Scenechch_WSL1/SceneServer",
-        // From Ginaluca:
-        // "https://servicesdev.arcgis.com/5xC5Wrapp1gUAl2r/arcgis/rest/services/City_Model_Christchurch/SceneServer",
-          //"440bec229bf24c89a72a69cf07cdf244", 
-          // "https://services.arcgis.com/hLRlshaEMEYQG5A8/arcgis/rest/services/Scenechch_WSL1/SceneServer",
 
         // Your different sections:
         sections: config.sections
-      }, "appDiv");
+      }, 
+
+      // The container where to display the html element:
+      "appDiv");
     });</script>
   </body>
 </html>
