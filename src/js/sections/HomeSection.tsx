@@ -21,6 +21,7 @@ interface HomeSectionCtorArgs {
   content: (that: HomeSection) => any;
   timetable?: Timetable;
   title?: string;
+  showExternalPoints?: boolean;
 }
 
 @subclass("sections/HomeSection")
@@ -44,6 +45,9 @@ class HomeSection extends declared(Section) {
   @property()
   infoPointsLayer: FeatureLayer;
 
+  @property({ constructOnly: true })
+  showExternalPoints: boolean = false;
+
   private handles = new Handles();
 
   @property()
@@ -55,7 +59,6 @@ class HomeSection extends declared(Section) {
   }
 
   render() {
-
     const timetable = this.timetable ? this.timetable.render() : null;
     const title = this.textTitle ? (<h1>{this.textTitle}</h1>) : null;
 
@@ -81,15 +84,19 @@ class HomeSection extends declared(Section) {
   constructor(args: HomeSectionCtorArgs) {
     super(args as any);
 
+    // Optionally add the external info points to display pictures:
     watchUtils.whenOnce(this, "appState", () => {
       watchUtils.on(this, "appState.initialLayers", "change", () => {
         if (this.appState && this.appState.initialLayers.length > 0) {
           this.infoPointsLayer = this.appState.initialLayers.find(layer => layer.title.indexOf(appUtils.EXTERNAL_INFOPOINT_LAYER_PREFIX) > -1) as FeatureLayer;
-          this.infoPointsLayer.outFields = ["*"];
-          this.infoPointsLayer.visible = false;
-          this.infoPointsLayer.popupTemplate.overwriteActions = true;
-          this.infoPointsLayer.popupTemplate.actions = new Collection();
-          this.appState.view.map.layers.add(this.infoPointsLayer);
+
+          if (this.infoPointsLayer) {
+            this.infoPointsLayer.outFields = ["*"];
+            this.infoPointsLayer.visible = false;
+            this.infoPointsLayer.popupTemplate.overwriteActions = true;
+            this.infoPointsLayer.popupTemplate.actions = new Collection();
+            this.appState.view.map.layers.add(this.infoPointsLayer);
+          }
         }
       });
     });
@@ -99,18 +106,20 @@ class HomeSection extends declared(Section) {
       this.textTitle = (this.appState.view.map as WebScene).portalItem.title;
     });
 
+    // Enabling external point if we are in the home section:
     watchUtils.init(this, "appState.pageLocation", (l) => {
       if (this.infoPointsLayer) {
-        this.infoPointsLayer.visible = false; // l === "home";
+        this.infoPointsLayer.visible = this.showExternalPoints && l === "home";
       }
     });
   }
 
   onEnter() {
+    // reset the active viewpoint each time we go in home section:
     this.viewpoints.activeViewpoint = null;
+
+    // check if we click on an external point and display a popup if that is the case:
     this.handles.add(this.appState.view.on("click", (event: any) => {
-     // the hitTest() checks to see if any graphics in the view
-     // intersect the given screen x, y coordinates
      this.appState.view.hitTest(event)
       .then((response) => {
         const filtered = response.results.filter((result: any) => {
@@ -125,7 +134,9 @@ class HomeSection extends declared(Section) {
       });
     }), "click");
   }
+
   onLeave() {
+    // when not in home, remove the click listener:
     this.handles.remove("click");
   }
 }
