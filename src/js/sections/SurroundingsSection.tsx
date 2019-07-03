@@ -14,6 +14,7 @@ import Toggle = require("../widgets/Toggle/Toggle");
 import watchUtils = require("esri/core/watchUtils");
 import FeatureLayer = require("esri/layers/FeatureLayer");
 import GroupLayer = require("esri/layers/GroupLayer");
+import appUtils = require("../support/appUtils");
 
 @subclass()
 class SurroundingsElement extends declared(Widget) {
@@ -44,14 +45,13 @@ class SurroundingsElement extends declared(Widget) {
   activate() {
     this.appState.view.goTo(this.camera);
     if (this.layer) {
-      this.appState.view.map.layers.add(this.layer);
       this.layer.visible = true;
     }
   }
 
   deactivate() {
     if (this.layer) {
-      this.appState.view.map.layers.remove(this.layer);
+      this.layer.visible = false;
     }
   }
 
@@ -127,13 +127,16 @@ class SurroundingsSection extends declared(Section) {
   @property()
   poiElements: Collection<PoIElement>;
 
-  @property({dependsOn: ["appState.initialLayers", "poiElements"], readOnly: true})
+  @property({dependsOn: ["appState.view.map.layers", "poiElements"], readOnly: true})
   @renderable()
   get elements() {
-    if (this.appState && this.appState.initialLayers.length > 0) {
-      const elements = this.appState.initialLayers
-      .filter(layer => layer.title.indexOf("Surroundings:") > -1)
+    if (this.appState && this.appState.view.map.layers.length > 0) {
+      const elements = this.appState.view.map.layers
+      .filter(layer => layer.title.indexOf(appUtils.SURROUNDINGS_LAYER_PREFIX) > -1)
       .map(layer => {
+
+        layer.visible = false;
+
         return new SurroundingsElement({
           title: layer.title.replace("Surroundings: ", ""),
           layer: layer,
@@ -184,7 +187,7 @@ class SurroundingsSection extends declared(Section) {
           });
         });
 
-        watchUtils.on(this.appState, "initialLayers", "change", () => this.notifyChange("elements"));
+        watchUtils.on(this.appState, "view.map.layers", "change", () => this.notifyChange("elements"));
         watchUtils.on(this, "poiElements", "change", () => this.notifyChange("elements"));
       });
     }));

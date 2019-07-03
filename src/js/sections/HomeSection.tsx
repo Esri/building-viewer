@@ -86,16 +86,16 @@ class HomeSection extends declared(Section) {
 
     // Optionally add the external info points to display pictures:
     watchUtils.whenOnce(this, "appState", () => {
-      watchUtils.on(this, "appState.initialLayers", "change", () => {
-        if (this.appState && this.appState.initialLayers.length > 0) {
-          this.infoPointsLayer = this.appState.initialLayers.find(layer => layer.title.indexOf(appUtils.EXTERNAL_INFOPOINT_LAYER_PREFIX) > -1) as FeatureLayer;
+      watchUtils.on(this, "appState.view.map.layers", "change", () => {
+        if (this.appState && this.appState.view.map.layers.length > 0) {
+          this.infoPointsLayer = this.appState.view.map.layers.find(layer => layer.title.indexOf(appUtils.EXTERNAL_INFOPOINT_LAYER_PREFIX) > -1) as FeatureLayer;
 
           if (this.infoPointsLayer) {
+            this.infoPointsLayer.visible = false;
             this.infoPointsLayer.outFields = ["*"];
             this.infoPointsLayer.visible = false;
             this.infoPointsLayer.popupTemplate.overwriteActions = true;
             this.infoPointsLayer.popupTemplate.actions = new Collection();
-            this.appState.view.map.layers.add(this.infoPointsLayer);
           }
         }
       });

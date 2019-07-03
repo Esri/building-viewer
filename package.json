@@ -1,7 +1,7 @@
 {
-  "name": "template",
+  "name": "BSL-Demo-App",
   "version": "1.0.0",
-  "description": "Template application for TypeScript and ArcGIS API 4 for JavaScript",
+  "description": "This application demonstrates the use of various Building Scene Layer related API",
   "repository": {
     "type": "git",
     "url": "git@github.com:yannikmesserli/esri-js-api-template-app.git"
@@ -35,6 +35,6 @@
   "dependencies": {
     "@types/dojo": "1.9.41",
     "sass": "^1.17.0",
-    "typescript": "^3.3.3333"
+    "typescript": "3.3"
   }
 }

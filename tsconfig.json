@@ -27,7 +27,7 @@
     "moduleResolution": "node",
     "types": [ 
       "dojo",
-      "./typings/arcgis-js-api-4.11"
+      "./typings/arcgis-js-api-4.12"
     ]
   },
   "include": [

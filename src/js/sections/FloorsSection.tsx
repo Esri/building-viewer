@@ -12,10 +12,41 @@ import watchUtils = require("esri/core/watchUtils");
 import FeatureLayer = require("esri/layers/FeatureLayer");
 import Legend = require("esri/widgets/Legend");
 import PopupInfo = require("../widgets/Popup/PopupInfo");
-import domCtr = require("dojo/dom-construct");
-import domClass = require("dojo/dom-class");
 import appUtils = require("../support/appUtils");
 import Handles = require("esri/core/Handles");
+import AppState = require("../AppState");
+
+@subclass()
+class LegendWrapper extends declared(Widget) {
+  @property()
+  @renderable()
+  hide: boolean = false;
+
+  @property({ constructOnly: true })
+  appState: AppState;
+
+  @property()
+  @renderable()
+  legend: Legend;
+
+  constructor(args: { appState: AppState }, container: string) {
+    super(args as any);
+  }
+
+  postInitialised() {
+    this.legend = new Legend({
+      view: this.appState.view,
+      layerInfos: []
+    });
+  }
+
+  render() {
+    return (<div class={this.classes({"hide": this.hide})}>
+      {this.legend.render()}
+    </div>);
+  }
+}
+
 
 @subclass()
 class PlayButton extends declared(Widget) {
@@ -143,16 +174,16 @@ export class FloorsSection extends declared(Section) {
   floorSelector: FloorSelector;
 
   @property()
-  legend: Legend;
+  legendWrapper: LegendWrapper;
 
   @property()
   layer: FeatureLayer;
 
   @property({constructOnly: true })
-  layerNameForInfoPoint: string;
+  layerNameForInfoPoint = appUtils.INTERNAL_INFOPOINTS_LAYER_PREFIX;
 
   @property({constructOnly: true })
-  layerNameForPicturePoint: string;
+  layerNameForPicturePoint = appUtils.FLOOR_POINTS_LAYER_PREFIX;
 
   @property()
   picturePointsLayer: FeatureLayer;
@@ -186,36 +217,34 @@ export class FloorsSection extends declared(Section) {
     
     watchUtils.whenOnce(this, "appState", (appState) => {
       this.floorSelector = new FloorSelector({appState: appState});
-      watchUtils.on(this, "appState.initialLayers", "change", () => {
-        if (this.appState && this.appState.initialLayers.length > 0) {
+      watchUtils.on(this, "appState.view.map.layers", "change", () => {
+        if (this.appState && this.appState.view.map.layers.length > 0) {
 
           // Get the info points:
-          if (!this.layer && this.layerNameForInfoPoint) {
-            this.layer = appUtils.findLayer(this.appState.initialLayers, this.layerNameForInfoPoint) as FeatureLayer;
-            this.appState.view.map.layers.add(this.layer);
-            this.legend.layerInfos = [
-              {
-                layer: this.layer,
-                title: "Legend"
-              }
-            ];
+          if (!this.layer) {
+            this.layer = appUtils.findLayer(this.appState.view.map.layers, this.layerNameForInfoPoint) as FeatureLayer;
+            if (this.layer) {
+              this.layer.visible = false;
+              this.legendWrapper.legend.layerInfos = [
+                {
+                  layer: this.layer,
+                  title: "Legend"
+                }
+              ];
+            }
           }
 
           if (!this.picturePointsLayer) {
-            this.picturePointsLayer = appUtils.findLayer(this.appState.initialLayers, this.layerNameForPicturePoint) as FeatureLayer;
-            this.picturePointsLayer.outFields = ["*"];
-            this.picturePointsLayer.popupTemplate.overwriteActions = true;
-            this.picturePointsLayer.popupTemplate.actions = new Collection();
-            this.appState.view.map.layers.add(this.picturePointsLayer);
+            this.picturePointsLayer = appUtils.findLayer(this.appState.view.map.layers, this.layerNameForPicturePoint) as FeatureLayer;
+            if (this.picturePointsLayer) {
+              this.picturePointsLayer.visible = false;
+              this.picturePointsLayer.outFields = ["*"];
+              this.picturePointsLayer.popupTemplate.overwriteActions = true;
+              this.picturePointsLayer.popupTemplate.actions = new Collection();
+            }
           }
           
         }
-      });
-      
-      this.legend = new Legend({
-        view: this.appState.view,
-        layerInfos: [],
-        container: domCtr.create("div", null, "floorLegend")
       });
 
       watchUtils.init(this, "selectedFloor,appState.pageLocation", () => {
@@ -234,9 +263,14 @@ export class FloorsSection extends declared(Section) {
     });
   }
 
+  postInitialised() {
+    this.legendWrapper = new LegendWrapper({
+      appState: this.appState
+    }, "floorLegend");
+  }
+
   onEnter() {
     this.selectedFloor = 1;
-    domClass.remove("floorLegend", "hide");
     this.appState.view.environment.lighting.directShadowsEnabled = false;
     this.appState.view.environment.lighting.ambientOcclusionEnabled = false;
     this.oldDate = this.appState.view.environment.lighting.date;
@@ -261,7 +295,6 @@ export class FloorsSection extends declared(Section) {
   }
 
   onLeave() {
-    domClass.add("floorLegend", "hide");
     this.handles.remove("click");
     this.appState.view.environment.lighting.directShadowsEnabled = true;
     this.appState.view.environment.lighting.ambientOcclusionEnabled = true;

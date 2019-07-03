@@ -7,7 +7,6 @@ import { tsx } from "esri/widgets/support/widget";
 import Collection = require("esri/core/Collection");
 import Section = require("./Section");
 import AppState = require("../AppState");
-import query = require("dojo/query");
 
 type SectionSubclass = Pick<Section, "render" | "active" | "id" | "paneRight" | "title" | "camera" | "onLeave" | "onEnter" | "appState">;
 
@@ -60,6 +59,9 @@ class Sections extends declared(Collection)<SectionSubclass> {
 
   previousActiveSection: SectionSubclass = null;
 
+  activeSectionNode: HTMLElement = null;
+  previousActiveSectionNode: HTMLElement = null;
+
   //--------------------------------------------------------------------------
   //
   //  Life circle
@@ -93,13 +95,13 @@ class Sections extends declared(Collection)<SectionSubclass> {
     }
   }
 
-  public paneLeft() {
-    const panes = this.swapPanes("render");
-    return (<div id="pane-right">{panes}</div>);
+  public paneLeft(firstRendering = true) {
+    const panes = this.swapPanes("render", firstRendering);
+    return (<div id="pane-left">{panes}</div>);
   }
 
-  public paneRight() {
-    const panes = this.swapPanes("paneRight");
+  public paneRight(firstRendering = true) {
+    const panes = this.swapPanes("paneRight", firstRendering);
     return (<div id="pane-right">{panes}</div>);
   }
 
@@ -116,16 +118,15 @@ class Sections extends declared(Collection)<SectionSubclass> {
     return (<a class={classes} href="javascript: void(0)" onclick={() => {this.activateSection(section.id);}}>{section.title}</a>);
   }
 
-  private swapPanes(renderViewToCall: string) {
+  private swapPanes(renderViewToCall: string, firstRendering = true) {
+
     
-    const currentPane = this.activeSection ? (<div class="willBeActive pane" key={this.activeSection}>{this.activeSection[renderViewToCall]()}</div>) : null;
-    const previousUsedPane = this.previousActiveSection ? (<div class="pane" key={this.previousActiveSection}>{this.previousActiveSection[renderViewToCall]()}</div>) : null;
-    setTimeout(() => {
-      const pane = query(".side-container .pane");
-      pane.removeClass("active");
-      const paneWillBeActive = query(".willBeActive");
-      paneWillBeActive.addClass("active");
-    }, 10);
+    const activeSectionClasses = firstRendering ? "pane" : "active pane";
+    const previousActiveSectionClasses = firstRendering ? "active pane" : "pane";
+    
+    const currentPane = this.activeSection ? (<div class={activeSectionClasses} key={this.activeSection}>{this.activeSection[renderViewToCall]()}</div>) : null;
+    const previousUsedPane = this.previousActiveSection ? (<div class={previousActiveSectionClasses} key={this.previousActiveSection}>{this.previousActiveSection[renderViewToCall]()}</div>) : null;
+    
     return (<div>{previousUsedPane}{currentPane}</div>);
   }
 }

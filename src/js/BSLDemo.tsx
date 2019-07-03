@@ -9,14 +9,10 @@ import Sections = require("./sections/Sections");
 import SceneView = require("esri/views/SceneView");
 import Widget = require("esri/widgets/Widget");
 import promiseUtils = require("esri/core/promiseUtils");
-import Collection = require("esri/core/Collection");
 import Camera = require("esri/Camera");
-import BuildingSceneLayer = require("esri/layers/BuildingSceneLayer");
 import SceneLayer = require("esri/layers/SceneLayer");
+import BuildingSceneLayer = require("esri/layers/BuildingSceneLayer");
 import WebScene = require("esri/WebScene");
-import Layer = require("esri/layers/Layer");
-import GroupLayer = require("esri/layers/GroupLayer");
-import Color = require("esri/Color");
 
 // BSLDemo
 import Section = require("./sections/Section");
@@ -45,10 +41,6 @@ class BSLDemo extends declared(Widget) {
   @property({ aliasOf: "appState.view"})
   view: SceneView;
 
-  @property({ aliasOf: "appState.initialLayers"})
-  initialLayers: Collection<Layer>;
-
-  @renderable()
   @property({ aliasOf: "sections.activeSection"})
   activeSection: SectionSublcass | string | number;
 
@@ -59,9 +51,6 @@ class BSLDemo extends declared(Widget) {
   @property()
   appState = new AppState();
 
-  @property()
-  backgroundColor: Color;
-
   //--------------------------------------------------------------------------
   //
   //  Variables:
@@ -69,10 +58,12 @@ class BSLDemo extends declared(Widget) {
   //--------------------------------------------------------------------------
 
   @property({ aliasOf: "appState.buildingLayer"})
-  private buildingLayer: BuildingVisualisation;
+  buildingLayer: BuildingVisualisation;
 
   @property({ aliasOf: "appState.surroundingsLayer"})
-  private surroundingsLayer: SurroundingsVisualisation;  
+  surroundingsLayer: SurroundingsVisualisation;
+
+  private firstRendering: boolean = true;  
 
   //--------------------------------------------------------------------------
   //
@@ -84,19 +75,17 @@ class BSLDemo extends declared(Widget) {
     super(args as any);
 
     this.view = appUtils.createViewFromWebScene({websceneId: args.websceneId, mapContainer: args.mapContainer});
-    this.backgroundColor = this.view.map.ground.surfaceColor;
     this.sections = new Sections(args.sections, this.appState);
 
     (this.view.map as WebScene).when(() => {
       // Save the initial layers:
       promiseUtils
         .eachAlways(this.view.map.layers.map((l) => this.appState.view.whenLayerView(l)))
-        .then((results: any) => {
-          results.forEach((result: {value: {layer: Layer}}) => this.recursivelySaveLayer(result.value.layer));
+        .then(() => {
 
           ///////////////////////////////////
           // Main building to present:
-          const BSL = this.appState.initialLayers.find(layer => layer.title.indexOf(appUtils.MAIN_BSL_PREFIX) > -1);
+          const BSL = this.appState.view.map.layers.find(layer => layer.title.indexOf(appUtils.MAIN_LAYER_PREFIX) > -1);
           
           if (!BSL) {
             throw new Error("Cannot find the main BuildingSceneLayer (Main BSL) in the webscene " + args.websceneId);
@@ -109,23 +98,12 @@ class BSLDemo extends declared(Widget) {
 
           ///////////////////////////////////
           // Optional surrounding's layer:
-          const surroundingsLayer = this.appState.initialLayers.find(layer => layer.title.indexOf(appUtils.EXTRA_LAYER_PREFIX) > -1) as SceneLayer;
+          const surroundingsLayer = this.appState.view.map.layers.find(layer => layer.title.toLowerCase().indexOf(appUtils.CITY_LAYER_PREFIX.toLowerCase()) > -1) as SceneLayer;
           if (surroundingsLayer) {
             this.surroundingsLayer = new SurroundingsVisualisation({
               layer: surroundingsLayer,
               appState: this.appState
             });
-          }
-
-          ///////////////////////////////////
-          // Reset layers:
-          this.view.map.layers.removeAll();
-          this.view.map.layers = new Collection([
-            this.buildingLayer.layer,
-          ]);
-
-          if (this.surroundingsLayer.layer) {
-            this.view.map.layers.push(this.surroundingsLayer.layer);
           }
         });
       
@@ -153,6 +131,16 @@ class BSLDemo extends declared(Widget) {
         this.sections.activateSection(this.sections.getItemAt(0).id);
       }
     });
+
+    this.watch("activeSection", (activeSection) => {
+      this.firstRendering = true;
+      this.renderNow();
+
+      setTimeout(() => {
+        this.firstRendering = false;
+        this.renderNow();
+      }, 10)
+    });
   }
 
   normalizeCtorArgs(args: BSLDemoCtorArgs, container: string) {
@@ -164,9 +152,9 @@ class BSLDemo extends declared(Widget) {
 
   render() {
     return (<div>
-      <div class="left side-container">{this.sections.paneLeft()}</div>
+      <div class="left side-container">{this.sections.paneLeft(this.firstRendering)}</div>
       <div class="left menu">{this.sections.menu()}</div>
-      <div class="right side-container">{this.sections.paneRight()}</div>
+      <div class="right side-container">{this.sections.paneRight(this.firstRendering)}</div>
     </div>);
   }
 
@@ -177,16 +165,6 @@ class BSLDemo extends declared(Widget) {
     }));
 
     new Popup({ appState: this.appState, container: "popup"});
-  }
-
-  //--------------------------------------------------------------------------
-  //
-  //  Private Methods
-  //
-  //--------------------------------------------------------------------------
-
-  recursivelySaveLayer(layer: Layer | GroupLayer) {
-    this.initialLayers.add(layer);
   }
 }
 

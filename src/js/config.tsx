@@ -10,7 +10,7 @@ import {Timetable, DayTimetable} from "./widgets/Timetable/Timetable";
 
 export const portalUrl = "https://zurich.maps.arcgis.com";
 
-export const websceneId = "b753b2ba04ef477ca46a5b8bd9766d2d";
+export const websceneId = "543648a92446497db8a92c06ce1ad0b1";
 
 export const sections = [
    // Check the different files
@@ -56,8 +56,6 @@ export const sections = [
    }),
    // The different floors for Turanga:
    new FloorsSection({
-      layerNameForPicturePoint: "Turanga Pictures - internal",
-      layerNameForInfoPoint: "Turanga Floor Points",
       floors: new Collection([
        new Floor({
          title: "He Hononga",

@@ -49,6 +49,9 @@ export function findLayer(layers: Collection<Layer>, title: string) {
   return layers.find(l => l.title === title);
 }
 
-export const MAIN_BSL_PREFIX = "Main BSL:";
-export const EXTRA_LAYER_PREFIX = "Extra:";
-export const EXTERNAL_INFOPOINT_LAYER_PREFIX = "External infopoints:";
+export const CITY_LAYER_PREFIX = "City model";
+export const MAIN_LAYER_PREFIX = "Building";
+export const FLOOR_POINTS_LAYER_PREFIX = "Floor points";
+export const INTERNAL_INFOPOINTS_LAYER_PREFIX = "Floor pictures";
+export const EXTERNAL_INFOPOINT_LAYER_PREFIX = "External pictures";
+export const SURROUNDINGS_LAYER_PREFIX = "Surroundings:";

@@ -1,7 +1,4 @@
 import SimpleRenderer = require("esri/renderers/SimpleRenderer");
-import Color = require("esri/Color");
-
-export const backgroundColor = new Color([70,70,70, 1]);
 
 export const renderers = {
   surroundings: {
