@@ -18,7 +18,7 @@ import PopupInfo = require("../widgets/Popup/PopupInfo");
 import WebScene = require("esri/WebScene");
 
 interface HomeSectionCtorArgs {
-  content: (that: HomeSection) => any;
+  content?: (that: HomeSection) => any;
   timetable?: Timetable;
   title?: string;
   showExternalPoints?: boolean;
@@ -51,7 +51,7 @@ class HomeSection extends declared(Section) {
   private handles = new Handles();
 
   @property()
-  content: (that: this) => any;
+  content: (that: this) => any = (that: this) => (this.appState.view.map as WebScene).portalItem.snippet;
 
   @property({dependsOn: ["appState"], readOnly: true})
   get viewpoints() {
@@ -59,7 +59,12 @@ class HomeSection extends declared(Section) {
   }
 
   render() {
-    const timetable = this.timetable ? this.timetable.render() : null;
+    const timetable = this.timetable ? (<section class="Hours">
+        <h2 class="slash-title">Opening hours</h2>
+        <div>
+          {this.timetable.render()}
+        </div>
+      </section>) : null;
     const title = this.textTitle ? (<h1>{this.textTitle}</h1>) : null;
 
     return (<div id={this.id}>
@@ -67,12 +72,7 @@ class HomeSection extends declared(Section) {
         {title}
         {this.content(this)}
       </div>
-      <section class="Hours">
-        <h2 class="slash-title">Opening hours</h2>
-        <div>
-          {timetable}
-        </div>
-      </section>
+      {timetable}
     </div>);
   }
 
