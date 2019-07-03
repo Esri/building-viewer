@@ -46,13 +46,13 @@ class Viewpoints extends declared(Widget) {
   }
 
   render() {
-    const items = this.slides.map((s) => s.render()).toArray();
-    return (<div bind={this} key={this} class="viewpoints">
+    const items = this.slides.length > 0 ? this.slides.map((s) => s.render()).toArray() : null;
+    return this.slides.length > 0 ? (<div bind={this} key={this} class="viewpoints">
       <h2 class="slash-title">Select 3D view</h2>
       <ul>
         {items}
       </ul>
-    </div>);
+    </div>) : null;
   }
 
   postInitialize() {
