@@ -8,7 +8,9 @@
   },
   "scripts": {
     "dev": "tsc -w & sass --watch src:src",
-    "lint": "tslint './src/*.ts'"
+    "lint": "tslint './src/*.ts'",
+    "build": "tsc & sass src:src",
+    "server": "grunt"
   },
   "keywords": [
     "esri",
