@@ -101,19 +101,6 @@ export const renderers = {
 
     "surroundings": {
       renderer: null as any
-      // new SimpleRenderer({
-      //   symbol: {
-      //     type: "mesh-3d",
-      //     symbolLayers: [{
-      //       type: "fill",
-      //       material: { color: [255,184,1, 1], colorMixMode: "replace" },
-      //       edges: {
-      //         type: "solid", // autocasts as new SolidEdges3D()
-      //         color: [0, 0, 0, 1]
-      //       }
-      //     }]
-      //   }
-      // } as any)
     }
   }
 };
