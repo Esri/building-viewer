@@ -8,8 +8,8 @@ export function updateSubLayersSymbolLayer (buildingLayer: BuildingSceneLayer, p
   buildingLayer.when(function() {
     buildingLayer.allSublayers.forEach(function(layer) {
       if (layer instanceof BuildingComponentSublayer && (layer.renderer as any).clone) {
-        var renderer = (layer.renderer as any).clone();
-        var parentProp = renderer.symbol.symbolLayers.getItemAt(0);
+        const renderer = (layer.renderer as any).clone();
+        let parentProp = renderer.symbol.symbolLayers.getItemAt(0);
         propertyPath.forEach(function (prop, i) {
           if (i === (propertyPath.length - 1)) {
             parentProp[prop] = value;
@@ -27,7 +27,7 @@ export function updateSubLayersSymbolLayer (buildingLayer: BuildingSceneLayer, p
 export function updateSubLayers(buildingLayer: BuildingSceneLayer, propertyPath: string[], value: any) {
   buildingLayer.when(function() {
     buildingLayer.allSublayers.forEach(function(layer) {
-      var parentProp = layer;
+      let parentProp = layer;
       propertyPath.forEach(function (prop, i) {
         if (i === (propertyPath.length - 1)) {
           parentProp[prop] = value;
