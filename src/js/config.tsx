@@ -8,6 +8,8 @@ import SurroundingsSection = require("./sections/SurroundingsSection");
 import Collection = require("esri/core/Collection");
 import {Timetable, DayTimetable} from "./widgets/Timetable/Timetable";
 
+export const portalUrl = "https://zurich.maps.arcgis.com";
+
 export const websceneId = "b753b2ba04ef477ca46a5b8bd9766d2d";
 
 export const sections = [
