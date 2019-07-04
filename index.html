@@ -55,6 +55,10 @@
         args.portalUrl = config.portalUrl;
       }
 
+      if (config.floorMapping) {
+        args.floorMapping = config.floorMapping;
+      }
+
       new BSLDemo(args,
       // The container where to display the html element:
       "appDiv");

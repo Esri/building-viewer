@@ -29,6 +29,7 @@ interface BSLDemoCtorArgs {
   mapContainer: string;
   websceneId: string;
   portalUrl?: string;
+  floorMapping?: (originalFloor: number) => number;
 }
 
 @subclass("webSceneViewer.widgets.LayersLoading.LayersLoadingProgressBar")
@@ -91,11 +92,17 @@ class BSLDemo extends declared(Widget) {
           if (!BSL) {
             throw new Error("Cannot find the main BuildingSceneLayer (Main BSL) in the webscene " + args.websceneId);
           }
-          
-          this.buildingLayer = new BuildingVisualisation({
+
+          const visualisationArgs: any = {
             appState: this.appState,
             layer: BSL as BuildingSceneLayer
-          });
+          };
+
+          if (args.floorMapping) {
+            visualisationArgs.floorMapping = args.floorMapping;
+          }
+          
+          this.buildingLayer = new BuildingVisualisation(visualisationArgs);
 
           ///////////////////////////////////
           // Optional surrounding's layer:

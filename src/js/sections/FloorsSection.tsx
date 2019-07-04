@@ -141,18 +141,9 @@ export class Floor extends declared(Widget) {
     super(args as any);
   }
 
-  activate(infoLayer: FeatureLayer, pictureLayer: FeatureLayer) {
+  activate() {
     // put audio back to 0
     this.playButton.audio.currentTime = 0;
-
-    // filter the picture and infoLayer:
-    if (infoLayer) {
-      infoLayer.definitionExpression = "level_id = " + this.floor;
-    }
-
-    if (pictureLayer) {
-      pictureLayer.definitionExpression = "level_id = " + this.floor;
-    }
   }
 }
 
@@ -165,7 +156,7 @@ export class FloorsSection extends declared(Section) {
   id = "floors";
 
   @property({ aliasOf: "appState.floorNumber"})
-  selectedFloor: number = 1;
+  selectedFloor: number;
 
   private oldDate: Date;
 
@@ -228,14 +219,29 @@ export class FloorsSection extends declared(Section) {
       watchUtils.on(this, "appState.view.map.layers", "change", this.getExtraInfoLayers.bind(this));
 
       watchUtils.init(this, "selectedFloor", (selectedFloor) => {
-        this.floors.getItemAt(selectedFloor).activate(this.layer, this.picturePointsLayer);
+        if (this.floors) {
+          this.floors.getItemAt(selectedFloor).activate();
+        }
+
+        // filter the picture and infoLayer:
+        if (this.layer) {
+          this.layer.definitionExpression = "level_id = " + selectedFloor;
+        }
+
+        if (this.picturePointsLayer) {
+          this.picturePointsLayer.definitionExpression = "level_id = " + selectedFloor;
+        }
       });
     });
   }
 
   onEnter() {
     this.selectedFloor = 1;
-    this.floors.getItemAt(this.selectedFloor).activate(this.layer, this.picturePointsLayer);
+
+    if (this.floors) {
+      this.floors.getItemAt(this.selectedFloor).activate();
+    }
+
     this.appState.view.environment.lighting.directShadowsEnabled = false;
     this.appState.view.environment.lighting.ambientOcclusionEnabled = false;
     this.oldDate = this.appState.view.environment.lighting.date;

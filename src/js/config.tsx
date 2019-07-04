@@ -97,3 +97,12 @@ export const sections = [
    // Surroundings:
    new SurroundingsSection({})
 ];
+
+export const floorMapping = (originalFloor: number) => {
+  let floor = originalFloor + 1;
+  if (floor >= 3) {
+    floor += 1;
+  }
+
+  return floor;
+}
