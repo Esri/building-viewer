@@ -83,7 +83,9 @@ class HomeSection extends declared(Section) {
 
   constructor(args: HomeSectionCtorArgs) {
     super(args as any);
+  }
 
+  postInitialize() {
     // Optionally add the external info points to display pictures:
     watchUtils.whenOnce(this, "appState", () => {
       watchUtils.on(this, "appState.view.map.layers", "change", () => {

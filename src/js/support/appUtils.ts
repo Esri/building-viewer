@@ -2,13 +2,13 @@ import WebScene = require("esri/WebScene");
 import SceneView = require("esri/views/SceneView");
 import Layer = require("esri/layers/Layer");
 import Collection = require("esri/core/Collection");
-import config = require("../config");
 import PortalItem = require("esri/portal/PortalItem");
 import Portal = require("esri/portal/Portal");
 
 export function createViewFromWebScene(args: {
   mapContainer: string, 
-  websceneId: string
+  websceneId: string,
+  portalUrl?: string
 }) {
 
   const portalItem = new PortalItem({
@@ -16,9 +16,9 @@ export function createViewFromWebScene(args: {
   });
 
   // Let user add portal parameter
-  if (config.portalUrl) {
+  if (args.portalUrl) {
     portalItem.portal = new Portal({
-      url: config.portalUrl
+      url: args.portalUrl
     });
   }
 

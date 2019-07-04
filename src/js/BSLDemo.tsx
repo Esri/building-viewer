@@ -28,6 +28,7 @@ interface BSLDemoCtorArgs {
   sections: Pick<Section, "render" | "active" | "id" | "paneRight" | "title" | "camera" | "onLeave" | "onEnter" | "appState">[];
   mapContainer: string;
   websceneId: string;
+  portalUrl?: string;
 }
 
 @subclass("webSceneViewer.widgets.LayersLoading.LayersLoadingProgressBar")
@@ -74,7 +75,7 @@ class BSLDemo extends declared(Widget) {
   constructor(args: BSLDemoCtorArgs) {
     super(args as any);
 
-    this.view = appUtils.createViewFromWebScene({websceneId: args.websceneId, mapContainer: args.mapContainer});
+    this.view = appUtils.createViewFromWebScene({websceneId: args.websceneId, mapContainer: args.mapContainer, portalUrl: args.portalUrl});
     this.sections = new Sections(args.sections, this.appState);
 
     (this.view.map as WebScene).when(() => {

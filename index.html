@@ -2,7 +2,7 @@
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
     <meta name="viewport" content="initial-scale=1, maximum-scale=1,user-scalable=no"/>
-    <title>BSL Demo App</title>
+    <title>Building Viewer</title>
     <meta name="viewport" content="minimal-ui">
     <link rel="stylesheet" href="https://jsdev.arcgis.com/4.12/esri/themes/light/main.css">
     <link rel="stylesheet" href="https://s3-us-west-1.amazonaws.com/patterns.esri.com/files/calcite-web/1.2.4/css/calcite-web.min.css">
@@ -38,8 +38,9 @@
     function(
       BSLDemo,
       config
-    ) {      
-      new BSLDemo({
+    ) {
+
+      var args = {
         // The container where to display the map:
         mapContainer: "mainViewDiv",
 
@@ -48,8 +49,13 @@
 
         // Your different sections:
         sections: config.sections
-      }, 
+      };
 
+      if (config.portalUrl) {
+        args.portalUrl = config.portalUrl;
+      }
+
+      new BSLDemo(args,
       // The container where to display the html element:
       "appDiv");
     });</script>

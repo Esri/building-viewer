@@ -20,7 +20,7 @@ import AppState = require("../AppState");
 class LegendWrapper extends declared(Widget) {
   @property()
   @renderable()
-  hide: boolean = false;
+  hide: boolean = true;
 
   @property({ constructOnly: true })
   appState: AppState;
@@ -33,7 +33,7 @@ class LegendWrapper extends declared(Widget) {
     super(args as any);
   }
 
-  postInitialised() {
+  postInitialize() {
     this.legend = new Legend({
       view: this.appState.view,
       layerInfos: []
@@ -105,6 +105,10 @@ interface FloorCtorArgs {
   audio?: string;
 }
 
+interface FloorsSectionCtorArgs {
+  floors?: Collection<Floor>;
+}
+
 @subclass()
 export class Floor extends declared(Widget) {
   @property()
@@ -124,8 +128,6 @@ export class Floor extends declared(Widget) {
 
   @property()
   playButton = new PlayButton();
-
-  featureLayer: FeatureLayer;
 
   render() {
     const audio = this.audio ? (<p>Listen to the name of this floor {this.playButton.render()}</p>) : null;
@@ -163,7 +165,7 @@ export class FloorsSection extends declared(Section) {
   id = "floors";
 
   @property({ aliasOf: "appState.floorNumber"})
-  selectedFloor: number;
+  selectedFloor: number = 1;
 
   private oldDate: Date;
 
@@ -180,10 +182,10 @@ export class FloorsSection extends declared(Section) {
   layer: FeatureLayer;
 
   @property({constructOnly: true })
-  layerNameForInfoPoint = appUtils.INTERNAL_INFOPOINTS_LAYER_PREFIX;
+  layerNameForInfoPoint = appUtils.FLOOR_POINTS_LAYER_PREFIX;
 
   @property({constructOnly: true })
-  layerNameForPicturePoint = appUtils.FLOOR_POINTS_LAYER_PREFIX;
+  layerNameForPicturePoint = appUtils.INTERNAL_INFOPOINTS_LAYER_PREFIX;
 
   @property()
   picturePointsLayer: FeatureLayer;
@@ -211,66 +213,29 @@ export class FloorsSection extends declared(Section) {
     return (<div>{floorSelector}</div>);
   }
 
-  constructor(args: any) {
-    super(args);
-    this.selectedFloor = 0;
-    
-    watchUtils.whenOnce(this, "appState", (appState) => {
-      this.floorSelector = new FloorSelector({appState: appState});
-      watchUtils.on(this, "appState.view.map.layers", "change", () => {
-        if (this.appState && this.appState.view.map.layers.length > 0) {
+  constructor(args: FloorsSectionCtorArgs) {
+    super(args as any);
+  }
 
-          // Get the info points:
-          if (!this.layer) {
-            this.layer = appUtils.findLayer(this.appState.view.map.layers, this.layerNameForInfoPoint) as FeatureLayer;
-            if (this.layer) {
-              this.layer.visible = false;
-              this.legendWrapper.legend.layerInfos = [
-                {
-                  layer: this.layer,
-                  title: "Legend"
-                }
-              ];
-            }
-          }
+  postInitialize() {
+    watchUtils.whenOnce(this, "appState", () => {
+      this.legendWrapper = new LegendWrapper({
+        appState: this.appState
+      }, "floorLegend");
 
-          if (!this.picturePointsLayer) {
-            this.picturePointsLayer = appUtils.findLayer(this.appState.view.map.layers, this.layerNameForPicturePoint) as FeatureLayer;
-            if (this.picturePointsLayer) {
-              this.picturePointsLayer.visible = false;
-              this.picturePointsLayer.outFields = ["*"];
-              this.picturePointsLayer.popupTemplate.overwriteActions = true;
-              this.picturePointsLayer.popupTemplate.actions = new Collection();
-            }
-          }
-          
-        }
-      });
+      this.floorSelector = new FloorSelector({appState: this.appState});
 
-      watchUtils.init(this, "selectedFloor,appState.pageLocation", () => {
-        if (typeof this.selectedFloor === 'number' && this.layer) {
-          this.floors.getItemAt(this.selectedFloor).activate(this.layer, this.picturePointsLayer);
-          
-          if (this.layer) {
-            this.layer.visible = (this.appState.pageLocation === "floors");
-          }
+      watchUtils.on(this, "appState.view.map.layers", "change", this.getExtraInfoLayers.bind(this));
 
-          if (this.picturePointsLayer) {
-            this.picturePointsLayer.visible = (this.appState.pageLocation === "floors");
-          }
-        }
+      watchUtils.init(this, "selectedFloor", (selectedFloor) => {
+        this.floors.getItemAt(selectedFloor).activate(this.layer, this.picturePointsLayer);
       });
     });
   }
 
-  postInitialised() {
-    this.legendWrapper = new LegendWrapper({
-      appState: this.appState
-    }, "floorLegend");
-  }
-
   onEnter() {
     this.selectedFloor = 1;
+    this.floors.getItemAt(this.selectedFloor).activate(this.layer, this.picturePointsLayer);
     this.appState.view.environment.lighting.directShadowsEnabled = false;
     this.appState.view.environment.lighting.ambientOcclusionEnabled = false;
     this.oldDate = this.appState.view.environment.lighting.date;
@@ -292,6 +257,16 @@ export class FloorsSection extends declared(Section) {
       });
     }), "click");
 
+    this.legendWrapper.hide = false;
+
+    if (this.layer) {
+      this.layer.visible = true;
+    }
+
+    if (this.picturePointsLayer) {
+      this.picturePointsLayer.visible = true;
+    }
+
   }
 
   onLeave() {
@@ -299,5 +274,42 @@ export class FloorsSection extends declared(Section) {
     this.appState.view.environment.lighting.directShadowsEnabled = true;
     this.appState.view.environment.lighting.ambientOcclusionEnabled = true;
     this.appState.view.environment.lighting.date = this.oldDate;
+
+    this.legendWrapper.hide = true;
+
+    if (this.layer) {
+      this.layer.visible = false;
+    }
+
+    if (this.picturePointsLayer) {
+      this.picturePointsLayer.visible = false;
+    }
+  }
+
+  private getExtraInfoLayers() {
+    if (this.appState && this.appState.view.map.layers.length > 0) {
+        // Get the info points on the floors:
+        if (!this.layer) {
+          this.layer = appUtils.findLayer(this.appState.view.map.layers, this.layerNameForInfoPoint) as FeatureLayer;
+          if (this.layer) {
+            this.layer.visible = false;
+            this.legendWrapper.legend.layerInfos = [
+              {
+                layer: this.layer,
+                title: "Legend"
+              }
+            ];
+          }
+        }
+        // Get extra pictures:
+        if (!this.picturePointsLayer) {
+          this.picturePointsLayer = appUtils.findLayer(this.appState.view.map.layers, this.layerNameForPicturePoint) as FeatureLayer;
+          if (this.picturePointsLayer) {
+            this.picturePointsLayer.visible = false;
+            this.picturePointsLayer.outFields = ["*"];
+          }
+        }
+        
+      }
   }
 }

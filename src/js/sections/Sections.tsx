@@ -68,10 +68,11 @@ class Sections extends declared(Collection)<SectionSubclass> {
   //
   //--------------------------------------------------------------------------
 
-  constructor(args: SectionSubclass[], appState: AppState) {
-    super(args.map(arg => {
-      arg.appState = appState;
+  constructor(sections: SectionSubclass[], appState: AppState) {
+    super(sections.map(section => {
+      section.appState = appState;
     }));
+
     this.appState = appState;
 
     this.watch("appState.pageLocation", this.activateSection);
