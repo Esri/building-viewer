@@ -187,16 +187,16 @@ export class FloorsSection extends declared(Section) {
   floors: Collection<Floor>;
 
   render() {
-    const currentLevel = this.floors.getItemAt(this.selectedFloor);
+    const currentLevel = this.floors ? this.floors.getItemAt(this.selectedFloor) : null;
     const selectedFloor = this.selectedFloor === 0 ? "G" : this.selectedFloor;
-    const title = this.selectedFloor === 0 ? (<h1>{currentLevel.title}</h1>) : (<h1>{currentLevel.title}</h1>);
-    return (<div id={this.id} bind={this} key={this}>
+    const title = currentLevel ? this.selectedFloor === 0 ? (<h1>{currentLevel.title}</h1>) : (<h1>{currentLevel.title}</h1>) : null;
+    return currentLevel ? (<div id={this.id} bind={this} key={this}>
       <div class="level">floor</div>
       <h1 class="number">{selectedFloor}</h1>
       {title}
       <h3 class="subtitle">[{currentLevel.subtitle}]</h3>
       <div class="content">{currentLevel.render()}</div>
-    </div>);
+    </div>) : null;
   }
 
   paneRight() {

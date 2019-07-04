@@ -90,7 +90,7 @@ class BSLDemo extends declared(Widget) {
           const BSL = this.appState.view.map.layers.find(layer => layer.title.indexOf(appUtils.MAIN_LAYER_PREFIX) > -1);
           
           if (!BSL) {
-            throw new Error("Cannot find the main BuildingSceneLayer (Main BSL) in the webscene " + args.websceneId);
+            throw new Error("Cannot find the main BuildingSceneLayer (" + appUtils.MAIN_LAYER_PREFIX + ") in the webscene " + args.websceneId);
           }
 
           const visualisationArgs: any = {
