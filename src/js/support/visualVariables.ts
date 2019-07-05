@@ -17,10 +17,10 @@ export const renderers = {
           type: "mesh-3d",
           symbolLayers: [{
             type: "fill",
-            material: { color: [100,100,100, 1], colorMixMode: "replace" },
+            material: { color: [255,255,255, 1], colorMixMode: "replace" },
             edges: {
               type: "solid", // autocasts as new SolidEdges3D()
-              color: [30, 30, 30, 1]
+              color: [170, 170, 170, 1]
             }
           }]
         }

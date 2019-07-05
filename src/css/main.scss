@@ -36,7 +36,6 @@ body,
   color: $primaryColor;
   font-size: $generalFontSize;
   line-height: $generalFontSize + 7px;
-  text-shadow: 1px 1px 5px rgba(70,70,70, 1);
 
   a {
     color: $primaryColor;
@@ -50,7 +49,6 @@ body,
     font-stretch: "condensed";
     pointer-events: all;
     font-weight: 900;
-    text-shadow: 0 0 5px rgba(70,70,70, 1);
     
     &.slash-title {
       text-transform: none;

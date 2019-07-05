@@ -10,7 +10,7 @@ import {Timetable, DayTimetable} from "./widgets/Timetable/Timetable";
 
 export const portalUrl = "https://zurich.maps.arcgis.com";
 
-export const websceneId = "543648a92446497db8a92c06ce1ad0b1";
+export const websceneId = "e56b66ccdd8a49b6b6629dd5e6ced6a8"; // "543648a92446497db8a92c06ce1ad0b1";
 
 export const sections = [
    // Check the different files
