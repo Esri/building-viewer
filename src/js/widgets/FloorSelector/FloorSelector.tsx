@@ -7,6 +7,17 @@ import { tsx, renderable } from "esri/widgets/support/widget";
 import Widget = require("esri/widgets/Widget");
 import AppState = require("../../AppState");
 
+
+interface FloorSelectorCtorArgs {
+  minFloor: number;
+  maxFloor: number;
+  appState: AppState;
+}
+
+interface FloorSelectorCtorArgs2 {
+  appState: AppState;
+}
+
 @subclass("widgets/FloorSelector")
 class FloorSelector extends declared(Widget) {
   @property({aliasOf: "appState.floorNumber"})
@@ -15,7 +26,7 @@ class FloorSelector extends declared(Widget) {
 
   @property()
   @renderable()
-  maxFloor = 5;
+  maxFloor = 4;
 
   @property()
   @renderable()
@@ -25,7 +36,7 @@ class FloorSelector extends declared(Widget) {
   appState: AppState;
 
   render() {
-    const levels = Array.from(Array(Math.abs(this.minFloor) + this.maxFloor).keys()).reverse().map((rawLevel: number) => {
+    const levels = Array.from(Array(Math.abs(this.minFloor) + this.maxFloor + 1).keys()).reverse().map((rawLevel: number) => {
       const level: number = rawLevel - this.minFloor;
       const levelText = level === 0 ? "G" : level;
       const activeClass = {
@@ -45,8 +56,8 @@ class FloorSelector extends declared(Widget) {
     this.activeFloor = newLevel;
   }
 
-  constructor(args: any) {
-    super(args);
+  constructor(args: FloorSelectorCtorArgs | FloorSelectorCtorArgs2) {
+    super(args as any);
   }
 }
 

@@ -106,3 +106,5 @@ export const floorMapping = (originalFloor: number) => {
 
   return floor;
 }
+
+export const extraQuery = " AND (Category <> 'Generic Models' OR OBJECTID_1 = 2) AND Category <> 'Walls' AND Category <> 'Roofs'  AND Category <> 'Curtain Wall Mullions' AND Category <> 'Curtain Panels'";

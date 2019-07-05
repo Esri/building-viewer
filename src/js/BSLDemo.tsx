@@ -30,6 +30,7 @@ interface BSLDemoCtorArgs {
   websceneId: string;
   portalUrl?: string;
   floorMapping?: (originalFloor: number) => number;
+  extraQuery?: string;
 }
 
 @subclass("webSceneViewer.widgets.LayersLoading.LayersLoadingProgressBar")
@@ -100,6 +101,10 @@ class BSLDemo extends declared(Widget) {
 
           if (args.floorMapping) {
             visualisationArgs.floorMapping = args.floorMapping;
+          }
+
+          if (args.extraQuery) {
+            visualisationArgs.extraQuery = args.extraQuery;
           }
           
           this.buildingLayer = new BuildingVisualisation(visualisationArgs);

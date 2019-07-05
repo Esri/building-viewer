@@ -19,6 +19,7 @@ interface BuildingVisualisationCtorArgs {
   appState: AppState;
   customBaseRenderer?: any;
   floorMapping?: (originalFloor: number) => number;
+  extraQuery?: string;
 }
 
 @subclass("support/BuildingVisualisation")
@@ -79,13 +80,16 @@ class BuildingVisualisation extends declared(Accessor) {
   })
   get layerDefinitionExpression() {
     if (this.appState.pageLocation === "floors") {
-      return definitionExpressions.floor(this.floorMapping(this.appState.floorNumber));
+      return definitionExpressions.floor(this.floorMapping(this.appState.floorNumber), this.extraQuery);
     }
     return definitionExpressions.basic;
   }
 
-  @property({ constructOnly: true})
+  @property({ constructOnly: true })
   appState: AppState;
+
+  @property()
+  extraQuery: string;
 
   //--------------------------------------------------------------------------
   //
@@ -101,6 +105,10 @@ class BuildingVisualisation extends declared(Accessor) {
 
     if (args.floorMapping) {
       this.floorMapping = args.floorMapping;
+    }
+
+    if (args.extraQuery) {
+      this.extraQuery = args.extraQuery;
     }
 
     buildingSceneLayerUtils.goThroughSubLayers(args.layer, (sublayer) => {

@@ -59,6 +59,10 @@
         args.floorMapping = config.floorMapping;
       }
 
+      if (config.extraQuery) {
+        args.extraQuery = config.extraQuery;
+      }
+
       new BSLDemo(args,
       // The container where to display the html element:
       "appDiv");

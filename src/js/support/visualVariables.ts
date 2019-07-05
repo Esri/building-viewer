@@ -104,8 +104,8 @@ export const renderers = {
 
 export const definitionExpressions = {
   basic: "BldgLevel IS NULL OR BldgLevel IS NOT NULL AND Category <> 'Generic Models'",
-  floor: function (floorNumber: number) {
-    return "BldgLevel = " + floorNumber + " AND (Category <> 'Generic Models' OR OBJECTID_1 = 2) AND Category <> 'Walls' AND Category <> 'Roofs'  AND Category <> 'Curtain Wall Mullions' AND Category <> 'Curtain Panels'";
+  floor: function (floorNumber: number, extraQuery = " AND Category <> 'Generic Models'") {
+    return "BldgLevel = " + floorNumber + extraQuery;
   }
 };
 

@@ -109,6 +109,11 @@ interface FloorsSectionCtorArgs {
   floors?: Collection<Floor>;
 }
 
+interface FloorsSectionCtorArgs2 {
+  minFloor: number;
+  maxFloor: number;
+}
+
 @subclass()
 export class Floor extends declared(Widget) {
   @property()
@@ -181,6 +186,12 @@ export class FloorsSection extends declared(Section) {
   @property()
   picturePointsLayer: FeatureLayer;
 
+  @property()
+  minFloor: number;
+
+  @property()
+  maxFloor: number;
+
   private handles = new Handles();
 
   @property({constructOnly: true})
@@ -204,7 +215,7 @@ export class FloorsSection extends declared(Section) {
     return (<div>{floorSelector}</div>);
   }
 
-  constructor(args: FloorsSectionCtorArgs) {
+  constructor(args: FloorsSectionCtorArgs | FloorsSectionCtorArgs2) {
     super(args as any);
   }
 
@@ -214,7 +225,15 @@ export class FloorsSection extends declared(Section) {
         appState: this.appState
       }, "floorLegend");
 
-      this.floorSelector = new FloorSelector({appState: this.appState});
+      const floorSelectorCtorArgs = this.minFloor != null &&  this.maxFloor != null ? {
+        appState: this.appState,
+        minFloor: this.minFloor,
+        maxFloor: this.maxFloor
+      } : {
+        appState: this.appState
+      }
+
+      this.floorSelector = new FloorSelector(floorSelectorCtorArgs);
 
       watchUtils.on(this, "appState.view.map.layers", "change", this.getExtraInfoLayers.bind(this));
 
@@ -263,7 +282,7 @@ export class FloorsSection extends declared(Section) {
       });
     }), "click");
 
-    this.legendWrapper.hide = false;
+    this.legendWrapper.hide = !!this.layer;
 
     if (this.layer) {
       this.layer.visible = true;
