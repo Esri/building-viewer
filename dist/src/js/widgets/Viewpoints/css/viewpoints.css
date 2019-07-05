@@ -1,0 +1,101 @@
+/***************
+  Colors
+****************/
+/***************
+  Font sizing
+****************/
+/***************
+  Sizing
+****************/
+/***************
+  Mixins
+****************/
+#appDiv .viewpoints {
+  width: 300px;
+  margin-left: -100px;
+  pointer-events: all;
+}
+#appDiv .viewpoints h2.slash-title {
+  margin-bottom: 20px;
+}
+#appDiv .viewpoints > div > div {
+  height: 30px;
+}
+#appDiv .viewpoints a {
+  color: #fff;
+  margin-left: 8px;
+  text-decoration: none;
+}
+#appDiv .viewpoints svg {
+  width: 15px;
+  opacity: 0.5;
+  vertical-align: -2px;
+}
+#appDiv .viewpoints .viewpoint {
+  -moz-transition: all 0.5s;
+  -o-transition: all 0.5s;
+  -webkit-transition: all 0.5s;
+  transition: all 0.5s;
+  margin-left: 200px;
+  font-family: "Roboto Condensed", sans-serif;
+  cursor: pointer;
+  list-style: none;
+  display: block;
+  pointer-events: all;
+  width: 100%;
+  font-size: 25px;
+  text-align: right;
+}
+#appDiv .viewpoints .viewpoint:first-child {
+  margin-top: 0;
+}
+#appDiv .viewpoints .viewpoint.active {
+  font-size: 40px;
+  color: #F6A803;
+}
+#appDiv .viewpoints .viewpoint.active:first-child {
+  margin-top: 0;
+}
+#appDiv .viewpoints .viewpoint.active:hover {
+  color: #F6A803;
+}
+#appDiv .viewpoints .viewpoint:hover {
+  font-size: 40px;
+  color: #fff;
+}
+
+#appDiv .active .viewpoints .viewpoint {
+  margin-left: 0;
+}
+#appDiv .active .viewpoints .viewpoint:nth-child(1) {
+  -moz-transition: all 0.5s, margin-left 0.8s 0.1s;
+  -o-transition: all 0.5s, margin-left 0.8s 0.1s;
+  -webkit-transition: all 0.5s, margin-left 0.8s 0.1s;
+  transition: all 0.5s, margin-left 0.8s 0.1s;
+}
+#appDiv .active .viewpoints .viewpoint:nth-child(2) {
+  -moz-transition: all 0.5s, margin-left 0.8s 0.2s;
+  -o-transition: all 0.5s, margin-left 0.8s 0.2s;
+  -webkit-transition: all 0.5s, margin-left 0.8s 0.2s;
+  transition: all 0.5s, margin-left 0.8s 0.2s;
+}
+#appDiv .active .viewpoints .viewpoint:nth-child(3) {
+  -moz-transition: all 0.5s, margin-left 0.8s 0.3s;
+  -o-transition: all 0.5s, margin-left 0.8s 0.3s;
+  -webkit-transition: all 0.5s, margin-left 0.8s 0.3s;
+  transition: all 0.5s, margin-left 0.8s 0.3s;
+}
+#appDiv .active .viewpoints .viewpoint:nth-child(4) {
+  -moz-transition: all 0.5s, margin-left 0.8s 0.4s;
+  -o-transition: all 0.5s, margin-left 0.8s 0.4s;
+  -webkit-transition: all 0.5s, margin-left 0.8s 0.4s;
+  transition: all 0.5s, margin-left 0.8s 0.4s;
+}
+#appDiv .active .viewpoints .viewpoint:nth-child(5) {
+  -moz-transition: all 0.5s, margin-left 0.8s 0.5s;
+  -o-transition: all 0.5s, margin-left 0.8s 0.5s;
+  -webkit-transition: all 0.5s, margin-left 0.8s 0.5s;
+  transition: all 0.5s, margin-left 0.8s 0.5s;
+}
+
+/*# sourceMappingURL=viewpoints.css.map */

@@ -1,0 +1,110 @@
+/***************
+  Colors
+****************/
+/***************
+  Font sizing
+****************/
+/***************
+  Sizing
+****************/
+/***************
+  Mixins
+****************/
+.floor-selector {
+  pointer-events: all;
+}
+.floor-selector .level {
+  font-family: "Roboto Condensed", sans-serif;
+  cursor: pointer;
+  list-style: none;
+  display: block;
+  pointer-events: all;
+  width: 100%;
+  font-size: 25px;
+  text-align: right;
+  -moz-transition: all 0.5s;
+  -o-transition: all 0.5s;
+  -webkit-transition: all 0.5s;
+  transition: all 0.5s;
+  margin-left: 200px;
+}
+.floor-selector .level:hover {
+  font-size: 60px;
+}
+.floor-selector .level:first-child {
+  margin-top: -40px;
+}
+.floor-selector .level.active {
+  font-size: 90px;
+  margin-top: -30px;
+  margin-bottom: -30px;
+  color: #F6A803;
+  text-transform: uppercase;
+  pointer-events: all;
+}
+.floor-selector .level.active:first-child {
+  margin-top: -80px;
+}
+
+.active .floor-selector .level {
+  margin-left: 0;
+}
+.active .floor-selector .level.active {
+  margin-left: 15px;
+}
+.active .floor-selector .level:nth-child(1) {
+  -moz-transition: all 0.5s, margin-left 0.8s 0.1s;
+  -o-transition: all 0.5s, margin-left 0.8s 0.1s;
+  -webkit-transition: all 0.5s, margin-left 0.8s 0.1s;
+  transition: all 0.5s, margin-left 0.8s 0.1s;
+}
+.active .floor-selector .level:nth-child(2) {
+  -moz-transition: all 0.5s, margin-left 0.8s 0.2s;
+  -o-transition: all 0.5s, margin-left 0.8s 0.2s;
+  -webkit-transition: all 0.5s, margin-left 0.8s 0.2s;
+  transition: all 0.5s, margin-left 0.8s 0.2s;
+}
+.active .floor-selector .level:nth-child(3) {
+  -moz-transition: all 0.5s, margin-left 0.8s 0.3s;
+  -o-transition: all 0.5s, margin-left 0.8s 0.3s;
+  -webkit-transition: all 0.5s, margin-left 0.8s 0.3s;
+  transition: all 0.5s, margin-left 0.8s 0.3s;
+}
+.active .floor-selector .level:nth-child(4) {
+  -moz-transition: all 0.5s, margin-left 0.8s 0.4s;
+  -o-transition: all 0.5s, margin-left 0.8s 0.4s;
+  -webkit-transition: all 0.5s, margin-left 0.8s 0.4s;
+  transition: all 0.5s, margin-left 0.8s 0.4s;
+}
+.active .floor-selector .level:nth-child(5) {
+  -moz-transition: all 0.5s, margin-left 0.8s 0.5s;
+  -o-transition: all 0.5s, margin-left 0.8s 0.5s;
+  -webkit-transition: all 0.5s, margin-left 0.8s 0.5s;
+  transition: all 0.5s, margin-left 0.8s 0.5s;
+}
+.active .floor-selector .level:nth-child(6) {
+  -moz-transition: all 0.5s, margin-left 0.8s 0.6s;
+  -o-transition: all 0.5s, margin-left 0.8s 0.6s;
+  -webkit-transition: all 0.5s, margin-left 0.8s 0.6s;
+  transition: all 0.5s, margin-left 0.8s 0.6s;
+}
+.active .floor-selector .level:nth-child(7) {
+  -moz-transition: all 0.5s, margin-left 0.8s 0.7s;
+  -o-transition: all 0.5s, margin-left 0.8s 0.7s;
+  -webkit-transition: all 0.5s, margin-left 0.8s 0.7s;
+  transition: all 0.5s, margin-left 0.8s 0.7s;
+}
+.active .floor-selector .level:nth-child(8) {
+  -moz-transition: all 0.5s, margin-left 0.8s 0.8s;
+  -o-transition: all 0.5s, margin-left 0.8s 0.8s;
+  -webkit-transition: all 0.5s, margin-left 0.8s 0.8s;
+  transition: all 0.5s, margin-left 0.8s 0.8s;
+}
+.active .floor-selector .level:nth-child(9) {
+  -moz-transition: all 0.5s, margin-left 0.8s 0.9s;
+  -o-transition: all 0.5s, margin-left 0.8s 0.9s;
+  -webkit-transition: all 0.5s, margin-left 0.8s 0.9s;
+  transition: all 0.5s, margin-left 0.8s 0.9s;
+}
+
+/*# sourceMappingURL=floorSelector.css.map */
