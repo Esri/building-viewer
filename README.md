@@ -18,12 +18,13 @@ The application presents the [Turanga library](https://my.christchurchcitylibrar
 1. Open `src/config.tsx` in your favorite code editor
 2. Delete all the content except the two first obscure lines
 3. Now you need to define 2 parameters in the config to get started:
-    1. The `websceneId` of the webscene you created above
+    The `websceneId` of the webscene you created above
     ```
     export const websceneId = "YOUR WEBSCENE ID HERE";
     ```
     *Note that you may to also export on which portal this webscene resides if different from the ArcGis's portal: `export const portalUrl = "https://your-portal-url.com";`*
-    2. The `sections` you'd like to have in your Building Viewer (see documentation about sections). Let's start with only one section, the home page:
+    
+    The `sections` you'd like to have in your Building Viewer (see documentation about sections). Let's start with only one section, the home page:
     ```typescript
     // first import the section:
     import HomeSection = require("./sections/HomeSection");
