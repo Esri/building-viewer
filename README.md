@@ -18,6 +18,7 @@ The application presents the [Turanga library](https://my.christchurchcitylibrar
 1. Open `src/config.tsx` in your favorite code editor
 2. Delete all the content except the two first obscure lines
 3. Now you need to define 2 parameters in the config to get started:
+    
     The `websceneId` of the webscene you created above
     ```
     export const websceneId = "YOUR WEBSCENE ID HERE";
