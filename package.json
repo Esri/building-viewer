@@ -20,7 +20,7 @@
   "author": "Yannik Messerli <ymesserli@esri.com>",
   "license": "Apache-2.0",
   "devDependencies": {
-    "grunt": "*",
+    "grunt": "^1.0.4",
     "grunt-contrib-concat": "*",
     "grunt-contrib-connect": "*",
     "grunt-contrib-copy": "*",
@@ -31,6 +31,7 @@
     "grunt-include-source": "^1.1.0",
     "grunt-run": "^0.8.1",
     "grunt-stripcomments": "^0.7.2",
+    "js-yaml": ">=3.13.1",
     "tslint": "^4.2.0"
   },
   "dependencies": {
