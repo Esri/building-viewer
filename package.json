@@ -10,6 +10,7 @@
     "dev": "tsc -w & sass --watch src:src",
     "lint": "tslint './src/*.ts'",
     "build": "tsc & sass src:src",
+    "dist": "grunt dist",
     "server": "grunt"
   },
   "keywords": [
