@@ -6,7 +6,7 @@ Besides the required the building scene layer, without which the entire applicat
 
 All the names need to include the following, but you can have longer layer's name, e.g. "Building: Turanga Library".
 
-- `"Building"`: this is the only required layer in your webscene. It needs to be a [Building Scene Layer](https://developers.arcgis.com/javascript/latest/api-reference/
+- `"Building"`: this is the only required layer in your webscene. It needs to be a [Building Scene Layer](https://developers.arcgis.com/javascript/latest/api-reference/)
 - `"City model"`: this is an optional layer in your webscene that show the surroundings. It needs to be a [Scene Layer](https://developers.arcgis.com/javascript/latest/api-reference/esri-layers-SceneLayer.html).
 - `"Floor points"`: this layer needs to be a [`FeatureLayer`](https://developers.arcgis.com/javascript/latest/api-reference/esri-layers-FeatureLayer.html) that will be added to the `FloorsSection`. Additionally, if every features have a number attribute `BldgLevel`, the feature filtered depending on the selected floor (See [FloorsSection](./Sections.html)).
 - `"Floor pictures"`: this layer needs to be a [`FeatureLayer`](https://developers.arcgis.com/javascript/latest/api-reference/esri-layers-FeatureLayer.html), displaying icons, with the string attributes `url`, `title` and `credit`. It will be added to the `FloorsSection`. When a user cliks on it, a popup is displayed with the information provided through the attributes. Additionally, if every features have a number attribute `BldgLevel`, the feature filtered depending on the selected floor (See [FloorsSection](./Sections.html)).
