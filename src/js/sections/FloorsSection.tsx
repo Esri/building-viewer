@@ -282,7 +282,7 @@ export class FloorsSection extends declared(Section) {
       });
     }), "click");
 
-    this.legendWrapper.hide = !!this.layer;
+    this.legendWrapper.hide = !this.layer;
 
     if (this.layer) {
       this.layer.visible = true;
