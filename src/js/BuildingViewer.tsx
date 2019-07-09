@@ -14,7 +14,7 @@ import SceneLayer = require("esri/layers/SceneLayer");
 import BuildingSceneLayer = require("esri/layers/BuildingSceneLayer");
 import WebScene = require("esri/WebScene");
 
-// BSLDemo
+// BuildingViewer
 import Section = require("./sections/Section");
 import BuildingVisualisation = require("./support/BuildingVisualisation");
 import SurroundingsVisualisation = require("./support/SurroundingsVisualisation");
@@ -24,7 +24,7 @@ import Popup = require("./widgets/Popup/Popup");
 
 type SectionSublcass = Pick<Section, "camera">;
 
-interface BSLDemoCtorArgs {
+interface BuildingViewerCtorArgs {
   sections: Pick<Section, "render" | "active" | "id" | "paneRight" | "title" | "camera" | "onLeave" | "onEnter" | "appState">[];
   mapContainer: string;
   websceneId: string;
@@ -34,7 +34,7 @@ interface BSLDemoCtorArgs {
 }
 
 @subclass("webSceneViewer.widgets.LayersLoading.LayersLoadingProgressBar")
-class BSLDemo extends declared(Widget) {
+class BuildingViewer extends declared(Widget) {
   //--------------------------------------------------------------------------
   //
   //  Properties
@@ -74,7 +74,7 @@ class BSLDemo extends declared(Widget) {
   //
   //--------------------------------------------------------------------------
 
-  constructor(args: BSLDemoCtorArgs) {
+  constructor(args: BuildingViewerCtorArgs) {
     super(args as any);
 
     this.view = appUtils.createViewFromWebScene({websceneId: args.websceneId, mapContainer: args.mapContainer, portalUrl: args.portalUrl});
@@ -156,7 +156,7 @@ class BSLDemo extends declared(Widget) {
     });
   }
 
-  normalizeCtorArgs(args: BSLDemoCtorArgs, container: string) {
+  normalizeCtorArgs(args: BuildingViewerCtorArgs, container: string) {
     return {
       mapContainer: args.mapContainer,
       container: container
@@ -181,4 +181,4 @@ class BSLDemo extends declared(Widget) {
   }
 }
 
-export = BSLDemo;
+export = BuildingViewer;
