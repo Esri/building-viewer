@@ -2,7 +2,7 @@
 
 ### Prepare a minimal webscene:
 1. Create a new webscene
-1. Add a Building Scene layer and add the suffix `Main BSL:` in front of it's name
+1. Add a Building Scene layer and add the suffix `Building:` in front of it's name
 1. Save the webscene, give it a nice title and copy the webscene id. You will need it in a few next steps
 
 ### Get your own copy of the Building Viewer
