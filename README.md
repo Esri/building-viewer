@@ -22,13 +22,15 @@ The application presents the [Turanga library](https://my.christchurchcitylibrar
 1. Clone the repo and `npm install` dependencies
 2. Remove ref to this repo: `rm -rf .git`
 3. `npm run build` to compile `src/js/*.ts` and `src/css/*.sccs` files in the same folder and watch for changes
-4. `npm run serve` launches a webserver and then you can access the `index.html` in your favorite browser.
+4. `npm run server` launches a webserver.
+5. Open your browser and enter the local address `http://localhost:8888/`. You should see now the Building Viewer running.
 
 ### To add your own building
 
-1. Open `src/config.tsx` in your favorite code editor
-2. Delete all the content except the two first obscure lines
-3. Now you need to define 2 parameters in the config to get started:
+1. Create a webscene with a BuildingSceneLayer named `Building
+2. Open `src/config.tsx` in your favorite code editor
+3. Delete all the content except the two first obscure lines
+4. Now you need to define 2 parameters in the config to get started:
     
     The `websceneId` of the webscene you created above
     ```
@@ -47,9 +49,9 @@ The application presents the [Turanga library](https://my.christchurchcitylibrar
     ];
     ```
 
-4. Recompile the code and reload the website.
+5. Recompile the code and reload the website.
 
-Checkout the documentation in the `docs` folder.
+Checkout the documentation in the `docs` folder, and in particular the [quick start guide](./docs/Quickstart.md).
 
 ## Requirements
 
@@ -59,9 +61,13 @@ Checkout the documentation in the `docs` folder.
 
 ## Resources
 
-* [ArcGIS for JavaScript API](https://developers.arcgis.com/javascript/)
-* [ArcGIS for JavaScript API Reference](https://developers.arcgis.com/javascript/latest/api-reference/)
-* [Introduction to Building Scene Layer](https://developers.arcgis.com/javascript/latest/sample-code/building-scene-layer-filter/index.html)
+The following external libraries, APIs, open datasets and specifications were used to make this application:
+
+* [ArcGIS API for JavaScript](https://developers.arcgis.com/javascript/)
+* [Calcite Web](http://esri.github.io/calcite-web/)
+* Turangua's BIM data provided by [Christchurch City Council](https://www.ccc.govt.nz/)
+* [Christchurch city model](https://www.linz.govt.nz/news/2014-03/3d-models-released-christchurch-city) provided by [Christchurch City Council](https://www.ccc.govt.nz/)
+* [Roboto font](https://fonts.google.com/specimen/Roboto)
 
 ## Issues
 
@@ -72,7 +78,7 @@ Find a bug or want to request a new feature?  Please let us know by submitting a
 Esri welcomes contributions from anyone and everyone. Please see our [guidelines for contributing](https://github.com/esri/contributing).
 
 ## Licensing
-Copyright 2016 Esri
+Copyright 2019 Esri
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.

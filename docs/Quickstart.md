@@ -9,14 +9,14 @@
 
 1. Clone the git repository in your local machine and then go into the folder:
 ```
-git clone https://devtopia.esri.com/yann9059/BSL-Demo-App
+git clone https://github.com/Esri/building-viewer
 cd BSL-Demo-App
 ```
 1. Remove the `.git` repository reference `rm -rf .git`
 1. Install dependency: `npm run install`
 1. Compile the code: `npm run build`
 1. Start the server: `npm run server`
-1. You should see now the Building Viewer running in your browser at `http://localhost:8888/`: 
+1. Open your browser and enter the local address `http://localhost:8888/`. You should see now the Building Viewer running:
 
 
 ![The default Building Viewer running](./images/screenshot_1.png)
