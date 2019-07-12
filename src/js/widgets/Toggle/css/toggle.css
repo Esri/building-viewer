@@ -1,0 +1,42 @@
+/***************
+  Colors
+****************/
+/***************
+  Font sizing
+****************/
+/***************
+  Sizing
+****************/
+/***************
+  Mixins
+****************/
+.toggle {
+  display: inline-block;
+  width: 35px;
+  height: 16px;
+  border-radius: 16px;
+  border: solid 1px #fff;
+  background: rgba(100, 100, 100, 0.5);
+  cursor: pointer;
+}
+.toggle .knob {
+  height: 14px;
+  width: 14px;
+  border-radius: 7px;
+  margin-top: 1px;
+  margin-left: 1px;
+  background-color: #fff;
+  -moz-transition: all 0.3s;
+  -o-transition: all 0.3s;
+  -webkit-transition: all 0.3s;
+  transition: all 0.3s;
+}
+.toggle.active {
+  border-color: #F6A803;
+}
+.toggle.active .knob {
+  margin-left: 19px;
+  background-color: #F6A803;
+}
+
+/*# sourceMappingURL=toggle.css.map */
