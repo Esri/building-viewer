@@ -102,10 +102,27 @@ export const renderers = {
   }
 };
 
+// Some useful definitionExpression:
 export const definitionExpressions = {
-  basic: "BldgLevel IS NULL OR BldgLevel IS NOT NULL AND Category <> 'Generic Models'",
+  basic: "BldgLevel IS NULL OR BldgLevel IS NOT NULL",
+
+  // this is used to filter FeatureLayer:
   floor: function (floorNumber: number, extraQuery = " AND Category <> 'Generic Models'") {
     return "BldgLevel = " + floorNumber + extraQuery;
   }
 };
 
+export const FLOOR_FILTER_NAME = "BuildingFloor";
+
+export function createFilterFor(floorNumber: number, extraQuery?: string) /*: BuildingFilter*/ {
+  return {
+    filterBlocks: [
+      {
+        filterMode: { type: "solid" },
+        filterExpression: definitionExpressions.floor(floorNumber, extraQuery),
+        title: "floor"
+      }
+    ],
+    name: FLOOR_FILTER_NAME
+  };
+}

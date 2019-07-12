@@ -8,7 +8,7 @@ import Accessor = require("esri/core/Accessor");
 import BuildingSceneLayer = require("esri/layers/BuildingSceneLayer");
 import watchUtils = require("esri/core/watchUtils");
 import Renderer = require("esri/renderers/Renderer");
-import { definitionExpressions } from "./visualVariables";
+import { createFilterFor, FLOOR_FILTER_NAME, definitionExpressions } from "./visualVariables";
 
 // App
 import AppState = require("../AppState");
@@ -33,8 +33,6 @@ class BuildingVisualisation extends declared(Accessor) {
   layer: BuildingSceneLayer;
 
   private initialRenderer: HashMap<Renderer> = {};
-  private initialDefExp: HashMap<string> = {};
-  private initialVisibility: HashMap<boolean> = {};
 
   @property({
     readOnly: true,
@@ -62,27 +60,11 @@ class BuildingVisualisation extends declared(Accessor) {
       "appState.floorNumber"
     ]
   })
-  get layerOpacity() {
-    return buildingSceneLayerUtils
-      .getVisualVarsFromAppState(
-        this.appState,
-        "mainBuilding",
-        "opacity"
-      );
-  }
-
-  @property({
-    readOnly: true,
-    dependsOn: [
-      "appState.pageLocation",
-      "appState.floorNumber"
-    ]
-  })
-  get layerDefinitionExpression() {
+  get buildingFilters() {
     if (this.appState.pageLocation === "floors") {
-      return definitionExpressions.floor(this.floorMapping(this.appState.floorNumber), this.extraQuery);
+      return createFilterFor(this.floorMapping(this.appState.floorNumber), this.extraQuery);
     }
-    return definitionExpressions.basic;
+    return null;
   }
 
   @property({ constructOnly: true })
@@ -111,38 +93,36 @@ class BuildingVisualisation extends declared(Accessor) {
       this.extraQuery = args.extraQuery;
     }
 
+    // Save the initial renderers, so that we can set it back:
     buildingSceneLayerUtils.goThroughSubLayers(args.layer, (sublayer) => {
       if (sublayer.type === "building-component") {
         this.initialRenderer[sublayer.title] = (sublayer as any).renderer;
       }
     });
 
+    // To improve performance, we will set a definition expression that will
+    // force the api to load the data for floor attribute:
     buildingSceneLayerUtils.goThroughSubLayers(args.layer, (sublayer) => {
       if (sublayer.type === "building-component") {
-        this.initialDefExp[sublayer.title] = sublayer.definitionExpression;
+        sublayer.definitionExpression = definitionExpressions.basic;
       }
-    });
-    buildingSceneLayerUtils.goThroughSubLayers(args.layer, (sublayer) => {
-      this.initialVisibility[sublayer.title] = sublayer.visible;
     });
 
     watchUtils.init(this, "layerRenderer", this._updateBaseRenderer);
     watchUtils.init(this, "customBaseRenderer", this._updateBaseRenderer);
 
-    watchUtils.init(this, "layerDefinitionExpression", (layerDefinitionExpression) => {
+    // Set the building filters when necessary:
+    watchUtils.init(this, "buildingFilters", (buildingFilters) => {
       if (!this.appState.pageLocation || this.appState.pageLocation !== "floors") {
-        buildingSceneLayerUtils.goThroughSubLayers(this.layer, (sublayer) => {
-          if (sublayer.type === "building-component") {
-            sublayer.definitionExpression = this.initialDefExp[sublayer.title];
-          }
-        });
+        this.layer.activeFilterId = null;
       }
       else {
-        buildingSceneLayerUtils.goThroughSubLayers(this.layer, (sublayer) => {
-          if (sublayer.type === "building-component") {
-            sublayer.definitionExpression = layerDefinitionExpression;
-          }
-        });
+        const currentFilter = this.layer.filters.find((filter: any) => filter.name === FLOOR_FILTER_NAME);
+        if (currentFilter) {
+          this.layer.filters.remove(currentFilter);
+        }
+        this.layer.filters.push(buildingFilters);
+        this.layer.activeFilterId = this.layer.filters.find((filter: any) => filter.name === FLOOR_FILTER_NAME).id;
       }
     });
 
