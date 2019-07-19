@@ -1,10 +1,10 @@
 {
-  "name": "BSL-Demo-App",
+  "name": "building-viewer",
   "version": "1.0.0",
   "description": "This application demonstrates the use of various Building Scene Layer related API",
   "repository": {
     "type": "git",
-    "url": "git@github.com:yannikmesserli/esri-js-api-template-app.git"
+    "url": "git@github.com:esri/building-viewer.git"
   },
   "scripts": {
     "dev": "tsc -w & sass --watch src:src",
