@@ -4,7 +4,7 @@ This demonstrates the use of [ArcGIS API 4 for JavaScript](https://developers.ar
 
 The application presents the [Turanga library](https://my.christchurchcitylibraries.com/turanga/) in 3D. The visitor can explore the library by navigating around, and then inside, floor by floor, to discover this amazing building.
 
-[Visit the live website here.](https://esri.github.io/building-viewer/dist/)
+[Visit the live website here.](https://esri.github.io/building-viewer)
 
 ![The live website](./docs/images/screenshot_1.png)
 
