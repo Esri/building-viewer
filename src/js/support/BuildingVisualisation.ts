@@ -161,7 +161,7 @@ class BuildingVisualisation extends declared(Accessor) {
     if (this.customBaseRenderer) {
       buildingSceneLayerUtils.updateSubLayers(this.layer, ["renderer"], this.customBaseRenderer);  
     }
-    else if (!this.appState.pageLocation || this.appState.pageLocation === "home") {
+    else if (!this.appState.pageLocation || this.appState.pageLocation === "home" || this.appState.pageLocation === "custom") {
       buildingSceneLayerUtils.goThroughSubLayers(this.layer, (sublayer) => {
         if (sublayer.type === "building-component") {
           sublayer.renderer = this.initialRenderer[sublayer.title] && (this.initialRenderer[sublayer.title] as any).clone();
