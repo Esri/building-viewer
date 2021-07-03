@@ -14,14 +14,11 @@
  * limitations under the License.
  *
  */
-/// <amd-dependency path="esri/core/tsSupport/declareExtendsHelper" name="__extends" />
-/// <amd-dependency path="esri/core/tsSupport/decorateHelper" name="__decorate" />
 import { tsx } from "esri/widgets/support/widget";
-
-import HomeSection = require("./sections/HomeSection");
+import HomeSection from "./sections/HomeSection";
 import { FloorsSection, Floor } from "./sections/FloorsSection";
-import SurroundingsSection = require("./sections/SurroundingsSection");
-import Collection = require("esri/core/Collection");
+import SurroundingsSection from "./sections/SurroundingsSection";
+import Collection from "esri/core/Collection";
 import {Timetable, DayTimetable} from "./widgets/Timetable/Timetable";
 
 export const portalUrl = "https://zurich.maps.arcgis.com";

@@ -14,21 +14,18 @@
  * limitations under the License.
  *
  */
-/// <amd-dependency path="esri/core/tsSupport/declareExtendsHelper" name="__extends" />
-/// <amd-dependency path="esri/core/tsSupport/decorateHelper" name="__decorate" />
-
-import { subclass, declared, property } from "esri/core/accessorSupport/decorators";
+import { subclass, property } from "esri/core/accessorSupport/decorators";
 
 // Esri
-import Accessor = require("esri/core/Accessor");
-import BuildingSceneLayer = require("esri/layers/BuildingSceneLayer");
-import watchUtils = require("esri/core/watchUtils");
-import Renderer = require("esri/renderers/Renderer");
+import Accessor from "esri/core/Accessor";
+import BuildingSceneLayer from "esri/layers/BuildingSceneLayer";
+import * as watchUtils from "esri/core/watchUtils";
+import Renderer from "esri/renderers/Renderer";
 import { createFilterFor, FLOOR_FILTER_NAME, definitionExpressions } from "./visualVariables";
 
 // App
-import AppState = require("../AppState");
-import buildingSceneLayerUtils = require("./buildingSceneLayerUtils");
+import AppState from "../AppState";
+import * as buildingSceneLayerUtils from "./buildingSceneLayerUtils";
 
 interface BuildingVisualisationCtorArgs {
   layer: BuildingSceneLayer;
@@ -39,7 +36,7 @@ interface BuildingVisualisationCtorArgs {
 }
 
 @subclass("support/BuildingVisualisation")
-class BuildingVisualisation extends declared(Accessor) {
+class BuildingVisualisation extends Accessor {
   //--------------------------------------------------------------------------
   //
   //  Properties

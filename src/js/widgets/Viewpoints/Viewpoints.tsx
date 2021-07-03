@@ -14,22 +14,18 @@
  * limitations under the License.
  *
  */
-/// <amd-dependency path="esri/core/tsSupport/declareExtendsHelper" name="__extends" />
-/// <amd-dependency path="esri/core/tsSupport/decorateHelper" name="__decorate" />
-
-import { subclass, declared, property } from "esri/core/accessorSupport/decorators";
-import { tsx, renderable } from "esri/widgets/support/widget";
-
-import AppState = require("../../AppState");
-import Widget = require("esri/widgets/Widget");
-import WebScene = require("esri/WebScene");
-import Collection = require("esri/core/Collection");
-import watchUtils = require("esri/core/watchUtils");
-import Handles = require("esri/core/Handles");
-import OneViewpoint = require("./OneViewpoint");
+import { subclass, property } from "esri/core/accessorSupport/decorators";
+import { tsx } from "esri/widgets/support/widget";
+import AppState from "../../AppState";
+import Widget from "esri/widgets/Widget";
+import WebScene from "esri/WebScene";
+import Collection from "esri/core/Collection";
+import * as watchUtils from "esri/core/watchUtils";
+import Handles from "esri/core/Handles";
+import OneViewpoint from "./OneViewpoint";
 
 @subclass("widgets/Viewpoints")
-class Viewpoints extends declared(Widget) {
+class Viewpoints extends Widget {
   @property()
   appState: AppState;
 
@@ -49,8 +45,7 @@ class Viewpoints extends declared(Widget) {
   }
 
   @property({readOnly: true, dependsOn: ["appState.view.map.presentation.slides"]})
-  @renderable()
-  get slides(): Collection<OneViewpoint> {
+    get slides(): Collection<OneViewpoint> {
     return this.appState ? 
       (this.appState.view.map as WebScene).presentation.slides
         .map((s) => new OneViewpoint({slide: s, appState: this.appState})) 

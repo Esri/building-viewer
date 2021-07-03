@@ -14,35 +14,29 @@
  * limitations under the License.
  *
  */
-/// <amd-dependency path="esri/core/tsSupport/declareExtendsHelper" name="__extends" />
-/// <amd-dependency path="esri/core/tsSupport/decorateHelper" name="__decorate" />
+import { subclass, property } from "esri/core/accessorSupport/decorators";
+import { tsx } from "esri/widgets/support/widget";
+import Section from "./Section";
+import Collection from "esri/core/Collection";
+import Widget from "esri/widgets/Widget";
+import FloorSelector from "../widgets/FloorSelector/FloorSelector";
+import * as watchUtils from "esri/core/watchUtils";
+import FeatureLayer from "esri/layers/FeatureLayer";
+import Legend from "esri/widgets/Legend";
+import PopupInfo from "../widgets/Popup/PopupInfo";
+import * as appUtils from "../support/appUtils";
+import Handles from "esri/core/Handles";
+import AppState from "../AppState";
 
-import { subclass, declared, property } from "esri/core/accessorSupport/decorators";
-import { tsx, renderable } from "esri/widgets/support/widget";
-
-import Section = require("./Section");
-import Collection = require("esri/core/Collection");
-import Widget = require("esri/widgets/Widget");
-import FloorSelector = require("../widgets/FloorSelector/FloorSelector");
-import watchUtils = require("esri/core/watchUtils");
-import FeatureLayer = require("esri/layers/FeatureLayer");
-import Legend = require("esri/widgets/Legend");
-import PopupInfo = require("../widgets/Popup/PopupInfo");
-import appUtils = require("../support/appUtils");
-import Handles = require("esri/core/Handles");
-import AppState = require("../AppState");
-
-@subclass()
-class LegendWrapper extends declared(Widget) {
+@subclass("legendWrapper")
+class LegendWrapper extends Widget {
   @property()
-  @renderable()
-  hide: boolean = true;
+    hide: boolean = true;
 
   @property({ constructOnly: true })
   appState: AppState;
 
   @property()
-  @renderable()
   legend: Legend;
 
   constructor(args: { appState: AppState }, container: string) {
@@ -64,10 +58,9 @@ class LegendWrapper extends declared(Widget) {
 }
 
 
-@subclass()
-class PlayButton extends declared(Widget) {
+@subclass("playButton")
+class PlayButton extends Widget {
   @property()
-  @renderable()
   playing: boolean = false;
 
   @property()
@@ -130,8 +123,8 @@ interface FloorsSectionCtorArgs2 {
   maxFloor: number;
 }
 
-@subclass()
-export class Floor extends declared(Widget) {
+@subclass("Floor")
+export class Floor extends Widget {
   @property()
   title: string;
 
@@ -169,7 +162,7 @@ export class Floor extends declared(Widget) {
 }
 
 @subclass("sections/FloorsSection")
-export class FloorsSection extends declared(Section) {
+export class FloorsSection extends Section {
   @property()
   title = "Floor by floor";
 
@@ -337,7 +330,8 @@ export class FloorsSection extends declared(Section) {
             this.legendWrapper.legend.layerInfos = [
               {
                 layer: this.layer,
-                title: "Legend"
+                title: "Legend",
+                hideLayers: []
               }
             ];
           }

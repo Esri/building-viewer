@@ -4,7 +4,7 @@
     <meta name="viewport" content="initial-scale=1, maximum-scale=1,user-scalable=no"/>
     <title>Building Viewer</title>
     <meta name="viewport" content="minimal-ui">
-    <link rel="stylesheet" href="https://jsdev.arcgis.com/4.12/esri/themes/light/main.css">
+    <link rel="stylesheet" href="https://jsdev.arcgis.com/4.20/esri/themes/light/main.css">
     <link rel="stylesheet" href="https://s3-us-west-1.amazonaws.com/patterns.esri.com/files/calcite-web/1.2.4/css/calcite-web.min.css">
     <link rel="stylesheet" href="./src/css/main.css">
     <link rel="stylesheet" href="./src/js/sections/css/sections.css">
@@ -22,18 +22,17 @@
         ]
       };
     </script>
-    <script src="https://js.arcgis.com/4.12/"></script>
+    <script src="https://js.arcgis.com/4.20/"></script>
     <!-- include: "type": "js", "files": "**/*.js" -->
   </head>
   <body>
     <div id="mainViewDiv"></div>
     <div id="appDiv">
-      <div id="floorLegend"></div>
-      <div id="popup"></div>
     </div>
     <script>require([
       "app/BuildingViewer", 
-      "app/config"
+      "app/config",
+      "dojo/domReady!"
     ], 
     function(
       BuildingViewer,
@@ -48,7 +47,10 @@
         websceneId: config.websceneId,
 
         // Your different sections:
-        sections: config.sections
+        sections: config.sections,
+
+        // The container where to display the html element:
+        container: document.getElementById("appDiv")
       };
 
       if (config.portalUrl) {
@@ -63,9 +65,7 @@
         args.extraQuery = config.extraQuery;
       }
 
-      new BuildingViewer(args,
-      // The container where to display the html element:
-      "appDiv");
+      new BuildingViewer(args);
     });</script>
   </body>
 </html>

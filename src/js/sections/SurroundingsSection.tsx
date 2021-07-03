@@ -14,31 +14,27 @@
  * limitations under the License.
  *
  */
-/// <amd-dependency path="esri/core/tsSupport/declareExtendsHelper" name="__extends" />
-/// <amd-dependency path="esri/core/tsSupport/decorateHelper" name="__decorate" />
+import { subclass, property } from "esri/core/accessorSupport/decorators";
+import { tsx } from "esri/widgets/support/widget";
 
-import { subclass, declared, property } from "esri/core/accessorSupport/decorators";
-import { tsx, renderable } from "esri/widgets/support/widget";
+import Section from "./Section";
+import AppState from "../AppState";
+import Collection from "esri/core/Collection";
+import WebScene from "esri/WebScene";
+import Camera from "esri/Camera";
+import Widget from "esri/widgets/Widget";
+import Toggle from "../widgets/Toggle/Toggle";
+import * as watchUtils from "esri/core/watchUtils";
+import FeatureLayer from "esri/layers/FeatureLayer";
+import GroupLayer from "esri/layers/GroupLayer";
+import * as appUtils from "../support/appUtils";
 
-import Section = require("./Section");
-import AppState = require("../AppState");
-import Collection = require("esri/core/Collection");
-import WebScene = require("esri/WebScene");
-import Camera = require("esri/Camera");
-import Widget = require("esri/widgets/Widget");
-import Toggle = require("../widgets/Toggle/Toggle");
-import watchUtils = require("esri/core/watchUtils");
-import FeatureLayer = require("esri/layers/FeatureLayer");
-import GroupLayer = require("esri/layers/GroupLayer");
-import appUtils = require("../support/appUtils");
-
-@subclass()
-class SurroundingsElement extends declared(Widget) {
+@subclass("SurroundingsElement")
+class SurroundingsElement extends Widget {
   @property()
   toggle = new Toggle();
 
   @property({aliasOf: "toggle.active"})
-  @renderable()
   set active(isActive: boolean) {
     this.toggle.active = isActive;
   }
@@ -103,8 +99,8 @@ class SurroundingsElement extends declared(Widget) {
   }
 }
 
-@subclass()
-class PoIElement extends declared(Widget) {
+@subclass("PoIElement")
+class PoIElement extends Widget {
   @property()
   camera: Camera;
 
@@ -130,7 +126,7 @@ class PoIElement extends declared(Widget) {
 }
 
 @subclass("sections/SurroundingsSection")
-class SurroundingsSection extends declared(Section) {
+class SurroundingsSection extends Section {
   @property()
   title = "Surroundings";
 
@@ -144,8 +140,7 @@ class SurroundingsSection extends declared(Section) {
   poiElements: Collection<PoIElement>;
 
   @property({dependsOn: ["appState.view.map.layers", "poiElements"], readOnly: true})
-  @renderable()
-  get elements() {
+    get elements() {
     if (this.appState && this.appState.view.map.layers.length > 0) {
       const elements = this.appState.view.map.layers
       .filter(layer => layer.title.indexOf(appUtils.SURROUNDINGS_LAYER_PREFIX) > -1)

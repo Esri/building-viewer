@@ -14,18 +14,14 @@
  * limitations under the License.
  *
  */
-/// <amd-dependency path="esri/core/tsSupport/declareExtendsHelper" name="__extends" />
-/// <amd-dependency path="esri/core/tsSupport/decorateHelper" name="__decorate" />
-
-import { subclass, declared, property } from "esri/core/accessorSupport/decorators";
-import { tsx, renderable } from "esri/widgets/support/widget";
-
-import Slide = require("esri/webscene/Slide");
-import AppState = require("../../AppState");
-import Widget = require("esri/widgets/Widget");
+import { subclass, property } from "esri/core/accessorSupport/decorators";
+import { tsx } from "esri/widgets/support/widget";
+import Slide from "esri/webscene/Slide";
+import AppState from "../../AppState";
+import Widget from "esri/widgets/Widget";
 
 @subclass("widgets/Viewpoints/Viewpoint")
-class OneViewpoint extends declared(Widget) {
+class OneViewpoint extends Widget {
   @property()
   slide: Slide;
 
@@ -33,7 +29,6 @@ class OneViewpoint extends declared(Widget) {
   appState: AppState;
 
   @property()
-  @renderable()
   active: boolean = false;
 
   render() {

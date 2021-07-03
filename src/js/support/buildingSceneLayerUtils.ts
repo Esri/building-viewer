@@ -14,11 +14,11 @@
  * limitations under the License.
  *
  */
-import BuildingSceneLayer = require("esri/layers/BuildingSceneLayer");
-import BuildingComponentSublayer = require("esri/layers/buildingSublayers/BuildingComponentSublayer");
-import BuildingGroupSublayer = require("esri/layers/buildingSublayers/BuildingGroupSublayer");
+import BuildingSceneLayer from "esri/layers/BuildingSceneLayer";
+import BuildingComponentSublayer from "esri/layers/buildingSublayers/BuildingComponentSublayer";
+import BuildingGroupSublayer from "esri/layers/buildingSublayers/BuildingGroupSublayer";
 import { renderers } from "./visualVariables";
-import AppState = require("../AppState");
+import AppState from "../AppState";
 
 export function updateSubLayersSymbolLayer (buildingLayer: BuildingSceneLayer, propertyPath: string[], value: any) {
   buildingLayer.when(function() {

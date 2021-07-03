@@ -14,29 +14,26 @@
  * limitations under the License.
  *
  */
-/// <amd-dependency path="esri/core/tsSupport/declareExtendsHelper" name="__extends" />
-/// <amd-dependency path="esri/core/tsSupport/decorateHelper" name="__decorate" />
-
-import { subclass, declared, property } from "esri/core/accessorSupport/decorators";
-import { tsx, renderable } from "esri/widgets/support/widget";
+import { subclass, property } from "esri/core/accessorSupport/decorators";
+import { tsx } from "esri/widgets/support/widget";
 
 // esri
-import Sections = require("./sections/Sections");
-import SceneView = require("esri/views/SceneView");
-import Widget = require("esri/widgets/Widget");
-import promiseUtils = require("esri/core/promiseUtils");
-import Camera = require("esri/Camera");
-import SceneLayer = require("esri/layers/SceneLayer");
-import BuildingSceneLayer = require("esri/layers/BuildingSceneLayer");
-import WebScene = require("esri/WebScene");
+import Sections from "./sections/Sections";
+import SceneView from "esri/views/SceneView";
+import Widget from "esri/widgets/Widget";
+import * as promiseUtils from "esri/core/promiseUtils";
+import Camera from "esri/Camera";
+import SceneLayer from "esri/layers/SceneLayer";
+import BuildingSceneLayer from "esri/layers/BuildingSceneLayer";
+import WebScene from "esri/WebScene";
 
 // BuildingViewer
-import Section = require("./sections/Section");
-import BuildingVisualisation = require("./support/BuildingVisualisation");
-import SurroundingsVisualisation = require("./support/SurroundingsVisualisation");
-import AppState = require("./AppState");
-import appUtils = require("./support/appUtils");
-import Popup = require("./widgets/Popup/Popup");
+import Section from "./sections/Section";
+import BuildingVisualisation from "./support/BuildingVisualisation";
+import SurroundingsVisualisation from "./support/SurroundingsVisualisation";
+import AppState from "./AppState";
+import * as appUtils from "./support/appUtils";
+import Popup from "./widgets/Popup/Popup";
 
 type SectionSublcass = Pick<Section, "camera">;
 
@@ -50,7 +47,7 @@ interface BuildingViewerCtorArgs {
 }
 
 @subclass("webSceneViewer.widgets.LayersLoading.LayersLoadingProgressBar")
-class BuildingViewer extends declared(Widget) {
+class BuildingViewer extends Widget {
   //--------------------------------------------------------------------------
   //
   //  Properties
@@ -64,11 +61,19 @@ class BuildingViewer extends declared(Widget) {
   activeSection: SectionSublcass | string | number;
 
   @property()
-  @renderable()
   sections: Sections;
 
   @property()
   appState = new AppState();
+
+  @property()
+  websceneId: string;
+
+  @property()
+  extraQuery: string;
+
+  @property()
+  portalUrl: string;
 
   //--------------------------------------------------------------------------
   //
@@ -82,7 +87,9 @@ class BuildingViewer extends declared(Widget) {
   @property({ aliasOf: "appState.surroundingsLayer"})
   surroundingsLayer: SurroundingsVisualisation;
 
-  private firstRendering: boolean = true;  
+  private firstRendering: boolean = true;
+
+  private rawSections: Pick<Section, "render" | "active" | "id" | "paneRight" | "title" | "camera" | "onLeave" | "onEnter" | "appState">[];
 
   //--------------------------------------------------------------------------
   //
@@ -94,7 +101,21 @@ class BuildingViewer extends declared(Widget) {
     super(args as any);
 
     this.view = appUtils.createViewFromWebScene({websceneId: args.websceneId, mapContainer: args.mapContainer, portalUrl: args.portalUrl});
-    this.sections = new Sections(args.sections, this.appState);
+
+    if (args.floorMapping) {
+      this.floorMapping = args.floorMapping.bind(this);
+    }
+  }
+
+  normalizeCtorArgs(args: BuildingViewerCtorArgs) {
+    this.rawSections = args.sections;
+    delete args["sections"];
+
+    return args;
+  }
+
+  initialize() {
+    this.sections = new Sections(this.rawSections, this.appState);
 
     (this.view.map as WebScene).when(() => {
       // Save the initial layers:
@@ -107,7 +128,7 @@ class BuildingViewer extends declared(Widget) {
           const BSL = this.appState.view.map.layers.find(layer => layer.title.indexOf(appUtils.MAIN_LAYER_PREFIX) > -1);
           
           if (!BSL) {
-            throw new Error("Cannot find the main BuildingSceneLayer (" + appUtils.MAIN_LAYER_PREFIX + ") in the webscene " + args.websceneId);
+            throw new Error("Cannot find the main BuildingSceneLayer (" + appUtils.MAIN_LAYER_PREFIX + ") in the webscene " + this.websceneId);
           }
 
           const visualisationArgs: any = {
@@ -115,12 +136,12 @@ class BuildingViewer extends declared(Widget) {
             layer: BSL as BuildingSceneLayer
           };
 
-          if (args.floorMapping) {
-            visualisationArgs.floorMapping = args.floorMapping;
+          if (this.floorMapping) {
+            visualisationArgs.floorMapping = this.floorMapping;
           }
 
-          if (args.extraQuery) {
-            visualisationArgs.extraQuery = args.extraQuery;
+          if (this.extraQuery) {
+            visualisationArgs.extraQuery = this.extraQuery;
           }
           
           this.buildingLayer = new BuildingVisualisation(visualisationArgs);
@@ -138,8 +159,8 @@ class BuildingViewer extends declared(Widget) {
       
       ///////////////////////////////////
       // Setup camera:
-      this.sections.forEach(section => {
-        const slide = (this.view.map as WebScene).presentation.slides.find(slide => slide.title.text === section.title);
+      this.sections.forEach((section) => {
+        const slide = (this.view.map as WebScene).presentation.slides.find((slide) => slide.title.text === section.title);
         if (slide) {
           section.camera = slide.viewpoint.camera;
           (this.view.map as WebScene).presentation.slides.remove(slide);
@@ -172,13 +193,6 @@ class BuildingViewer extends declared(Widget) {
     });
   }
 
-  normalizeCtorArgs(args: BuildingViewerCtorArgs, container: string) {
-    return {
-      mapContainer: args.mapContainer,
-      container: container
-    };
-  }
-
   render() {
     return (<div>
       <div class="left side-container">{this.sections.paneLeft(this.firstRendering)}</div>
@@ -195,6 +209,8 @@ class BuildingViewer extends declared(Widget) {
 
     new Popup({ appState: this.appState, container: "popup"});
   }
+
+  floorMapping(num: number) { return num; }
 }
 
 export = BuildingViewer;

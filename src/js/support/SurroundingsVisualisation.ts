@@ -14,22 +14,18 @@
  * limitations under the License.
  *
  */
-/// <amd-dependency path="esri/core/tsSupport/declareExtendsHelper" name="__extends" />
-/// <amd-dependency path="esri/core/tsSupport/decorateHelper" name="__decorate" />
-
-import { subclass, declared, property } from "esri/core/accessorSupport/decorators";
-
-import Accessor = require("esri/core/Accessor");
+import { subclass, property } from "esri/core/accessorSupport/decorators";
+import Accessor from "esri/core/Accessor";
 
 // App
-import AppState = require("../AppState");
-import buildingSceneLayerUtils = require("./buildingSceneLayerUtils");
-import watchUtils = require("esri/core/watchUtils");
-import Renderer = require("esri/renderers/Renderer");
-import SceneLayer = require("esri/layers/SceneLayer");
+import AppState from "../AppState";
+import * as buildingSceneLayerUtils from "./buildingSceneLayerUtils";
+import * as watchUtils from "esri/core/watchUtils";
+import Renderer from "esri/renderers/Renderer";
+import SceneLayer from "esri/layers/SceneLayer";
 
 @subclass("support/SurroundingsVisualisation")
-class SurroundingsVisualisation extends declared(Accessor) {
+class SurroundingsVisualisation extends Accessor {
   //--------------------------------------------------------------------------
   //
   //  Properties

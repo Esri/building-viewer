@@ -14,20 +14,17 @@
  * limitations under the License.
  *
  */
-/// <amd-dependency path="esri/core/tsSupport/declareExtendsHelper" name="__extends" />
-/// <amd-dependency path="esri/core/tsSupport/decorateHelper" name="__decorate" />
-
-import { subclass, declared, property } from "esri/core/accessorSupport/decorators";
+import { subclass, property } from "esri/core/accessorSupport/decorators";
 import { tsx } from "esri/widgets/support/widget";
 
-import Collection = require("esri/core/Collection");
-import Section = require("./Section");
-import AppState = require("../AppState");
+import Collection from "esri/core/Collection";
+import Section from "./Section";
+import AppState from "../AppState";
 
 type SectionSubclass = Pick<Section, "render" | "active" | "id" | "paneRight" | "title" | "camera" | "onLeave" | "onEnter" | "appState">;
 
 @subclass("sections/Section")
-class Sections extends declared(Collection)<SectionSubclass> {
+class Sections extends Collection<SectionSubclass> {
   //--------------------------------------------------------------------------
   //
   //  Properties
@@ -85,8 +82,9 @@ class Sections extends declared(Collection)<SectionSubclass> {
   //--------------------------------------------------------------------------
 
   constructor(sections: SectionSubclass[], appState: AppState) {
-    super(sections.map(section => {
+    super(sections.map((section) => {
       section.appState = appState;
+      return section;
     }));
 
     this.appState = appState;

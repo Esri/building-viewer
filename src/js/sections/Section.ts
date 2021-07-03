@@ -14,18 +14,15 @@
  * limitations under the License.
  *
  */
-/// <amd-dependency path="esri/core/tsSupport/declareExtendsHelper" name="__extends" />
-/// <amd-dependency path="esri/core/tsSupport/decorateHelper" name="__decorate" />
+import { subclass,property } from "esri/core/accessorSupport/decorators";
 
-import { subclass, declared, property } from "esri/core/accessorSupport/decorators";
+import Camera from "esri/Camera";
+import Widget from "esri/widgets/Widget";
 
-import Camera = require("esri/Camera");
-import Widget = require("esri/widgets/Widget");
-
-import AppState = require("../AppState");
+import AppState from "../AppState";
 
 @subclass("sections/Section")
-abstract class Section extends declared(Widget) {
+abstract class Section extends Widget {
   @property()
   appState: AppState;
 
@@ -41,9 +38,9 @@ abstract class Section extends declared(Widget) {
   @property()
   active: boolean = false;
 
-  abstract render(): JSX.Element;
+  abstract render(): any;
 
-  abstract paneRight(): JSX.Element;
+  abstract paneRight(): any;
 
   onEnter() {}
 

@@ -14,23 +14,17 @@
  * limitations under the License.
  *
  */
-/// <amd-dependency path="esri/core/tsSupport/declareExtendsHelper" name="__extends" />
-/// <amd-dependency path="esri/core/tsSupport/decorateHelper" name="__decorate" />
-
-import { subclass, declared, property } from "esri/core/accessorSupport/decorators";
-import { tsx, renderable } from "esri/widgets/support/widget";
-
-import AppState = require("../../AppState");
-import Widget = require("esri/widgets/Widget");
+import { subclass, property } from "esri/core/accessorSupport/decorators";
+import { tsx } from "esri/widgets/support/widget";
+import AppState from "../../AppState";
+import Widget from "esri/widgets/Widget";
 
 @subclass("widgets/Popup")
-class Popup extends declared(Widget) {
+class Popup extends Widget {
   @property({aliasOf: "appState.popupInfo.active"})
-  @renderable()
   active: boolean = false;
 
   @property({aliasOf: "appState.popupInfo.image"})
-  @renderable()
   image: string;
 
   @property({aliasOf: "appState.popupInfo.credit"})

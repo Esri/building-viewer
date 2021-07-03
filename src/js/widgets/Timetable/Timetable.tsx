@@ -14,14 +14,10 @@
  * limitations under the License.
  *
  */
-/// <amd-dependency path="esri/core/tsSupport/declareExtendsHelper" name="__extends" />
-/// <amd-dependency path="esri/core/tsSupport/decorateHelper" name="__decorate" />
-
-import { subclass, declared, property } from "esri/core/accessorSupport/decorators";
-import { tsx, renderable } from "esri/widgets/support/widget";
-
-import Widget = require("esri/widgets/Widget");
-import Collection = require("esri/core/Collection");
+import { subclass, property } from "esri/core/accessorSupport/decorators";
+import { tsx } from "esri/widgets/support/widget";
+import Widget from "esri/widgets/Widget";
+import Collection from "esri/core/Collection";
 
 const daysName = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"];
 
@@ -35,7 +31,7 @@ interface DayTimetableCtorArgs {
 }
 
 @subclass("widgets/Timetable")
-export class DayTimetable extends declared(Widget) {
+export class DayTimetable extends Widget {
   @property()
   opens: string;
 
@@ -46,15 +42,21 @@ export class DayTimetable extends declared(Widget) {
   index = 0;
 
   @property({dependsOn: ["opens", "index"]})
-  @renderable()
-  private get openDate() {
+    private get openDate() {
+    if (!this.opens) {
+      return new Date();
+    }
+
     const time = this.opens.split(":").map((aTime) => parseInt(aTime));
     return new Date(2019, 2, 18 + this.index, time[0], time[1]);
   }
 
   @property({dependsOn: ["closes", "index"]})
-  @renderable()
-  private get closeDate() {
+    private get closeDate() {
+    if (!this.closes) {
+      return new Date();
+    }
+
     const time = this.closes.split(":").map((aTime) => parseInt(aTime));
     return new Date(2019, 2, 18 + this.index, time[0], time[1]);
   }
@@ -81,13 +83,11 @@ export class DayTimetable extends declared(Widget) {
 }
 
 @subclass("widgets/Timetable")
-export class Timetable extends declared(Widget) {
+export class Timetable extends Widget {
   @property()
-  @renderable()
   today = new Date();
 
   @property()
-  @renderable()
   dates: Collection<DayTimetable>;
 
   render() {

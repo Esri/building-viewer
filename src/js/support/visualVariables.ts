@@ -14,7 +14,7 @@
  * limitations under the License.
  *
  */
-import SimpleRenderer = require("esri/renderers/SimpleRenderer");
+import SimpleRenderer from "esri/renderers/SimpleRenderer";
 
 export const renderers = {
   surroundings: {

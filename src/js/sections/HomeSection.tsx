@@ -14,24 +14,19 @@
  * limitations under the License.
  *
  */
-/// <amd-dependency path="esri/core/tsSupport/declareExtendsHelper" name="__extends" />
-/// <amd-dependency path="esri/core/tsSupport/decorateHelper" name="__decorate" />
-
-import { subclass, declared, property } from "esri/core/accessorSupport/decorators";
-import { tsx, renderable } from "esri/widgets/support/widget";
-
-import Section = require("./Section");
-
-import AppState = require("../AppState");
+import { subclass, property } from "esri/core/accessorSupport/decorators";
+import { tsx } from "esri/widgets/support/widget";
+import Section from "./Section";
+import AppState from "../AppState";
 import { Timetable } from "../widgets/Timetable/Timetable";
-import Viewpoints = require("../widgets/Viewpoints/Viewpoints");
-import watchUtils = require("esri/core/watchUtils");
-import Handles = require("esri/core/Handles");
-import FeatureLayer = require("esri/layers/FeatureLayer");
-import appUtils = require("../support/appUtils");
-import Collection = require("esri/core/Collection");
-import PopupInfo = require("../widgets/Popup/PopupInfo");
-import WebScene = require("esri/WebScene");
+import Viewpoints from "../widgets/Viewpoints/Viewpoints";
+import * as watchUtils from "esri/core/watchUtils";
+import Handles from "esri/core/Handles";
+import FeatureLayer from "esri/layers/FeatureLayer";
+import * as appUtils from "../support/appUtils";
+import Collection from "esri/core/Collection";
+import PopupInfo from "../widgets/Popup/PopupInfo";
+import WebScene from "esri/WebScene";
 
 interface HomeSectionCtorArgs {
   content?: (that: HomeSection) => any;
@@ -41,7 +36,7 @@ interface HomeSectionCtorArgs {
 }
 
 @subclass("sections/HomeSection")
-class HomeSection extends declared(Section) {
+class HomeSection extends Section {
   @property()
   title = "Overview";
 
@@ -52,7 +47,6 @@ class HomeSection extends declared(Section) {
   timetable: Timetable;
 
   @property()
-  @renderable()
   private textTitle: string;
 
   @property()

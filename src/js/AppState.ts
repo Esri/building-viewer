@@ -14,18 +14,14 @@
  * limitations under the License.
  *
  */
-/// <amd-dependency path="esri/core/tsSupport/declareExtendsHelper" name="__extends" />
-/// <amd-dependency path="esri/core/tsSupport/decorateHelper" name="__decorate" />
-
-import { subclass, declared, property } from "esri/core/accessorSupport/decorators";
-
-import Accessor = require("esri/core/Accessor");
-import SceneView = require("esri/views/SceneView");
-import BuildingVisualisation = require("./support/BuildingVisualisation");
-import PopupInfo = require("./widgets/Popup/PopupInfo");
+import { subclass, property } from "esri/core/accessorSupport/decorators";
+import Accessor from "esri/core/Accessor";
+import SceneView from "esri/views/SceneView";
+import BuildingVisualisation from "./support/BuildingVisualisation";
+import PopupInfo from "./widgets/Popup/PopupInfo";
 
 @subclass("AppState")
-class AppState extends declared(Accessor) {
+class AppState extends Accessor {
   @property()
   pageLocation: string;
 

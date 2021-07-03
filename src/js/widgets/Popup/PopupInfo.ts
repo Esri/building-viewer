@@ -14,15 +14,11 @@
  * limitations under the License.
  *
  */
-/// <amd-dependency path="esri/core/tsSupport/declareExtendsHelper" name="__extends" />
-/// <amd-dependency path="esri/core/tsSupport/decorateHelper" name="__decorate" />
+import { subclass, property } from "esri/core/accessorSupport/decorators";
+import Accessor from "esri/core/Accessor";
 
-import { subclass, declared, property } from "esri/core/accessorSupport/decorators";
-
-import Accessor = require("esri/core/Accessor");
-
-@subclass()
-class PopupInfo extends declared(Accessor) {
+@subclass("PopupInfo")
+class PopupInfo extends Accessor {
   @property()
   image: string;
 

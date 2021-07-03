@@ -14,12 +14,12 @@
  * limitations under the License.
  *
  */
-import WebScene = require("esri/WebScene");
-import SceneView = require("esri/views/SceneView");
-import Layer = require("esri/layers/Layer");
-import Collection = require("esri/core/Collection");
-import PortalItem = require("esri/portal/PortalItem");
-import Portal = require("esri/portal/Portal");
+import WebScene from "esri/WebScene";
+import SceneView from "esri/views/SceneView";
+import Layer from "esri/layers/Layer";
+import Collection from "esri/core/Collection";
+import PortalItem from "esri/portal/PortalItem";
+import Portal from "esri/portal/Portal";
 
 export function createViewFromWebScene(args: {
   mapContainer: string, 

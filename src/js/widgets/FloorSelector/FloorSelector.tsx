@@ -14,14 +14,10 @@
  * limitations under the License.
  *
  */
-/// <amd-dependency path="esri/core/tsSupport/declareExtendsHelper" name="__extends" />
-/// <amd-dependency path="esri/core/tsSupport/decorateHelper" name="__decorate" />
-
-import { subclass, declared, property } from "esri/core/accessorSupport/decorators";
-import { tsx, renderable } from "esri/widgets/support/widget";
-
-import Widget = require("esri/widgets/Widget");
-import AppState = require("../../AppState");
+import { subclass, property } from "esri/core/accessorSupport/decorators";
+import { tsx } from "esri/widgets/support/widget";
+import Widget from "esri/widgets/Widget";
+import AppState from "../../AppState";
 
 
 interface FloorSelectorCtorArgs {
@@ -35,17 +31,14 @@ interface FloorSelectorCtorArgs2 {
 }
 
 @subclass("widgets/FloorSelector")
-class FloorSelector extends declared(Widget) {
+class FloorSelector extends Widget {
   @property({aliasOf: "appState.floorNumber"})
-  @renderable()
   activeFloor: number;
 
   @property()
-  @renderable()
   maxFloor = 4;
 
   @property()
-  @renderable()
   minFloor = 0;
 
   @property({constructOnly: true})
