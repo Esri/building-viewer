@@ -1,3 +1,4 @@
+@use "sass:math";
 @import "../../../../css/variables.scss";
 @import "../../../../css/mixins.scss";
 
@@ -16,7 +17,7 @@ $size: 16px;
   .knob {
     height: ($size - 2);
     width: ($size - 2);
-    border-radius: ($size - 2) / 2;
+    border-radius: math.div($size - 2, 2);
     margin-top: 1px;
     margin-left: 1px;
     background-color: $primaryColor;

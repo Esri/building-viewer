@@ -1,3 +1,4 @@
+@use "sass:math";
 @import "../../../../css/variables.scss";
 @import "../../../../css/mixins.scss";
 
@@ -28,8 +29,8 @@ $transition-time: 0.5s;
 
     &.active {
       font-size: $floorSelectorLevelActiveFontSize;
-      margin-top: -$floorSelectorLevelActiveFontSize / 2 + 15px;
-      margin-bottom: -$floorSelectorLevelActiveFontSize / 2 + 15px;
+      margin-top: math.div(-$floorSelectorLevelActiveFontSize, 2) + 15px;
+      margin-bottom: math.div(-$floorSelectorLevelActiveFontSize, 2) + 15px;
       color: #F6A803;
       text-transform: uppercase;
       pointer-events: all;
