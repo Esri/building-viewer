@@ -142,4 +142,4 @@ new HomeSection({
 
 ---
 
-To go beyond and add more section, please read [the sections documentation](./Section.html). You can always check the [naming conventions](./NameConventions.html) for a quick look at the different layer and slide names.
+To go beyond and add more section, please read [the sections documentation](./Section.md). You can always check the [naming conventions](./NameConventions.md) for a quick look at the different layer and slide names.
