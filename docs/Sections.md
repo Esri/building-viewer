@@ -12,7 +12,7 @@ The demo uses 3 different sections, the home section, the floor section and the 
 The home section ships with 3 main part: 
 
 - The **description of the building** on the left. By default, the description is taken from the scene's description. As shown in the `Quickstart` guide, you can add your text in the `Properties` pane of the Scene Viewer. However, if you'd like to add more complex content, e.g. involving html or somejavacsript logic, you can always pass a parameter `content` to the `HomeSection` constructor. This parameter is a function that takes in argument the section and return some `VNodes` that will be later added to the left. You are now totally free to design the exact content you would like.
-- The **viewpoints**: every slides that you create in your webscene with automatically be added as a viewpoints on the right of the HomeSection if the slide's name is not part of the [reserved names](./NamingConvention.md).
+- The **viewpoints**: every slides that you create in your webscene with automatically be added as a viewpoints on the right of the HomeSection if the slide's name is not part of the [reserved names](./NameConventions.md).
 - The **building opening hours**: you can pass to your Building Viewer a list of opening hours as follow:
 ```typescript
 new HomeSection({
