@@ -1,5 +1,11 @@
 # Building Viewer
 
+
+> ⚠️ **Warning**  
+> This application do not currently reflect the latest version of the [ArcGIS Maps SDK for JavaScript](https://developers.arcgis.com/javascript/latest/) and the current [programming patterns](https://developers.arcgis.com/javascript/latest/programming-patterns/).  
+> See the [Transition plan: widgets to components](https://developers.arcgis.com/javascript/latest/components-transition-plan/) guide for more information.
+
+
 This demonstrates the use of [ArcGIS API 4 for JavaScript](https://developers.arcgis.com/javascript/) and [Building Scene Layers](https://developers.arcgis.com/javascript/latest/api-reference/) in a compelling website.
 
 The application presents the [Turanga library](https://my.christchurchcitylibraries.com/turanga/) in 3D. The visitor can explore the library by navigating around, and then inside, floor by floor, to discover this amazing building.
