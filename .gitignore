@@ -1,7 +1,2 @@
-node_modules/*
-src/**/*.js*
-src/**/*.css
-*.css.map
-css/**/*.css*
-.sass-cache/*
+node_modules/
 dist/

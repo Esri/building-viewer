@@ -1,101 +1,76 @@
 # Building Viewer
 
+Building Viewer is a Vite and TypeScript application that presents [Tūranga](https://my.christchurchcitylibraries.com/turanga/), the central library in Christchurch, New Zealand, as an interactive 3D scene. It uses the current component-based programming pattern from the [ArcGIS Maps SDK for JavaScript](https://developers.arcgis.com/javascript/latest/) and loads its content from an ArcGIS WebScene.
 
-> ⚠️ **Warning**  
-> This application do not currently reflect the latest version of the [ArcGIS Maps SDK for JavaScript](https://developers.arcgis.com/javascript/latest/) and the current [programming patterns](https://developers.arcgis.com/javascript/latest/programming-patterns/).  
-> See the [Transition plan: widgets to components](https://developers.arcgis.com/javascript/latest/components-transition-plan/) guide for more information.
+[View it live](https://esri.github.io/building-viewer)
 
-
-This demonstrates the use of [ArcGIS API 4 for JavaScript](https://developers.arcgis.com/javascript/) and [Building Scene Layers](https://developers.arcgis.com/javascript/latest/api-reference/) in a compelling website.
-
-The application presents the [Turanga library](https://my.christchurchcitylibraries.com/turanga/) in 3D. The visitor can explore the library by navigating around, and then inside, floor by floor, to discover this amazing building.
-
-[Visit the live website here.](https://esri.github.io/building-viewer)
-
-![The live website](./docs/images/screenshot_1.png)
-
+[![Building Viewer showing Tūranga Library in 3D](building-viewer.jpeg)](building-viewer.png)
 
 ## Features
-* Building exploration - discover the great Turanga library
-* Customisation - use this app to display your own building
-* Discover the building floor by floor on a 2D visualisation
-* Get a broader perspective of the building surroundings
+
+- Explore Tūranga Library in an interactive 3D scene from a set of predefined viewpoints.
+- Discover each public floor, including its facilities, images, description, and Māori name pronunciation.
+- Examine nearby parking, transportation, and points of interest.
+- Adapt the application to another building through an ArcGIS WebScene and a TypeScript configuration file.
 
 ## Instructions
 
-### To get a live copy on your machine
+1. Fork and then clone the repo.
+2. Install dependencies with `npm install`.
+3. Update the config file with your services/data.
+4. Start the development app with `npm run dev`.
+5. The production app can be created with `npm run build`.
 
-1. Clone the repo and `npm install` dependencies
-2. Remove ref to this repo: `rm -rf .git`
-3. `npm run build` to compile `src/js/*.ts` and `src/css/*.sccs` files in the same folder and watch for changes
-4. `npm run server` launches a webserver.
-5. Open your browser and enter the local address `http://localhost:8888/`. You should see now the Building Viewer running.
+The application is organized into three sections whose content comes from the WebScene and `src/config.ts`:
 
-### To add your own building
+- **Overview** displays the WebScene title, the configured description and opening hours, and selectable viewpoints created from WebScene slides.
+- **Floor by floor** uses the configured `FLOORS` collection to display floor names, descriptions, pronunciation recordings, and mappings between UI floors and Building Scene Layer `BldgLevel` values. Floor facilities and pictures are filtered by their numeric `level_id` attribute.
+- **Surroundings** controls the configured parking and transportation layers and creates links to nearby places from specially named WebScene slides.
 
-1. Create a webscene with a BuildingSceneLayer named `Building
-2. Open `src/config.tsx` in your favorite code editor
-3. Delete all the content except the two first obscure lines
-4. Now you need to define 2 parameters in the config to get started:
-    
-    The `websceneId` of the webscene you created above
-    ```
-    export const websceneId = "YOUR WEBSCENE ID HERE";
-    ```
-    *Note that you may to also export on which portal this webscene resides if different from the ArcGis's portal: `export const portalUrl = "https://your-portal-url.com";`*
-    
-    The `sections` you'd like to have in your Building Viewer (see documentation about sections). Let's start with only one section, the home page:
-    ```typescript
-    // first import the section:
-    import HomeSection = require("./sections/HomeSection");
+To use another building, create a WebScene with the layers and slides needed by the sections you want to retain, then update the identifiers and content in `src/config.ts`. The current application uses exact layer titles because each title identifies a specific role:
 
-    // then export the `sections` parameter:
-    export const sections = [
-        new HomeSection({})
-    ];
-    ```
+| Layer title                    | Role and required data                                                                                                  |
+| ------------------------------ | ----------------------------------------------------------------------------------------------------------------------- |
+| `Building: Turanga Library`    | Building Scene Layer displayed by the application and filtered by floor.                                                |
+| `City Model: Christchurch`     | Scene Layer used as the surrounding 3D city model.                                                                      |
+| `Floor points`                 | Feature Layer containing floor facilities. Features must have a numeric `level_id` field for filtering.                 |
+| `Floor pictures`               | Feature Layer containing image markers. Features must have a numeric `level_id` field and `url` and `title` attributes. |
+| `Surroundings: Car Parks`      | Feature Layer controlled by the Car Parks switch.                                                                       |
+| `Surroundings: Transportation` | Group Layer controlled by the Transportation switch.                                                                    |
 
-5. Recompile the code and reload the website.
+WebScene slide names also determine their role:
 
-Checkout the documentation in the `docs` folder, and in particular the [quick start guide](./docs/Quickstart.md).
-
-## Requirements
-
-* Notepad or your favorite HTML editor
-* `npm` and some knowledge of [Typescript](https://www.typescriptlang.org/)
-* Web browser with access to the Internet
+- `Overview`, `Floor by floor`, and `Surroundings` define the initial camera for the corresponding section.
+- Slides beginning with `Points of Interest: ` appear as destinations in the Surroundings section. The text after the prefix becomes the displayed label.
+- All other slides appear as selectable viewpoints in the Overview section.
 
 ## Resources
 
-The following external libraries, APIs, open datasets and specifications were used to make this application:
+The following libraries, APIs, and datasets were used to make this application:
 
-* [ArcGIS API for JavaScript](https://developers.arcgis.com/javascript/)
-* [Calcite Web](http://esri.github.io/calcite-web/)
-* Turangua's BIM data provided by [Christchurch City Council](https://www.ccc.govt.nz/)
-* [Christchurch city model](https://www.linz.govt.nz/news/2014-03/3d-models-released-christchurch-city) provided by [Christchurch City Council](https://www.ccc.govt.nz/)
-* [Roboto font](https://fonts.google.com/specimen/Roboto)
+- [ArcGIS Maps SDK for JavaScript](https://developers.arcgis.com/javascript/latest/) for the map.
+- Turangua's BIM data provided by [Christchurch City Council](https://www.ccc.govt.nz/)
+- [Christchurch city model](https://www.linz.govt.nz/news/2014-03/3d-models-released-christchurch-city) provided by [Christchurch City Council](https://www.ccc.govt.nz/)
 
-## Issues
+- Floor names pronunciation recordings are from [Christchurch City Libraries](https://my.christchurchcitylibraries.com/turanga/) ([He Hononga](https://my.christchurchcitylibraries.com/wp-content/uploads/sites/5/2019/01/He-Hononga.mp3), [Hapori](https://my.christchurchcitylibraries.com/wp-content/uploads/sites/5/2019/01/Hapori.mp3), [Tuakiri](https://my.christchurchcitylibraries.com/wp-content/uploads/sites/5/2019/01/Tuakiri.mp3), [Tūhuratanga](https://my.christchurchcitylibraries.com/wp-content/uploads/sites/5/2019/01/T%C5%ABhuratanga.mp3), and [Auahatanga](https://my.christchurchcitylibraries.com/wp-content/uploads/sites/5/2019/01/Auahatanga.mp3)).
+- [Roboto font](https://fonts.google.com/specimen/Roboto)
 
-Find a bug or want to request a new feature?  Please let us know by submitting an issue.
+## Disclaimer
+
+This demo application is for illustrative purposes only and it is not maintained. There is no support available for deployment or development of the application.
 
 ## Contributing
 
 Esri welcomes contributions from anyone and everyone. Please see our [guidelines for contributing](https://github.com/esri/contributing).
 
 ## Licensing
-Copyright 2019 Esri
 
-Licensed under the Apache License, Version 2.0 (the "License");
-you may not use this file except in compliance with the License.
-You may obtain a copy of the License at
+Copyright 2026 Esri
 
-   http://www.apache.org/licenses/LICENSE-2.0
+Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except in compliance with the License. You may obtain a copy of the License at
 
-Unless required by applicable law or agreed to in writing, software
-distributed under the License is distributed on an "AS IS" BASIS,
-WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-See the License for the specific language governing permissions and
-limitations under the License.
+[http://www.apache.org/licenses/LICENSE-2.0](http://www.apache.org/licenses/LICENSE-2.0)
 
-A copy of the license is available in the repository's [license.txt](license.txt) file.
+Unless required by applicable law or agreed to in writing, software distributed under the License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the License for the specific language governing permissions and limitations under the License.
+
+A copy of the license is available in the repository's [license.txt](../license.txt) file.
