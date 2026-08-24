@@ -15,6 +15,8 @@ import {
   type SceneInfo,
 } from "./sceneController.ts";
 
+// -------------------- DOM references --------------------
+
 const sceneElement = document.querySelector<ArcgisScene>("#building-scene")!;
 const legendElement = document.querySelector<ArcgisLegend>("#floor-legend")!;
 const appElement = document.querySelector<HTMLElement>("#app")!;
@@ -28,6 +30,8 @@ const popupDismiss =
   document.querySelector<HTMLButtonElement>("#popup-dismiss")!;
 const loadingScreen = document.querySelector<HTMLElement>("#loading-screen")!;
 
+// -------------------- Application state --------------------
+
 let activeSection: SectionId = "overview";
 let selectedFloor = 1;
 let activeViewpoint: string | null = null;
@@ -38,6 +42,32 @@ const surroundingsState = {
   carParks: false,
   transportation: false,
 };
+
+// -------------------- Template utilities --------------------
+
+const requireElement = <T extends Element>(
+  parent: ParentNode,
+  selector: string,
+): T => {
+  const element = parent.querySelector<T>(selector);
+  if (!element) throw new Error(`Required element not found: ${selector}`);
+  return element;
+};
+
+const cloneTemplate = (id: string): DocumentFragment => {
+  const template = requireElement<HTMLTemplateElement>(document, `#${id}`);
+  return template.content.cloneNode(true) as DocumentFragment;
+};
+
+const replaceWithTemplate = (
+  container: HTMLElement,
+  templateId: string,
+): void => {
+  const content = cloneTemplate(templateId);
+  container.replaceChildren(content);
+};
+
+// -------------------- Media and scene setup --------------------
 
 const showPicture = ({ imageUrl, title }: PictureInfo): void => {
   popupImage.src = imageUrl;
@@ -66,37 +96,43 @@ const stopAudio = (): void => {
   }
 };
 
-const titleMarkup = (title: string): string =>
-  `<h1 class="display-title">${title}</h1>`;
+// -------------------- Section rendering --------------------
 
-const renderHours = (): string => {
+const renderHours = (container: HTMLElement): void => {
   const todayIndex = (new Date().getDay() + 6) % 7;
-  return HOURS.map(([day, hours], index) => {
+  HOURS.forEach(([day, hours], index) => {
+    const row = cloneTemplate("hours-row-template");
     const isToday = index === todayIndex;
-    return `<div class="hours-row${isToday ? " is-today" : ""}">
-      <strong>${isToday ? "Today" : day}</strong><span>${hours}</span>
-    </div>`;
-  }).join("");
+    requireElement(row, ".hours-row").classList.toggle("is-today", isToday);
+    requireElement(row, '[data-field="day"]').textContent = isToday
+      ? "Today"
+      : day;
+    requireElement(row, '[data-field="hours"]').textContent = hours;
+    container.append(row);
+  });
 };
 
 const renderOverview = (sceneTitle: string): void => {
-  primaryContent.innerHTML = `${titleMarkup(sceneTitle)}
-    <p class="overview-copy">${OVERVIEW_DESCRIPTION}</p>
-    <section class="hours" aria-labelledby="hours-heading">
-      <h2 id="hours-heading" class="slash-title">Opening hours</h2>${renderHours()}
-    </section>`;
+  replaceWithTemplate(primaryContent, "overview-template");
+  requireElement(primaryContent, '[data-field="title"]').textContent =
+    sceneTitle;
+  requireElement(primaryContent, '[data-field="description"]').textContent =
+    OVERVIEW_DESCRIPTION;
+  renderHours(requireElement(primaryContent, '[data-list="hours"]'));
 
-  contextControls.innerHTML = `<section class="viewpoints" aria-labelledby="viewpoint-heading">
-    <h2 id="viewpoint-heading" class="slash-title">Point of view</h2>
-    <div class="control-list">
-      ${sceneInfo.overviewViewpoints
-        .map(
-          (title) =>
-            `<button type="button" class="viewpoint${activeViewpoint === title ? " is-active" : ""}" data-viewpoint="${title}">${title}</button>`,
-        )
-        .join("")}
-    </div>
-  </section>`;
+  replaceWithTemplate(contextControls, "viewpoints-template");
+  const viewpoints = requireElement<HTMLElement>(
+    contextControls,
+    '[data-list="viewpoints"]',
+  );
+  sceneInfo.overviewViewpoints.forEach((title) => {
+    const item = cloneTemplate("viewpoint-button-template");
+    const button = requireElement<HTMLButtonElement>(item, "[data-viewpoint]");
+    button.dataset.viewpoint = title;
+    button.textContent = title;
+    button.classList.toggle("is-active", activeViewpoint === title);
+    viewpoints.append(item);
+  });
 
   contextControls
     .querySelectorAll<HTMLButtonElement>("[data-viewpoint]")
@@ -115,29 +151,41 @@ const renderOverview = (sceneTitle: string): void => {
 const renderFloor = (): void => {
   const floor = FLOORS[selectedFloor];
   const label = selectedFloor === 0 ? "G" : String(selectedFloor);
-  primaryContent.innerHTML = `<section class="floor-content">
-    <div class="floor-identity"><span class="floor-word">floor</span><span class="floor-number">${label}</span></div>
-    <div class="floor-heading"><h1 class="display-title">${floor.title}</h1><p class="floor-subtitle">[${floor.subtitle}]</p></div>
-    <p class="floor-copy">${floor.description}</p>
-    <p class="audio-row">Listen to the name of this floor
-      <button class="audio-button" type="button" aria-label="Play floor pronunciation"><span></span></button>
-    </p>
-  </section>`;
+  replaceWithTemplate(primaryContent, "floor-template");
+  requireElement(primaryContent, '[data-field="floor-number"]').textContent =
+    label;
+  requireElement(primaryContent, '[data-field="title"]').textContent =
+    floor.title;
+  requireElement(primaryContent, '[data-field="subtitle"]').textContent =
+    `[${floor.subtitle}]`;
+  requireElement(primaryContent, '[data-field="description"]').textContent =
+    floor.description;
 
-  contextControls.innerHTML = `<section class="floor-selector" aria-labelledby="floor-selector-heading">
-    <h2 id="floor-selector-heading" class="slash-title">Select floor</h2>
-    <div class="floor-list">
-      ${FLOOR_ORDER.map(
-        (floorNumber) =>
-          `<button type="button" data-floor="${floorNumber}" class="floor-option${floorNumber === selectedFloor ? " is-active" : ""}">${floorNumber === 0 ? "G" : floorNumber}</button>`,
-      ).join("")}
-    </div>
-  </section>`;
+  replaceWithTemplate(contextControls, "floor-selector-template");
+  const floorList = requireElement<HTMLElement>(
+    contextControls,
+    '[data-list="floors"]',
+  );
+  FLOOR_ORDER.forEach((floorNumber) => {
+    const item = cloneTemplate("floor-button-template");
+    const button = requireElement<HTMLButtonElement>(item, "[data-floor]");
+    button.dataset.floor = String(floorNumber);
+    button.textContent = floorNumber === 0 ? "G" : String(floorNumber);
+    button.classList.toggle("is-active", floorNumber === selectedFloor);
+    floorList.append(item);
+  });
 
-  audioButton = document.querySelector<HTMLButtonElement>(".audio-button")!;
+  audioButton = requireElement<HTMLButtonElement>(
+    primaryContent,
+    ".audio-button",
+  );
   const createFloorAudio = (): HTMLAudioElement => {
     const audio = new Audio(floor.audioUrl);
-    audio.addEventListener("ended", stopAudio, { once: true });
+    audio.addEventListener("ended", () => {
+      audio.currentTime = 0;
+      audioButton?.classList.remove("is-playing");
+      audioButton?.setAttribute("aria-label", "Play floor pronunciation");
+    });
     return audio;
   };
   activeAudio = createFloorAudio();
@@ -175,32 +223,28 @@ const renderFloor = (): void => {
     });
 };
 
-const toggleMarkup = (
-  key: keyof typeof surroundingsState,
-  label: string,
-): string => {
-  const active = surroundingsState[key];
-  return `<button type="button" class="toggle-row${active ? " is-active" : ""}" data-toggle="${key}" role="switch" aria-checked="${active}">
-    <span class="switch" aria-hidden="true"><span></span></span><span>${label}</span>
-  </button>`;
-};
-
 const renderSurroundings = (): void => {
-  primaryContent.innerHTML = `${titleMarkup("Surroundings")}
-    <div class="surroundings-controls">
-      ${toggleMarkup("carParks", "Car Parks")}
-      ${toggleMarkup("transportation", "Transportation")}
-      <h2 class="toggle-row is-active poi-heading">Points of Interest</h2>
-      <div class="poi-list">
-        ${sceneInfo.pointsOfInterest
-          .map(
-            ({ label, sourceTitle }) =>
-              `<button type="button" data-poi="${sourceTitle}"><span class="search-icon" aria-hidden="true"></span>${label}</button>`,
-          )
-          .join("")}
-      </div>
-    </div>`;
-  contextControls.innerHTML = "";
+  replaceWithTemplate(primaryContent, "surroundings-template");
+  primaryContent
+    .querySelectorAll<HTMLButtonElement>("[data-toggle]")
+    .forEach((button) => {
+      const key = button.dataset.toggle as keyof typeof surroundingsState;
+      const active = surroundingsState[key];
+      button.classList.toggle("is-active", active);
+      button.setAttribute("aria-checked", String(active));
+    });
+  const pointsOfInterest = requireElement<HTMLElement>(
+    primaryContent,
+    '[data-list="points-of-interest"]',
+  );
+  sceneInfo.pointsOfInterest.forEach(({ label, sourceTitle }) => {
+    const item = cloneTemplate("poi-button-template");
+    const button = requireElement<HTMLButtonElement>(item, "[data-poi]");
+    button.dataset.poi = sourceTitle;
+    requireElement(button, '[data-field="label"]').textContent = label;
+    pointsOfInterest.append(item);
+  });
+  contextControls.replaceChildren();
 
   primaryContent
     .querySelectorAll<HTMLButtonElement>("[data-toggle]")
@@ -223,6 +267,8 @@ const renderSurroundings = (): void => {
       });
     });
 };
+
+// -------------------- Section navigation --------------------
 
 const renderSection = (sceneTitle: string): void => {
   primaryContent.classList.remove("is-entering");
@@ -262,6 +308,8 @@ const activateSection = async (
   await controller.activateSection(section);
   if (section === "floors") controller.selectFloor(1, FLOORS[1].buildingLevel);
 };
+
+// -------------------- Dialog and application startup --------------------
 
 popupDismiss.addEventListener("click", () => {
   imagePopup.classList.remove("is-active");

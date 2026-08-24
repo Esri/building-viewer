@@ -172,7 +172,13 @@ export class SceneController {
   async goToSlide(title: string, animate = true): Promise<void> {
     const slide = this.slides.get(title);
     const camera = slide?.viewpoint.camera;
-    if (camera) await this.sceneElement.goTo(camera, { animate });
+    if (camera) {
+      await this.sceneElement.goTo(camera, { animate }).catch(function (error) {
+        if (error.name != "AbortError") {
+          console.error(error);
+        }
+      });
+    }
   }
 
   selectFloor(uiFloor: number, buildingLevel: number): void {

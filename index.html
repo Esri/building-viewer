@@ -51,5 +51,101 @@
         <span id="popup-credit" class="popup-credit"></span>
       </button>
     </div>
+
+    <template id="overview-template">
+      <h1 class="display-title" data-field="title"></h1>
+      <p class="overview-copy" data-field="description"></p>
+      <section class="hours" aria-labelledby="hours-heading">
+        <h2 id="hours-heading" class="slash-title">Opening hours</h2>
+        <div data-list="hours"></div>
+      </section>
+    </template>
+
+    <template id="hours-row-template">
+      <div class="hours-row">
+        <strong data-field="day"></strong><span data-field="hours"></span>
+      </div>
+    </template>
+
+    <template id="viewpoints-template">
+      <section class="viewpoints" aria-labelledby="viewpoint-heading">
+        <h2 id="viewpoint-heading" class="slash-title">Point of view</h2>
+        <div class="control-list" data-list="viewpoints"></div>
+      </section>
+    </template>
+
+    <template id="viewpoint-button-template">
+      <button type="button" class="viewpoint" data-viewpoint></button>
+    </template>
+
+    <template id="floor-template">
+      <section class="floor-content">
+        <div class="floor-identity">
+          <span class="floor-word">floor</span>
+          <span class="floor-number" data-field="floor-number"></span>
+        </div>
+        <div class="floor-heading">
+          <h1 class="display-title" data-field="title"></h1>
+          <p class="floor-subtitle" data-field="subtitle"></p>
+        </div>
+        <p class="floor-copy" data-field="description"></p>
+        <p class="audio-row">
+          Listen to the name of this floor
+          <button
+            class="audio-button"
+            type="button"
+            aria-label="Play floor pronunciation"
+          >
+            <span></span>
+          </button>
+        </p>
+      </section>
+    </template>
+
+    <template id="floor-selector-template">
+      <section class="floor-selector" aria-labelledby="floor-selector-heading">
+        <h2 id="floor-selector-heading" class="slash-title">Select floor</h2>
+        <div class="floor-list" data-list="floors"></div>
+      </section>
+    </template>
+
+    <template id="floor-button-template">
+      <button type="button" class="floor-option" data-floor></button>
+    </template>
+
+    <template id="surroundings-template">
+      <h1 class="display-title">Surroundings</h1>
+      <div class="surroundings-controls">
+        <button
+          type="button"
+          class="toggle-row"
+          data-toggle="carParks"
+          role="switch"
+          aria-checked="false"
+        >
+          <span class="switch" aria-hidden="true"><span></span></span>
+          <span>Car Parks</span>
+        </button>
+        <button
+          type="button"
+          class="toggle-row"
+          data-toggle="transportation"
+          role="switch"
+          aria-checked="false"
+        >
+          <span class="switch" aria-hidden="true"><span></span></span>
+          <span>Transportation</span>
+        </button>
+        <h2 class="toggle-row is-active poi-heading">Points of Interest</h2>
+        <div class="poi-list" data-list="points-of-interest"></div>
+      </div>
+    </template>
+
+    <template id="poi-button-template">
+      <button type="button" data-poi>
+        <span class="search-icon" aria-hidden="true"></span>
+        <span data-field="label"></span>
+      </button>
+    </template>
   </body>
 </html>

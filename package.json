@@ -1,6 +1,6 @@
 {
-  "name": "js-maps-sdk-vite-template",
-  "description": "ArcGIS Maps SDK for JavaScript Vite TypeScript template",
+  "name": "building-viewer",
+  "description": "ArcGIS Maps SDK for JavaScript Showcase - Building Viewer",
   "private": true,
   "type": "module",
   "scripts": {
