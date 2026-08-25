@@ -45,7 +45,7 @@ const surroundingsState = {
 
 // -------------------- Template utilities --------------------
 
-const requireElement = <T extends Element>(
+const queryElement = <T extends Element>(
   parent: ParentNode,
   selector: string,
 ): T => {
@@ -55,7 +55,7 @@ const requireElement = <T extends Element>(
 };
 
 const cloneTemplate = (id: string): DocumentFragment => {
-  const template = requireElement<HTMLTemplateElement>(document, `#${id}`);
+  const template = queryElement<HTMLTemplateElement>(document, `#${id}`);
   return template.content.cloneNode(true) as DocumentFragment;
 };
 
@@ -98,36 +98,65 @@ const stopAudio = (): void => {
 
 // -------------------- Section rendering --------------------
 
-const renderHours = (container: HTMLElement): void => {
+const renderHours = (): DocumentFragment => {
+  const content = document.createDocumentFragment();
   const todayIndex = (new Date().getDay() + 6) % 7;
   HOURS.forEach(([day, hours], index) => {
     const row = cloneTemplate("hours-row-template");
     const isToday = index === todayIndex;
-    requireElement(row, ".hours-row").classList.toggle("is-today", isToday);
-    requireElement(row, '[data-field="day"]').textContent = isToday
+    queryElement(row, ".hours-row").classList.toggle("is-today", isToday);
+    queryElement(row, '[data-field="day"]').textContent = isToday
       ? "Today"
       : day;
-    requireElement(row, '[data-field="hours"]').textContent = hours;
-    container.append(row);
+    queryElement(row, '[data-field="hours"]').textContent = hours;
+    content.append(row);
   });
+  return content;
+};
+
+const renderFloorList = (): DocumentFragment => {
+  const content = document.createDocumentFragment();
+  FLOOR_ORDER.forEach((floorNumber) => {
+    const item = cloneTemplate("floor-button-template");
+    const button = queryElement<HTMLButtonElement>(item, "[data-floor]");
+    button.dataset.floor = String(floorNumber);
+    button.textContent = floorNumber === 0 ? "G" : String(floorNumber);
+    button.classList.toggle("is-active", floorNumber === selectedFloor);
+    content.append(item);
+  });
+  return content;
+};
+
+const renderPointsOfInterest = (): DocumentFragment => {
+  const content = document.createDocumentFragment();
+  sceneInfo.pointsOfInterest.forEach(({ label, sourceTitle }) => {
+    const item = cloneTemplate("poi-button-template");
+    const button = queryElement<HTMLButtonElement>(item, "[data-poi]");
+    button.dataset.poi = sourceTitle;
+    queryElement(button, '[data-field="label"]').textContent = label;
+    content.append(item);
+  });
+  return content;
 };
 
 const renderOverview = (sceneTitle: string): void => {
   replaceWithTemplate(primaryContent, "overview-template");
-  requireElement(primaryContent, '[data-field="title"]').textContent =
+  queryElement(primaryContent, '[data-field="title"]').textContent =
     sceneTitle;
-  requireElement(primaryContent, '[data-field="description"]').textContent =
+  queryElement(primaryContent, '[data-field="description"]').textContent =
     OVERVIEW_DESCRIPTION;
-  renderHours(requireElement(primaryContent, '[data-list="hours"]'));
+  queryElement(primaryContent, '[data-list="hours"]').replaceChildren(
+    renderHours(),
+  );
 
   replaceWithTemplate(contextControls, "viewpoints-template");
-  const viewpoints = requireElement<HTMLElement>(
+  const viewpoints = queryElement<HTMLElement>(
     contextControls,
     '[data-list="viewpoints"]',
   );
   sceneInfo.overviewViewpoints.forEach((title) => {
     const item = cloneTemplate("viewpoint-button-template");
-    const button = requireElement<HTMLButtonElement>(item, "[data-viewpoint]");
+    const button = queryElement<HTMLButtonElement>(item, "[data-viewpoint]");
     button.dataset.viewpoint = title;
     button.textContent = title;
     button.classList.toggle("is-active", activeViewpoint === title);
@@ -152,30 +181,23 @@ const renderFloor = (): void => {
   const floor = FLOORS[selectedFloor];
   const label = selectedFloor === 0 ? "G" : String(selectedFloor);
   replaceWithTemplate(primaryContent, "floor-template");
-  requireElement(primaryContent, '[data-field="floor-number"]').textContent =
+  queryElement(primaryContent, '[data-field="floor-number"]').textContent =
     label;
-  requireElement(primaryContent, '[data-field="title"]').textContent =
+  queryElement(primaryContent, '[data-field="title"]').textContent =
     floor.title;
-  requireElement(primaryContent, '[data-field="subtitle"]').textContent =
+  queryElement(primaryContent, '[data-field="subtitle"]').textContent =
     `[${floor.subtitle}]`;
-  requireElement(primaryContent, '[data-field="description"]').textContent =
+  queryElement(primaryContent, '[data-field="description"]').textContent =
     floor.description;
 
   replaceWithTemplate(contextControls, "floor-selector-template");
-  const floorList = requireElement<HTMLElement>(
+  const floorList = queryElement<HTMLElement>(
     contextControls,
     '[data-list="floors"]',
   );
-  FLOOR_ORDER.forEach((floorNumber) => {
-    const item = cloneTemplate("floor-button-template");
-    const button = requireElement<HTMLButtonElement>(item, "[data-floor]");
-    button.dataset.floor = String(floorNumber);
-    button.textContent = floorNumber === 0 ? "G" : String(floorNumber);
-    button.classList.toggle("is-active", floorNumber === selectedFloor);
-    floorList.append(item);
-  });
+  floorList.replaceChildren(renderFloorList());
 
-  audioButton = requireElement<HTMLButtonElement>(
+  audioButton = queryElement<HTMLButtonElement>(
     primaryContent,
     ".audio-button",
   );
@@ -233,17 +255,11 @@ const renderSurroundings = (): void => {
       button.classList.toggle("is-active", active);
       button.setAttribute("aria-checked", String(active));
     });
-  const pointsOfInterest = requireElement<HTMLElement>(
+  const pointsOfInterest = queryElement<HTMLElement>(
     primaryContent,
     '[data-list="points-of-interest"]',
   );
-  sceneInfo.pointsOfInterest.forEach(({ label, sourceTitle }) => {
-    const item = cloneTemplate("poi-button-template");
-    const button = requireElement<HTMLButtonElement>(item, "[data-poi]");
-    button.dataset.poi = sourceTitle;
-    requireElement(button, '[data-field="label"]').textContent = label;
-    pointsOfInterest.append(item);
-  });
+  pointsOfInterest.replaceChildren(renderPointsOfInterest());
   contextControls.replaceChildren();
 
   primaryContent
