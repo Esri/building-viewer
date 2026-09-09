@@ -1,43 +1,22 @@
 {
   "name": "building-viewer",
-  "version": "1.0.0",
-  "description": "This application demonstrates the use of various Building Scene Layer related API",
-  "repository": {
-    "type": "git",
-    "url": "git@github.com:esri/building-viewer.git"
-  },
+  "description": "ArcGIS Maps SDK for JavaScript Showcase - Building Viewer",
+  "private": true,
+  "type": "module",
   "scripts": {
-    "dev": "tsc -w & sass --watch src:src",
-    "lint": "tslint './src/*.ts'",
-    "build": "tsc & sass src:src",
-    "dist": "grunt dist",
-    "server": "grunt"
-  },
-  "keywords": [
-    "esri",
-    "typescript"
-  ],
-  "author": "Yannik Messerli <ymesserli@esri.com>",
-  "license": "Apache-2.0",
-  "devDependencies": {
-    "grunt": "^1.3.0",
-    "grunt-contrib-concat": "*",
-    "grunt-contrib-connect": "*",
-    "grunt-contrib-copy": "*",
-    "grunt-contrib-htmlmin": "*",
-    "grunt-contrib-uglify": "*",
-    "grunt-contrib-watch": "*",
-    "grunt-dojo": "^1.1.2",
-    "grunt-include-source": "^1.1.0",
-    "grunt-run": "^0.8.1",
-    "grunt-stripcomments": "^0.7.2",
-    "js-yaml": ">=3.13.1",
-    "tslint": "^4.2.0",
-    "tslib": "~2.4.0",
-    "sass": "^1.49.10"
+    "dev": "vite",
+    "build": "tsc && vite build",
+    "preview": "vite preview"
   },
   "dependencies": {
-    "@types/dojo": "1.9.41",
-    "typescript": "4.2.4"
+    "@arcgis/charts-components": "^5.1.0",
+    "@arcgis/core": "^5.1.0",
+    "@arcgis/map-components": "^5.1.0",
+    "@esri/calcite-components": "^5.1.1"
+  },
+  "devDependencies": {
+    "@types/node": "~24.10.1",
+    "typescript": "~6.0.2",
+    "vite": "^8.0.16"
   }
 }

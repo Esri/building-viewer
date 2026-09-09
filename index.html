@@ -1,71 +1,151 @@
-<html>
+<!doctype html>
+<html lang="en" class="app-loading">
   <head>
-    <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
-    <meta name="viewport" content="initial-scale=1, maximum-scale=1,user-scalable=no"/>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Building Viewer</title>
-    <meta name="viewport" content="minimal-ui">
-    <link rel="stylesheet" href="https://jsdev.arcgis.com/4.20/esri/themes/light/main.css">
-    <link rel="stylesheet" href="https://s3-us-west-1.amazonaws.com/patterns.esri.com/files/calcite-web/1.2.4/css/calcite-web.min.css">
-    <link rel="stylesheet" href="./src/css/main.css">
-    <link rel="stylesheet" href="./src/js/sections/css/sections.css">
-    <link rel="stylesheet" href="./src/js/widgets/widgets.css">
-    <link href="https://fonts.googleapis.com/css?family=Roboto" rel="stylesheet">
-    <link href="https://fonts.googleapis.com/css?family=Roboto+Condensed" rel="stylesheet">
-    <script>
-      var locationPath = location.pathname.replace(/\/[^\/]+$/, "/");
-      window.dojoConfig = {
-        packages: [
-          {
-            name: "app",
-            location: locationPath + "src/js/"
-          }
-        ]
-      };
-    </script>
-    <script src="https://js.arcgis.com/4.20/"></script>
-    <!-- include: "type": "js", "files": "**/*.js" -->
+    <link rel="icon" href="data:;base64,=" />
+    <link rel="stylesheet" href="/src/style.css" />
+    <script type="module" src="/src/main.ts"></script>
   </head>
+
   <body>
-    <div id="mainViewDiv"></div>
-    <div id="appDiv">
+    <div id="loading-screen" role="status" aria-label="Loading"></div>
+    <arcgis-scene id="building-scene" popup-disabled>
+      <arcgis-legend
+        id="floor-legend"
+        slot="bottom-left"
+        hidden
+      ></arcgis-legend>
+    </arcgis-scene>
+
+    <div id="app" class="app" aria-busy="true">
+      <nav class="primary-nav" aria-label="Building sections">
+        <button type="button" data-section="overview" class="is-active">
+          Overview
+        </button>
+        <span aria-hidden="true">/</span>
+        <button type="button" data-section="floors">Floor by floor</button>
+        <span aria-hidden="true">/</span>
+        <button type="button" data-section="surroundings">Surroundings</button>
+      </nav>
+      <main class="content-layout">
+        <section
+          id="primary-content"
+          class="primary-content"
+          aria-live="polite"
+        ></section>
+        <aside id="context-controls" class="context-controls"></aside>
+      </main>
     </div>
-    <script>require([
-      "app/BuildingViewer", 
-      "app/config",
-      "dojo/domReady!"
-    ], 
-    function(
-      BuildingViewer,
-      config
-    ) {
 
-      var args = {
-        // The container where to display the map:
-        mapContainer: "mainViewDiv",
+    <div
+      id="image-popup"
+      class="image-popup"
+      role="dialog"
+      aria-modal="true"
+      hidden
+    >
+      <button id="popup-dismiss" type="button" aria-label="Close image">
+        <img id="popup-image" alt="" />
+        <span id="popup-credit" class="popup-credit"></span>
+      </button>
+    </div>
 
-        // The id to the scene for the BSL you'd like to display:
-        websceneId: config.websceneId,
+    <template id="overview-template">
+      <h1 class="display-title" data-field="title"></h1>
+      <p class="overview-copy" data-field="description"></p>
+      <section class="hours" aria-labelledby="hours-heading">
+        <h2 id="hours-heading" class="slash-title">Opening hours</h2>
+        <div data-list="hours"></div>
+      </section>
+    </template>
 
-        // Your different sections:
-        sections: config.sections,
+    <template id="hours-row-template">
+      <div class="hours-row">
+        <strong data-field="day"></strong><span data-field="hours"></span>
+      </div>
+    </template>
 
-        // The container where to display the html element:
-        container: document.getElementById("appDiv")
-      };
+    <template id="viewpoints-template">
+      <section class="viewpoints" aria-labelledby="viewpoint-heading">
+        <h2 id="viewpoint-heading" class="slash-title">Point of view</h2>
+        <div class="control-list" data-list="viewpoints"></div>
+      </section>
+    </template>
 
-      if (config.portalUrl) {
-        args.portalUrl = config.portalUrl;
-      }
+    <template id="viewpoint-button-template">
+      <button type="button" class="viewpoint" data-viewpoint></button>
+    </template>
 
-      if (config.floorMapping) {
-        args.floorMapping = config.floorMapping;
-      }
+    <template id="floor-template">
+      <section class="floor-content">
+        <div class="floor-identity">
+          <span class="floor-word">floor</span>
+          <span class="floor-number" data-field="floor-number"></span>
+        </div>
+        <div class="floor-heading">
+          <h1 class="display-title" data-field="title"></h1>
+          <p class="floor-subtitle" data-field="subtitle"></p>
+        </div>
+        <p class="floor-copy" data-field="description"></p>
+        <p class="audio-row">
+          Listen to the name of this floor
+          <button
+            class="audio-button"
+            type="button"
+            aria-label="Play floor pronunciation"
+          >
+            <span></span>
+          </button>
+        </p>
+      </section>
+    </template>
 
-      if (config.extraQuery) {
-        args.extraQuery = config.extraQuery;
-      }
+    <template id="floor-selector-template">
+      <section class="floor-selector" aria-labelledby="floor-selector-heading">
+        <h2 id="floor-selector-heading" class="slash-title">Select floor</h2>
+        <div class="floor-list" data-list="floors"></div>
+      </section>
+    </template>
 
-      new BuildingViewer(args);
-    });</script>
+    <template id="floor-button-template">
+      <button type="button" class="floor-option" data-floor></button>
+    </template>
+
+    <template id="surroundings-template">
+      <h1 class="display-title">Surroundings</h1>
+      <div class="surroundings-controls">
+        <button
+          type="button"
+          class="toggle-row"
+          data-toggle="carParks"
+          role="switch"
+          aria-checked="false"
+        >
+          <span class="switch" aria-hidden="true"><span></span></span>
+          <span>Car Parks</span>
+        </button>
+        <button
+          type="button"
+          class="toggle-row"
+          data-toggle="transportation"
+          role="switch"
+          aria-checked="false"
+        >
+          <span class="switch" aria-hidden="true"><span></span></span>
+          <span>Transportation</span>
+        </button>
+        <h2 class="toggle-row is-active poi-heading">Points of Interest</h2>
+        <div class="poi-list" data-list="points-of-interest"></div>
+      </div>
+    </template>
+
+    <template id="poi-button-template">
+      <button type="button" data-poi>
+        <span class="search-icon" aria-hidden="true"></span>
+        <span data-field="label"></span>
+      </button>
+    </template>
   </body>
 </html>
